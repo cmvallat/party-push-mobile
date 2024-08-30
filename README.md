@@ -1,4 +1,4 @@
-# Party Push Backend Repo
+# Party Push Mobile Repo
 
 Party Push is a web app (hosted at http://www.livepartyhelper.com) that crowdsources party and event management.
 
