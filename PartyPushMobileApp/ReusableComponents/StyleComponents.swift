@@ -1,0 +1,56 @@
+//
+//  StyleComponents.swift
+//  Song_Requester
+//
+//  Created by Christian Vallat on 8/4/24.
+//
+
+import Foundation
+import SwiftUI
+
+class StyleHelpers{
+    struct ActionButtonStyle: ButtonStyle {
+        func makeBody(configuration: Configuration) -> some View {
+            configuration.label
+                .padding()
+                .background(Color(red: 0, green: 0.5, blue: 0))
+                .foregroundStyle(.white)
+                .cornerRadius(10)
+        }
+    }
+    
+    struct GlassView: View {
+        let cornerRadius: CGFloat
+        let fill: Color
+        let opacity: CGFloat
+        let shadowRadius: CGFloat
+
+        init(cornerRadius: CGFloat, fill: Color = .white, opacity: CGFloat = 0.25, shadowRadius: CGFloat = 10.0) {
+            self.cornerRadius = cornerRadius
+            self.fill = fill
+            self.opacity = opacity
+            self.shadowRadius = shadowRadius
+        }
+
+        var body: some View {
+            RoundedRectangle(cornerRadius: cornerRadius)
+                .fill(fill)
+                .opacity(opacity)
+                .shadow(radius: shadowRadius)
+        }
+    }
+
+    struct GlassModifier: ViewModifier {
+        let cornerRadius: CGFloat
+        let fill: Color
+        let opacity: CGFloat
+        let shadowRadius: CGFloat
+
+        func body(content: Content) -> some View {
+            content
+                .background {
+                    GlassView(cornerRadius: cornerRadius, fill: fill, opacity: opacity, shadowRadius: shadowRadius)
+                }
+        }
+    }
+}
