@@ -1,0 +1,20 @@
+[
+  {
+    "username": "Nick Georgiou",
+    "password": "Greek",
+    "phone": "9803227077",
+    "id": 1
+  },
+  {
+    "username": "Christian Vallat",
+    "password": "Swiss",
+    "phone": "Twentynine Palms",
+    "id": 2
+  },
+  {
+    "username": "Phillip Choi",
+    "password": "Korean",
+    "phone": "7049892249",
+    "id": 3
+  }
+]

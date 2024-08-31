@@ -81,11 +81,16 @@ struct UserManagementPage: View {
     let authUser: AuthUser
     
     var body: some View {
-        Text("Email: \(authUser.email)")
-        Text("Password: \(authUser.password)")
-        Text("Id Token: \(authUser.idToken)")
-        Text("Access Token: \(authUser.accessToken)")
-        Text("Refresh Token: \(authUser.refreshToken)")
+        VStack{
+            Spacer()
+            
+            HostList()
+            
+            Spacer()
+        }
+        .padding([.leading,.trailing], 15)
+        .background(Gradient(colors: [.blue, .pink]).opacity(0.2))
+            
     }
 }
 

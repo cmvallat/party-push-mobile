@@ -8,15 +8,19 @@
 import SwiftUI
 
 struct AuthTestView: View {
+    
     // to test AuthController functions
+    let authUser: AuthUser
+    
     var body: some View {
-        Button(action: {
-        }) {
-           Text("Test function")
-        }
+        Text("Email: \(authUser.email)")
+        Text("Password: \(authUser.password)")
+        Text("Id Token: \(authUser.idToken)")
+        Text("Access Token: \(authUser.accessToken)")
+        Text("Refresh Token: \(authUser.refreshToken)")
     }
 }
 
 #Preview {
-    AuthTestView()
+    AuthTestView(authUser: AuthUser())
 }
