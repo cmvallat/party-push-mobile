@@ -5,9 +5,7 @@
     "party_code": "nickcatannight",
     "phone_number": "9803227077",
     "spotify_device_id": "deviceid",
-    "invite_only": "1",
-    "description": "Nick hosts a weekly Catan night where he has some Redds and then loses at Catan.",
-    "id": 1
+    "invite_only": 1,
   },
   {
     "username": "christianvallat",
@@ -15,9 +13,7 @@
     "party_code": "cvbday26",
     "phone_number": "9802192919",
     "spotify_device_id": "deviceid",
-    "invite_only": "1",
-    "description": "Christian has an existential crisis about being closer to 30.",
-    "id": 2
+    "invite_only": 1,
   },
   {
     "username": "phillipchoi",
@@ -25,8 +21,6 @@
     "party_code": "philsbparty",
     "phone_number": "7049892249",
     "spotify_device_id": "deviceid",
-    "invite_only": "1",
-    "description": "Phil cries tears of joy when the Panthers beat the Chiefs in the Super Bowl. Patrick Mahomes goes 13-50 with 4 interceptions.",
-    "id": 3
+    "invite_only": 3,
   }
 ]

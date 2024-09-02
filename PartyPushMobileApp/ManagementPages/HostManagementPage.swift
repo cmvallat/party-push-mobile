@@ -20,6 +20,7 @@ struct HostManagementPage: View {
                 
                 Text("About the Party")
                     .font(.title2)
+                    .padding(.bottom, 10)
                 Text("Add description here if we want to add it to the Host object schema in the database.")
             }
             .padding()

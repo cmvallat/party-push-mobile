@@ -19,8 +19,8 @@ final class SessionManager : ObservableObject {
     @Published var authState: AuthState = .signUp
     
     //Todo: get these from Secrets Manager
-    let clientId: String = "up7gikj8g2jb4lpvqekgdumap"
-    let cognitoUrl: URL = URL(string: "https://cognito-idp.us-east-1.amazonaws.com/")!
+    let clientId: String = "clientid"
+    let cognitoUrl: URL = URL(string: "cognitoid")!
     
     func showLogin(authUser: AuthUser){
         authState = .login(authUser: authUser)

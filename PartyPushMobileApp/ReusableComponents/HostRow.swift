@@ -12,7 +12,7 @@ struct HostRow: View {
     
     var body: some View {
         HStack{
-            host.image
+            Image(systemName: "party.popper.fill")
                 .resizable()
                 .frame(width: 25, height: 25)
             Text(host.party_name)
