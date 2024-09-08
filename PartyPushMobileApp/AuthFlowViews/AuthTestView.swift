@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import JWTDecode
 
 struct Movie: Identifiable, Codable{
     let username: String
@@ -15,6 +16,12 @@ struct Movie: Identifiable, Codable{
     var id: String{
         username
     }
+}
+
+struct ApiResponseFormat: Codable{
+    let statusCode: Int
+    let body: String
+    let isBase64Encoded: Bool
 }
 
 struct AuthTestView: View {
@@ -31,11 +38,15 @@ struct AuthTestView: View {
                     HostRow(host: host)
                 }
             }
+//            Text($viewModel.response)
             
             HStack{
-                TextField("enter a username to fetch host parties", text: $viewModel.text)
+                TextField("enter a username", text: $viewModel.text)
                 
-                Button("Send", action: viewModel.addUser)
+                Button("Send", action:
+                        {
+                    viewModel.getPartiesAttending(auth: authUser)
+                })
             }
             .padding()
         }
@@ -43,26 +54,45 @@ struct AuthTestView: View {
 }
 
 extension AuthTestView{
-    class ViewModel: ObservableObject{
+    class ViewModel: ObservableObject
+    {
         @Published var hosts = [Host]()
         @Published var text = ""
         
-        func addUser(){
-            let path = "apigatewayurlhere"
-            var request = URLRequest(url: URL(string: path)!)
-            request.httpMethod = "POST"
-            
-            let movie = Movie(username: "testusername", password: "testpassword", phone_number: "testphonenumber")
-            if let movieData = try? JSONEncoder().encode(movie){
-                request.httpBody = movieData
+        func getPartiesAttending(auth: AuthUser)
+        {
+            // check if the email on the idToken matches
+            // the email we assigned at login/sign up
+            let jwt = try? decode(jwt: auth.idToken)
+            if let jwtEmail = jwt?["email"].string {
+                if(jwtEmail == auth.email)
+                {
+                    print("worked")
+                }
+                else
+                {
+                    print("didnt work")
+                }
             }
+
+            let queryItems = [URLQueryItem(name: "name", value: "cmvallat")]
+            var urlComps = URLComponents(string: "https://phmbstdnr3.execute-api.us-east-1.amazonaws.com/Test")!
+            urlComps.queryItems = queryItems
+            let path = urlComps.url!
+            var request = URLRequest(url: path)
+            request.httpMethod = "GET"
+            request.setValue(auth.idToken, forHTTPHeaderField: "AccessToken")
             
+            // Todo: pass in data from AuthUser
             let task = URLSession.shared.dataTask(with: request){
                 if let error = $2{
                     print(error)
-                } else if let data = $0, let movies = try? JSONDecoder().decode([Host].self, from: data){
+                } else if let data = $0
+                {
+                    print("---> data: \n \(String(data: data, encoding: .utf8) as AnyObject) \n")
+                    let movies = try? JSONDecoder().decode([Host].self, from: data)
                     DispatchQueue.main.async{ [weak self] in
-                        self?.hosts = movies
+                        self?.hosts = movies!
                         self?.text.removeAll()
                     }
                 }

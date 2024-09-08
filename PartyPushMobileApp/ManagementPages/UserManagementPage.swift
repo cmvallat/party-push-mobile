@@ -70,7 +70,6 @@ import AuthenticationServices
 //    task.resume()
 //}
 
-
 struct UserManagementPage: View {
     
     let authUser: AuthUser
@@ -80,12 +79,39 @@ struct UserManagementPage: View {
             Spacer()
             
             HostList()
+            GuestList()
             
             Spacer()
         }
         .padding([.leading,.trailing], 15)
         .background(Gradient(colors: [.blue, .pink]).opacity(0.2))
+        .onAppear(perform: {
+            sendNotification(authUser: authUser)
+        })
     }
+}
+
+func sendNotification(authUser: AuthUser)
+{
+    let content = UNMutableNotificationContent()
+        content.title = "Welcome"
+    content.body = "Hi \(authUser.username) you've just joined Party Push!"
+        content.sound = UNNotificationSound.default
+
+        // Set up a trigger for the notification (wait 5s)
+        let trigger = UNTimeIntervalNotificationTrigger(timeInterval: (5), repeats: false)
+
+        // Create the request
+        let request = UNNotificationRequest(identifier: UUID().uuidString, content: content, trigger: trigger)
+
+        // Add the request to the notification center
+        UNUserNotificationCenter.current().add(request) { error in
+            if let error = error {
+                print(error.localizedDescription)
+            } else {
+                print("Notification scheduled")
+            }
+        }
 }
 
 #Preview {

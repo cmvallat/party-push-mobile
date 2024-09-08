@@ -15,6 +15,7 @@ struct VerifyCodeView: View {
     @State var code = ""
     @State private var showResendCodeMessage = false
     @State private var resendCodeMessage: String = ""
+    @StateObject var viewModel = ViewModel()
 
     var body: some View {
         NavigationStack{
@@ -32,7 +33,12 @@ struct VerifyCodeView: View {
                     
                     Button(action:
                             {
-                        sessionManager.verifyEmail(authUser: authUser, confirmationCode: code)
+                        let response = sessionManager.verifyEmail(authUser: authUser, confirmationCode: code)
+                        if(response == "Success")
+                        {
+                            viewModel.addUser()
+                            sessionManager.login(authUser: authUser)
+                        }
                     })
                     {
                         Label("Verify", systemImage: "checkmark.seal.fill")
@@ -129,6 +135,44 @@ struct VerifyCodeView: View {
 extension View {
     func glass(cornerRadius: CGFloat, fill: Color = .white, opacity: CGFloat = 0.5, shadowRadius: CGFloat = 10.0) -> some View {
         modifier(StyleHelpers.GlassModifier(cornerRadius: cornerRadius, fill: fill, opacity: opacity, shadowRadius: shadowRadius))
+    }
+}
+
+extension VerifyCodeView{
+    class ViewModel: ObservableObject{
+        @Published var text = ""
+        @Published var response = ""
+        
+        func addUser(){
+            let path = "https://dlnhzdvr74.execute-api.us-east-1.amazonaws.com/Test/"
+            var request = URLRequest(url: URL(string: path)!)
+            request.httpMethod = "POST"
+            
+            // Todo: pass in data from AuthUser
+            let movie = Movie(username: "pchoi", password: "philtest", phone_number: "567")
+            if let movieData = try? JSONEncoder().encode(movie){
+                request.httpBody = movieData
+            }
+            
+            let task = URLSession.shared.dataTask(with: request){
+                if let error = $2{
+                    print(error)
+                } else if let data = $0
+                {
+                    let movies = try? JSONDecoder().decode(ApiResponseFormat.self, from: data)
+                    print(movies?.body)
+                    DispatchQueue.main.async{ [weak self] in
+                        self?.response = movies?.body ?? "failed to decode"
+                        self?.text.removeAll()
+                    }
+                }
+                else
+                {
+                    print("failed")
+                }
+            }
+            task.resume()
+        }
     }
 }
     

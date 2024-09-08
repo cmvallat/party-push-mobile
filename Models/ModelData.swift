@@ -8,7 +8,8 @@
 import Foundation
 
 var hosts: [Host] = load("hosts.json")
-
+var guests: [Guest] = load("guests.json")
+var users: [User] = load("users.json")
 
 func load<T: Decodable>(_ filename: String) -> T {
     let data: Data

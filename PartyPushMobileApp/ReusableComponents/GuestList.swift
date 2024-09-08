@@ -1,13 +1,13 @@
 //
-//  UserList.swift
+//  GuestList.swift
 //  PartyPushMobileApp
 //
-//  Created by Christian Vallat on 8/30/24.
+//  Created by Christian Vallat on 9/2/24.
 //
 
 import SwiftUI
 
-struct HostList: View {
+struct GuestList: View {
     
     @StateObject var viewModel = ViewModel()
 
@@ -21,32 +21,30 @@ struct HostList: View {
                         HostRow(host: host)
                     }
                 }
-                .navigationTitle("Hosting")
+                .navigationTitle("Attending")
             }        detail: {
                 Text("Select a party")
             }
         }
-        .onAppear(perform: viewModel.getHosts)
+        .onAppear(perform: viewModel.getPartiesAttending)
     }
 }
 
-extension HostList{
+extension GuestList{
     class ViewModel: ObservableObject{
         @Published var hosts = [Host]()
         @Published var text = ""
         
-        func getHosts(){
-            let path = "https://wdyj4fn3z3.execute-api.us-east-1.amazonaws.com/Test"
-            var request = URLRequest(url: URL(string: path)!)
-            request.httpMethod = "POST"
-            
+        func getPartiesAttending()
+        {
+            let queryItems = [URLQueryItem(name: "name", value: "cmvallat")]
+            var urlComps = URLComponents(string: "https://phmbstdnr3.execute-api.us-east-1.amazonaws.com/Test")!
+            urlComps.queryItems = queryItems
+            let path = urlComps.url!
+            var request = URLRequest(url: path)
+            request.httpMethod = "GET"
             
             // Todo: pass in data from AuthUser
-            let movie = Movie(username: "cmvallat", password: "testing", phone_number: "123")
-            if let movieData = try? JSONEncoder().encode(movie){
-                request.httpBody = movieData
-            }
-            
             let task = URLSession.shared.dataTask(with: request){
                 if let error = $2{
                     print(error)
@@ -63,5 +61,5 @@ extension HostList{
 }
 
 #Preview {
-    HostList()
+    GuestList()
 }

@@ -12,7 +12,7 @@ struct User: Hashable, Codable, Identifiable {
     var id: Int
     var username: String
     var password: String
-    var phone: String
+    var phone_number: String
     
     var image: Image {
         Image(systemName: "party.popper.fill")

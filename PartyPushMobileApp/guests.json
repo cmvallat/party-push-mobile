@@ -1,0 +1,20 @@
+[
+  {
+    "username": "nag",
+    "guest_name": "nick",
+    "party_code": "party2",
+    "at_party": 1
+  },
+  {
+    "username": "pc",
+    "guest_name": "phil",
+    "party_code": "party2",
+    "at_party": 1
+  },
+  {
+    "username": "cmv",
+    "guest_name": "chris",
+    "party_code": "party2",
+    "at_party": 1
+  }
+]

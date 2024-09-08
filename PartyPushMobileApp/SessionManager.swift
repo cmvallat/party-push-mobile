@@ -19,8 +19,8 @@ final class SessionManager : ObservableObject {
     @Published var authState: AuthState = .signUp
     
     //Todo: get these from Secrets Manager
-    let clientId: String = "clientid"
-    let cognitoUrl: URL = URL(string: "cognitoid")!
+    let clientId: String = "up7gikj8g2jb4lpvqekgdumap"
+    let cognitoUrl: URL = URL(string: "https://cognito-idp.us-east-1.amazonaws.com/")!
     
     func showLogin(authUser: AuthUser){
         authState = .login(authUser: authUser)
@@ -127,9 +127,9 @@ final class SessionManager : ObservableObject {
             "ClientId": clientId
         ]
         var retCode = waitForRequest(authUser: authUser, url: "AWSCognitoIdentityProviderService.ConfirmSignUp", method: "Post", parameters: parameters)
-        if (retCode.0) == "Success" {
-            retCode.0 = login(authUser: authUser)
-        }
+//        if (retCode.0) == "Success" {
+//            retCode.0 = login(authUser: authUser)
+//        }
         return retCode.0
     }
     
