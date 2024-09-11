@@ -1,0 +1,20 @@
+[
+  {
+    "username": "nickgeorgiou",
+    "email": "nicholasgeorgiou@gmail.com",
+    "cognito_username": "82ddbcbd-5a0a-4841-a713-62e6f0f4f8bf",
+    "id": 1
+  },
+  {
+    "username": "christianvallat",
+    "email": "christianvallat02@gmail.com",
+    "cognito_username": "95b3832d-9ecf-47ae-8405-73e9112c321c",
+    "id": 2
+  },
+  {
+    "username": "phillipchoi",
+    "email": "phillipchoi114@gmail.com",
+    "cognito_username": "75e9c328-4b53-4aea-8bab-8f984e4c03e2",
+    "id": 3
+  }
+]

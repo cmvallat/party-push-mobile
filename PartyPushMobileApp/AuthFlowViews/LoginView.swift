@@ -25,27 +25,15 @@ struct LoginView: View {
                 Spacer()
                 
                 VStack{
-                    Text("Welcome to PartyPush! Please log in below:")
+                    Text("Party Push Login")
                         .multilineTextAlignment(.center)
+                        .font(.title)
                         .padding([.top], 100)
                         .padding([.leading,.trailing], 15)
                     
-                    LabeledContent {
-                        TextField("Email address", text: $email)
-                            .textFieldStyle(.roundedBorder)
-                    } label: {
-                        Button("", systemImage: "info.circle")
-                        {
-                            showEmailPopover.toggle()
-                        }
-                        .tint(.black)
-                        .popover(isPresented: $showEmailPopover, attachmentAnchor: .point(.topTrailing), content: {
-                            Text("The email address associated with your account.")
-                                .presentationCompactAdaptation(.popover)
-                                .padding([.leading, .trailing], 5)
-                        })
-                    }
-                    .padding([.leading,.trailing], 15)
+                    TextField("Email address", text: $email)
+                        .textFieldStyle(.roundedBorder)
+                        .padding([.leading,.trailing], 15)
                     
                     LabeledContent {
                         SecureField("Password", text: $password)
@@ -57,7 +45,7 @@ struct LoginView: View {
                         }
                         .tint(.black)
                         .popover(isPresented: $showPasswordPopover, attachmentAnchor: .point(.bottomTrailing), content: {
-                            Text("The password associated with your account.")
+                            Text("We will never store your password in order to protect your data.")
                                 .presentationCompactAdaptation(.popover)
                                 .padding([.leading, .trailing], 5)
                         })
@@ -67,7 +55,11 @@ struct LoginView: View {
                     Button(action:{
                         authUser.email = email
                         authUser.password = password
-                        sessionManager.login(authUser: authUser)
+                        let res = sessionManager.login(authUser: authUser)
+                        if(res == "Success")
+                        {
+                            sessionManager.showSession(authUser: authUser)
+                        }
                     })
                     {
                         Label("Login", systemImage: "checkmark.seal.fill")

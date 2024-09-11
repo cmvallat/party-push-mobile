@@ -19,6 +19,19 @@
 		E95DC3A42C61DF930035FBD6 /* AuthUser.swift in Sources */ = {isa = PBXBuildFile; fileRef = E95DC3A32C61DF930035FBD6 /* AuthUser.swift */; };
 		E95DC3A82C7FFAAA0035FBD6 /* PasswordResetView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E95DC3A72C7FFAAA0035FBD6 /* PasswordResetView.swift */; };
 		E95DC3AA2C81740D0035FBD6 /* PasswordResetPrompt.swift in Sources */ = {isa = PBXBuildFile; fileRef = E95DC3A92C81740D0035FBD6 /* PasswordResetPrompt.swift */; };
+		E979D5422C82994100070658 /* User.swift in Sources */ = {isa = PBXBuildFile; fileRef = E979D5412C82994100070658 /* User.swift */; };
+		E979D5442C829CAA00070658 /* ModelData.swift in Sources */ = {isa = PBXBuildFile; fileRef = E979D5432C829CAA00070658 /* ModelData.swift */; };
+		E979D5462C829D3900070658 /* HostRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = E979D5452C829D3900070658 /* HostRow.swift */; };
+		E979D5482C829EC500070658 /* users.json in Resources */ = {isa = PBXBuildFile; fileRef = E979D5472C829EC500070658 /* users.json */; };
+		E979D54A2C82A32200070658 /* HostList.swift in Sources */ = {isa = PBXBuildFile; fileRef = E979D5492C82A32200070658 /* HostList.swift */; };
+		E979D54C2C82B1AE00070658 /* hosts.json in Resources */ = {isa = PBXBuildFile; fileRef = E979D54B2C82B1AE00070658 /* hosts.json */; };
+		E979D54E2C82B1DC00070658 /* Host.swift in Sources */ = {isa = PBXBuildFile; fileRef = E979D54D2C82B1DC00070658 /* Host.swift */; };
+		E979D5502C86901800070658 /* Guest.swift in Sources */ = {isa = PBXBuildFile; fileRef = E979D54F2C86901800070658 /* Guest.swift */; };
+		E979D5582C86973400070658 /* guests.json in Resources */ = {isa = PBXBuildFile; fileRef = E979D5572C86973300070658 /* guests.json */; };
+		E979D55A2C8698A800070658 /* GuestRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = E979D5592C8698A800070658 /* GuestRow.swift */; };
+		E979D55C2C869BEA00070658 /* GuestList.swift in Sources */ = {isa = PBXBuildFile; fileRef = E979D55B2C869BEA00070658 /* GuestList.swift */; };
+		E979D55F2C8D530F00070658 /* JWTDecode in Frameworks */ = {isa = PBXBuildFile; productRef = E979D55E2C8D530F00070658 /* JWTDecode */; };
+		E979D5662C8D606D00070658 /* PushNotificationTestView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E979D5652C8D606D00070658 /* PushNotificationTestView.swift */; };
 		E9F08D7F2B34C33500E3474A /* PartyPushMobileApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = E9F08D7E2B34C33500E3474A /* PartyPushMobileApp.swift */; };
 		E9F08D832B34C33700E3474A /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = E9F08D822B34C33700E3474A /* Assets.xcassets */; };
 		E9F08D862B34C33700E3474A /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = E9F08D852B34C33700E3474A /* Preview Assets.xcassets */; };
@@ -37,6 +50,19 @@
 		E95DC3A32C61DF930035FBD6 /* AuthUser.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthUser.swift; sourceTree = "<group>"; };
 		E95DC3A72C7FFAAA0035FBD6 /* PasswordResetView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PasswordResetView.swift; sourceTree = "<group>"; };
 		E95DC3A92C81740D0035FBD6 /* PasswordResetPrompt.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PasswordResetPrompt.swift; sourceTree = "<group>"; };
+		E979D5412C82994100070658 /* User.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = User.swift; sourceTree = "<group>"; };
+		E979D5432C829CAA00070658 /* ModelData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ModelData.swift; sourceTree = "<group>"; };
+		E979D5452C829D3900070658 /* HostRow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HostRow.swift; sourceTree = "<group>"; };
+		E979D5472C829EC500070658 /* users.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = users.json; sourceTree = "<group>"; };
+		E979D5492C82A32200070658 /* HostList.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HostList.swift; sourceTree = "<group>"; };
+		E979D54B2C82B1AE00070658 /* hosts.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = hosts.json; sourceTree = "<group>"; };
+		E979D54D2C82B1DC00070658 /* Host.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Host.swift; sourceTree = "<group>"; };
+		E979D54F2C86901800070658 /* Guest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Guest.swift; sourceTree = "<group>"; };
+		E979D5572C86973300070658 /* guests.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = guests.json; sourceTree = "<group>"; };
+		E979D5592C8698A800070658 /* GuestRow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GuestRow.swift; sourceTree = "<group>"; };
+		E979D55B2C869BEA00070658 /* GuestList.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GuestList.swift; sourceTree = "<group>"; };
+		E979D5602C8D59AE00070658 /* PartyPushMobileApp.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = PartyPushMobileApp.entitlements; sourceTree = "<group>"; };
+		E979D5652C8D606D00070658 /* PushNotificationTestView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PushNotificationTestView.swift; sourceTree = "<group>"; };
 		E9F08D7B2B34C33500E3474A /* PartyPushMobileApp.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = PartyPushMobileApp.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		E9F08D7E2B34C33500E3474A /* PartyPushMobileApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PartyPushMobileApp.swift; sourceTree = "<group>"; };
 		E9F08D822B34C33700E3474A /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
@@ -48,6 +74,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				E979D55F2C8D530F00070658 /* JWTDecode in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -71,6 +98,10 @@
 			isa = PBXGroup;
 			children = (
 				E95DC39A2C6021790035FBD6 /* StyleComponents.swift */,
+				E979D5452C829D3900070658 /* HostRow.swift */,
+				E979D5492C82A32200070658 /* HostList.swift */,
+				E979D5592C8698A800070658 /* GuestRow.swift */,
+				E979D55B2C869BEA00070658 /* GuestList.swift */,
 			);
 			path = ReusableComponents;
 			sourceTree = "<group>";
@@ -89,6 +120,10 @@
 			isa = PBXGroup;
 			children = (
 				E95DC3A32C61DF930035FBD6 /* AuthUser.swift */,
+				E979D5412C82994100070658 /* User.swift */,
+				E979D5432C829CAA00070658 /* ModelData.swift */,
+				E979D54D2C82B1DC00070658 /* Host.swift */,
+				E979D54F2C86901800070658 /* Guest.swift */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -113,13 +148,18 @@
 		E9F08D7D2B34C33500E3474A /* PartyPushMobileApp */ = {
 			isa = PBXGroup;
 			children = (
+				E979D5602C8D59AE00070658 /* PartyPushMobileApp.entitlements */,
 				E9F08D7E2B34C33500E3474A /* PartyPushMobileApp.swift */,
 				E95DC39C2C602B6F0035FBD6 /* SessionManager.swift */,
 				E9F08D822B34C33700E3474A /* Assets.xcassets */,
+				E979D5472C829EC500070658 /* users.json */,
+				E979D54B2C82B1AE00070658 /* hosts.json */,
+				E979D5572C86973300070658 /* guests.json */,
 				E9F08D842B34C33700E3474A /* Preview Content */,
 				E95DC3922C5FF5230035FBD6 /* ManagementPages */,
 				E95DC3912C5FF5040035FBD6 /* ReusableComponents */,
 				E95DC3902C5FF4D80035FBD6 /* AuthFlowViews */,
+				E979D5652C8D606D00070658 /* PushNotificationTestView.swift */,
 			);
 			path = PartyPushMobileApp;
 			sourceTree = "<group>";
@@ -148,6 +188,9 @@
 			dependencies = (
 			);
 			name = PartyPushMobileApp;
+			packageProductDependencies = (
+				E979D55E2C8D530F00070658 /* JWTDecode */,
+			);
 			productName = Song_Requester;
 			productReference = E9F08D7B2B34C33500E3474A /* PartyPushMobileApp.app */;
 			productType = "com.apple.product-type.application";
@@ -176,6 +219,9 @@
 				Base,
 			);
 			mainGroup = E9F08D722B34C33500E3474A;
+			packageReferences = (
+				E979D55D2C8D530F00070658 /* XCRemoteSwiftPackageReference "JWTDecode" */,
+			);
 			productRefGroup = E9F08D7C2B34C33500E3474A /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
@@ -190,8 +236,11 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				E979D5482C829EC500070658 /* users.json in Resources */,
 				E9F08D862B34C33700E3474A /* Preview Assets.xcassets in Resources */,
 				E9F08D832B34C33700E3474A /* Assets.xcassets in Resources */,
+				E979D5582C86973400070658 /* guests.json in Resources */,
+				E979D54C2C82B1AE00070658 /* hosts.json in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -203,18 +252,27 @@
 			buildActionMask = 2147483647;
 			files = (
 				E95DC3992C5FF5B20035FBD6 /* HostManagementPage.swift in Sources */,
+				E979D54A2C82A32200070658 /* HostList.swift in Sources */,
 				E95DC3A82C7FFAAA0035FBD6 /* PasswordResetView.swift in Sources */,
+				E979D5442C829CAA00070658 /* ModelData.swift in Sources */,
 				E95DC38B2C5E93A70035FBD6 /* LoginView.swift in Sources */,
 				E95DC3942C5FF5890035FBD6 /* UserManagementPage.swift in Sources */,
 				E95DC3892C5DA4780035FBD6 /* AuthTestView.swift in Sources */,
 				E95DC39F2C6030480035FBD6 /* SignUpView.swift in Sources */,
+				E979D5422C82994100070658 /* User.swift in Sources */,
+				E979D55A2C8698A800070658 /* GuestRow.swift in Sources */,
 				E95DC39B2C6021790035FBD6 /* StyleComponents.swift in Sources */,
 				E9F08D7F2B34C33500E3474A /* PartyPushMobileApp.swift in Sources */,
+				E979D5502C86901800070658 /* Guest.swift in Sources */,
 				E95DC3972C5FF5A30035FBD6 /* GuestManagementPage.swift in Sources */,
 				E95DC39D2C602B6F0035FBD6 /* SessionManager.swift in Sources */,
+				E979D55C2C869BEA00070658 /* GuestList.swift in Sources */,
 				E95DC3A42C61DF930035FBD6 /* AuthUser.swift in Sources */,
+				E979D5662C8D606D00070658 /* PushNotificationTestView.swift in Sources */,
 				E95DC38D2C5EDAC30035FBD6 /* VerifyCodeView.swift in Sources */,
+				E979D54E2C82B1DC00070658 /* Host.swift in Sources */,
 				E95DC3AA2C81740D0035FBD6 /* PasswordResetPrompt.swift in Sources */,
+				E979D5462C829D3900070658 /* HostRow.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -345,12 +403,14 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = PartyPushMobileApp/PartyPushMobileApp.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "\"PartyPushMobileApp/Preview Content\"";
 				DEVELOPMENT_TEAM = 8TRXBFW3M2;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_CFBundleDisplayName = "Party Push";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
@@ -374,12 +434,14 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = PartyPushMobileApp/PartyPushMobileApp.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "\"PartyPushMobileApp/Preview Content\"";
 				DEVELOPMENT_TEAM = 8TRXBFW3M2;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_CFBundleDisplayName = "Party Push";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
@@ -420,6 +482,25 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		E979D55D2C8D530F00070658 /* XCRemoteSwiftPackageReference "JWTDecode" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/auth0/JWTDecode.swift";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 3.1.0;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		E979D55E2C8D530F00070658 /* JWTDecode */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = E979D55D2C8D530F00070658 /* XCRemoteSwiftPackageReference "JWTDecode" */;
+			productName = JWTDecode;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = E9F08D732B34C33500E3474A /* Project object */;
 }

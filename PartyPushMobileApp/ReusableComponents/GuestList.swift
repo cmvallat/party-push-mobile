@@ -1,32 +1,39 @@
 //
-//  AuthTestView.swift
-//  Song_Requester
+//  GuestList.swift
+//  PartyPushMobileApp
 //
-//  Created by Christian Vallat on 8/2/24.
+//  Created by Christian Vallat on 9/2/24.
 //
 
 import SwiftUI
 import JWTDecode
 
-struct ApiResponseFormat: Codable{
-    let statusCode: Int
-    let body: String
-    let isBase64Encoded: Bool
-}
-
-struct AuthTestView: View 
-{
-    let authUser: AuthUser
+struct GuestList: View {
+    
     @StateObject var viewModel = ViewModel()
+    let authUser: AuthUser
 
     var body: some View {
-        VStack{
-            if(viewModel.hosts.isEmpty)
+        VStack
+        {
+            HStack
             {
-                Text("none")
+                Button(action:{
+                    viewModel.getPartiesAttending(authUser: authUser)
+                })
+                {
+                    Label("Refresh", systemImage: "arrow.clockwise.circle.fill")
+                        .tint(Color(red: 0, green: 0.65, blue: 0))
+                }
             }
-            else
+            .padding()
+            
+            NavigationSplitView 
             {
+                if(viewModel.hosts.isEmpty)
+                {
+                    Text("You aren't attending any parties right now.")
+                }
                 List(viewModel.hosts, id: \.self) { host in
                     NavigationLink {
                         HostManagementPage(host: host)
@@ -34,20 +41,15 @@ struct AuthTestView: View
                         HostRow(host: host)
                     }
                 }
+                .navigationTitle("Attending")
+            }        detail: {
+                Text("Select a party")
             }
-
-            HStack{
-                Button("Send", action:
-                        {
-                    viewModel.getPartiesAttending(authUser: authUser)
-                })
-            }
-            .padding()
         }
     }
 }
 
-extension AuthTestView
+extension GuestList
 {
     class ViewModel: ObservableObject
     {
@@ -57,7 +59,6 @@ extension AuthTestView
         {
             authorizeCall(authUser: authUser)
             
-            // setup the GET request
             let queryItems = [URLQueryItem(name: "cognito_username", value: authUser.cognito_username.uuidString)]
             var urlComps = URLComponents(string: "https://phmbstdnr3.execute-api.us-east-1.amazonaws.com/Test")!
             urlComps.queryItems = queryItems
@@ -71,15 +72,12 @@ extension AuthTestView
                 {
                     print(error)
                 } 
-                else if let data = $0
+                else if let data = $0, let hosts = try? JSONDecoder().decode([Host].self, from: data)
                 {
-                    // For debugging purposes:
-//                    print("---> data: \n \(String(data: data, encoding: .utf8) as AnyObject) \n")
-                    let attendingParties = try? JSONDecoder().decode([Host].self, from: data)
+                    // Todo: don't use force unwrap here
                     DispatchQueue.main.async
                     { [weak self] in
-                        // Todo: don't use force unwrap here
-                        self?.hosts = attendingParties!
+                        self?.hosts = hosts
                     }
                 }
             }
@@ -115,5 +113,5 @@ extension AuthTestView
 }
 
 #Preview {
-    AuthTestView(authUser: AuthUser())
+    GuestList(authUser: AuthUser())
 }

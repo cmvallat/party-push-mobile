@@ -79,11 +79,16 @@ final class SessionManager : ObservableObject {
             authUser.accessToken = result.1.accessToken
             authUser.idToken = result.1.idToken
             authUser.refreshToken = result.1.refreshToken
-            self.showSession(authUser: authUser)
+//            self.showSession(authUser: authUser)
         }
         else if(result.0 == "User is not confirmed.")
         {
             self.showVerifyCode(authUser: result.1)
+        }
+        else if(result.0 == "Incorrect username or password")
+        {
+            // Todo: handle
+            print(result.0)
         }
         return result.0
     }
@@ -127,7 +132,8 @@ final class SessionManager : ObservableObject {
             "ClientId": clientId
         ]
         var retCode = waitForRequest(authUser: authUser, url: "AWSCognitoIdentityProviderService.ConfirmSignUp", method: "Post", parameters: parameters)
-        if (retCode.0) == "Success" {
+        if (retCode.0) == "Success" 
+        {
             retCode.0 = login(authUser: authUser)
         }
         return retCode.0

@@ -7,7 +7,6 @@
 
 import SwiftUI
 
-
 struct SignUpView: View {
     
     @EnvironmentObject var sessionManager: SessionManager
@@ -15,9 +14,7 @@ struct SignUpView: View {
     @State var email = ""
     @State var username = ""
     @State var password = ""
-    @State var phone = ""
-    @State private var showPhonePopover: Bool = false
-    @State private var showEmailPopover: Bool = false
+    @State private var showUsernamePopover: Bool = false
     @State private var showVerificationView = false
     @State private var isSigningUp = false
 
@@ -27,29 +24,13 @@ struct SignUpView: View {
                 Spacer()
                 
                 VStack{
-                    Text("Please sign up below (we do NOT collect any data):")
+                    Text("Party Push Sign Up")
                         .multilineTextAlignment(.center)
+                        .font(.title)
                         .padding(.top, 100)
                         .padding([.leading,.trailing], 15)
                     
-                    LabeledContent {
-                        TextField("Email address", text: $email)
-                            .textFieldStyle(.roundedBorder)
-                    } label: {
-                        Button("", systemImage: "info.circle")
-                        {
-                            showEmailPopover.toggle()
-                        }
-                        .tint(.black)
-                        .popover(isPresented: $showEmailPopover, attachmentAnchor: .point(.topTrailing), content: {
-                            Text("The email address to sign up with. A verification code will be sent to this email.")
-                                .presentationCompactAdaptation(.popover)
-                                .padding([.leading, .trailing], 5)
-                        })
-                    }
-                    .padding([.leading,.trailing], 15)
-                    
-                    TextField("Username", text: $username)
+                    TextField("Email address", text: $email)
                         .textFieldStyle(.roundedBorder)
                         .padding([.leading,.trailing], 15)
                     
@@ -58,16 +39,16 @@ struct SignUpView: View {
                         .padding([.leading,.trailing], 15)
                     
                     LabeledContent {
-                        TextField("Phone number", text: $phone)
+                        TextField("Username", text: $username)
                             .textFieldStyle(.roundedBorder)
                     } label: {
                         Button("", systemImage: "info.circle")
                         {
-                            showPhonePopover.toggle()
+                            showUsernamePopover.toggle()
                         }
                         .tint(.black)
-                        .popover(isPresented: $showPhonePopover, attachmentAnchor: .point(.top), content: {
-                            Text("We will use this to send you text alerts from guests throughout the party. We will NEVER store or sell this data.")
+                        .popover(isPresented: $showUsernamePopover, attachmentAnchor: .point(.top), content: {
+                            Text("This will be displayed as your screen name throughout the app.")
                                 .presentationCompactAdaptation(.popover)
                                 .padding([.leading, .trailing], 5)
                         })
@@ -86,7 +67,14 @@ struct SignUpView: View {
                     Button(action: {
                         authUser.email = email
                         authUser.password = password
-                        sessionManager.signUp(authUser: authUser)
+                        authUser.username = username
+                        let res = sessionManager.signUp(authUser: authUser)
+                        // if we get "Success" back, it means we signed up AND logged in correctly
+                        // otherwise, we will automatically go to verify code
+                        if(res == "Success")
+                        {
+                            sessionManager.showSession(authUser: authUser)
+                        }
                     }){
                         Label("Submit", systemImage: "arrowshape.turn.up.forward.fill")
                             .tint(Color(red: 0, green: 0.65, blue: 0))

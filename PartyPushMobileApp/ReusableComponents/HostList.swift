@@ -1,32 +1,37 @@
 //
-//  AuthTestView.swift
-//  Song_Requester
+//  UserList.swift
+//  PartyPushMobileApp
 //
-//  Created by Christian Vallat on 8/2/24.
+//  Created by Christian Vallat on 8/30/24.
 //
 
 import SwiftUI
 import JWTDecode
 
-struct ApiResponseFormat: Codable{
-    let statusCode: Int
-    let body: String
-    let isBase64Encoded: Bool
-}
-
-struct AuthTestView: View 
-{
-    let authUser: AuthUser
+struct HostList: View {
+    
     @StateObject var viewModel = ViewModel()
+    let authUser: AuthUser
 
     var body: some View {
         VStack{
-            if(viewModel.hosts.isEmpty)
-            {
-                Text("none")
+            HStack{
+                Button(action:{
+                    viewModel.getHosts(authUser: authUser)
+                })
+                {
+                    Label("Refresh", systemImage: "arrow.clockwise.circle.fill")
+                        .tint(Color(red: 0, green: 0.65, blue: 0))
+                }
             }
-            else
+            .padding()
+            
+            NavigationSplitView 
             {
+                if(viewModel.hosts.isEmpty)
+                {
+                    Text("You aren't hosting any parties right now.")
+                }
                 List(viewModel.hosts, id: \.self) { host in
                     NavigationLink {
                         HostManagementPage(host: host)
@@ -34,52 +39,43 @@ struct AuthTestView: View
                         HostRow(host: host)
                     }
                 }
+                .navigationTitle("Hosting")
+            }        detail: {
+                Text("Select a party")
             }
-
-            HStack{
-                Button("Send", action:
-                        {
-                    viewModel.getPartiesAttending(authUser: authUser)
-                })
-            }
-            .padding()
         }
     }
 }
 
-extension AuthTestView
+extension HostList
 {
     class ViewModel: ObservableObject
     {
         @Published var hosts = [Host]()
         
-        func getPartiesAttending(authUser: AuthUser)
+        func getHosts(authUser: AuthUser)
         {
             authorizeCall(authUser: authUser)
             
-            // setup the GET request
             let queryItems = [URLQueryItem(name: "cognito_username", value: authUser.cognito_username.uuidString)]
-            var urlComps = URLComponents(string: "https://phmbstdnr3.execute-api.us-east-1.amazonaws.com/Test")!
+            var urlComps = URLComponents(string: "https://wdyj4fn3z3.execute-api.us-east-1.amazonaws.com/Test")!
             urlComps.queryItems = queryItems
             let path = urlComps.url!
+            let body = User(username: authUser.username, email: authUser.email, cognito_username: authUser.cognito_username)
             var request = URLRequest(url: path)
             request.httpMethod = "GET"
-            request.setValue(authUser.idToken, forHTTPHeaderField: "AccessToken")
             
             let task = URLSession.shared.dataTask(with: request){
                 if let error = $2
                 {
                     print(error)
-                } 
+                }
                 else if let data = $0
                 {
-                    // For debugging purposes:
-//                    print("---> data: \n \(String(data: data, encoding: .utf8) as AnyObject) \n")
-                    let attendingParties = try? JSONDecoder().decode([Host].self, from: data)
-                    DispatchQueue.main.async
-                    { [weak self] in
-                        // Todo: don't use force unwrap here
-                        self?.hosts = attendingParties!
+                    print("---> data: \n \(String(data: data, encoding: .utf8) as AnyObject) \n")
+                    let hosts = try? JSONDecoder().decode([Host].self, from: data)
+                    DispatchQueue.main.async{ [weak self] in
+                        self?.hosts = hosts!
                     }
                 }
             }
@@ -115,5 +111,5 @@ extension AuthTestView
 }
 
 #Preview {
-    AuthTestView(authUser: AuthUser())
+    HostList(authUser: AuthUser())
 }
