@@ -9,10 +9,13 @@ import Foundation
 import SwiftUI
 
 struct User: Hashable, Codable, Identifiable {
-    var id: Int
     var username: String
-    var password: String
-    var phone_number: String
+    var email: String
+    var cognito_username: UUID
+    
+    var id: UUID{
+        cognito_username
+    }
     
     var image: Image {
         Image(systemName: "party.popper.fill")

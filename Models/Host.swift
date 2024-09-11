@@ -12,9 +12,8 @@ struct Host: Hashable, Codable, Identifiable {
     var username: String
     var party_name: String
     var party_code: String
-    var phone_number: String
-    var spotify_device_id: String
     var invite_only: Int
+    var cognito_username: String
     
     var id: String{
         username

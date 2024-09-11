@@ -74,12 +74,14 @@ struct UserManagementPage: View {
     
     let authUser: AuthUser
     
-    var body: some View {
-        VStack{
+    var body: some View 
+    {
+        VStack
+        {
             Spacer()
             
-            HostList()
-            GuestList()
+            HostList(authUser: authUser)
+            GuestList(authUser: authUser)
             
             Spacer()
         }

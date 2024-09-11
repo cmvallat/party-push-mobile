@@ -1,19 +1,19 @@
 [
   {
-    "username": "nag",
+    "username": "nickgeorgiou",
     "guest_name": "nick",
     "party_code": "party2",
     "at_party": 1
   },
   {
-    "username": "pc",
-    "guest_name": "phil",
+    "username": "christianvallat",
+    "guest_name": "chris",
     "party_code": "party2",
     "at_party": 1
   },
   {
-    "username": "cmv",
-    "guest_name": "chris",
+    "username": "phillipchoi",
+    "guest_name": "phil",
     "party_code": "party2",
     "at_party": 1
   }

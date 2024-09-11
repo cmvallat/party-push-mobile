@@ -8,44 +8,38 @@
 import SwiftUI
 import JWTDecode
 
-struct Movie: Identifiable, Codable{
-    let username: String
-    let password: String
-    let phone_number: String
-    
-    var id: String{
-        username
-    }
-}
-
 struct ApiResponseFormat: Codable{
     let statusCode: Int
     let body: String
     let isBase64Encoded: Bool
 }
 
-struct AuthTestView: View {
-    
+struct AuthTestView: View 
+{
     let authUser: AuthUser
     @StateObject var viewModel = ViewModel()
 
     var body: some View {
         VStack{
-            List(viewModel.hosts, id: \.self) { host in
-                NavigationLink {
-                    HostManagementPage(host: host)
-                } label: {
-                    HostRow(host: host)
+            if(viewModel.hosts.isEmpty)
+            {
+                Text("none")
+            }
+            else
+            {
+                List(viewModel.hosts, id: \.self) { host in
+                    NavigationLink {
+                        HostManagementPage(host: host)
+                    } label: {
+                        HostRow(host: host)
+                    }
                 }
             }
-//            Text($viewModel.response)
-            
+
             HStack{
-                TextField("enter a username", text: $viewModel.text)
-                
                 Button("Send", action:
                         {
-                    viewModel.getPartiesAttending(auth: authUser)
+                    viewModel.getPartiesAttending(authUser: authUser)
                 })
             }
             .padding()
@@ -53,51 +47,69 @@ struct AuthTestView: View {
     }
 }
 
-extension AuthTestView{
+extension AuthTestView
+{
     class ViewModel: ObservableObject
     {
         @Published var hosts = [Host]()
-        @Published var text = ""
         
-        func getPartiesAttending(auth: AuthUser)
+        func getPartiesAttending(authUser: AuthUser)
         {
-            // check if the email on the idToken matches
-            // the email we assigned at login/sign up
-            let jwt = try? decode(jwt: auth.idToken)
-            if let jwtEmail = jwt?["email"].string {
-                if(jwtEmail == auth.email)
-                {
-                    print("worked")
-                }
-                else
-                {
-                    print("didnt work")
-                }
-            }
-
-            let queryItems = [URLQueryItem(name: "name", value: "cmvallat")]
+            authorizeCall(authUser: authUser)
+            
+            // setup the GET request
+            let queryItems = [URLQueryItem(name: "cognito_username", value: authUser.cognito_username.uuidString)]
             var urlComps = URLComponents(string: "https://phmbstdnr3.execute-api.us-east-1.amazonaws.com/Test")!
             urlComps.queryItems = queryItems
             let path = urlComps.url!
             var request = URLRequest(url: path)
             request.httpMethod = "GET"
-            request.setValue(auth.idToken, forHTTPHeaderField: "AccessToken")
+            request.setValue(authUser.idToken, forHTTPHeaderField: "AccessToken")
             
-            // Todo: pass in data from AuthUser
             let task = URLSession.shared.dataTask(with: request){
-                if let error = $2{
-                    print(error)
-                } else if let data = $0
+                if let error = $2
                 {
-                    print("---> data: \n \(String(data: data, encoding: .utf8) as AnyObject) \n")
-                    let movies = try? JSONDecoder().decode([Host].self, from: data)
-                    DispatchQueue.main.async{ [weak self] in
-                        self?.hosts = movies!
-                        self?.text.removeAll()
+                    print(error)
+                } 
+                else if let data = $0
+                {
+                    // For debugging purposes:
+//                    print("---> data: \n \(String(data: data, encoding: .utf8) as AnyObject) \n")
+                    let attendingParties = try? JSONDecoder().decode([Host].self, from: data)
+                    DispatchQueue.main.async
+                    { [weak self] in
+                        // Todo: don't use force unwrap here
+                        self?.hosts = attendingParties!
                     }
                 }
             }
             task.resume()
+        }
+        
+        func authorizeCall(authUser: AuthUser)
+        {
+            // check if the email on the idToken matches
+            // the email we assigned at login/sign up
+            let accessToken = try? decode(jwt: authUser.accessToken)
+            let idToken = try? decode(jwt: authUser.idToken)
+            let cognito_username_from_accessToken = accessToken?["username"].string ?? "defaultAccessToken"
+            let cognito_username_from_idToken = idToken?["cognito:username"].string ?? "defaultIdToken"
+            
+            if(cognito_username_from_accessToken != cognito_username_from_idToken)
+            {
+                // if the cognito username of the tokens don't match,
+                // then we have a problem and shouldn't be accessing this API
+                // Todo: handle here
+            }
+            else
+            {
+                // if they do match, we're good to call the API
+                // for the requested user's objects
+                
+                // either cognito_username variable works here
+                // since they would be the same in this check
+                authUser.cognito_username = UUID(uuidString: cognito_username_from_accessToken) ?? UUID()
+            }
         }
     }
 }
