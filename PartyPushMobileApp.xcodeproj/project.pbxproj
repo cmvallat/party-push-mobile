@@ -7,7 +7,9 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		E95DC3892C5DA4780035FBD6 /* AuthTestView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E95DC3882C5DA4780035FBD6 /* AuthTestView.swift */; };
+		E9067A4C2CA129BA00C5342B /* CommonFunctions.swift in Sources */ = {isa = PBXBuildFile; fileRef = E9067A4B2CA129BA00C5342B /* CommonFunctions.swift */; };
+		E9067A4E2CA1381900C5342B /* SandboxView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E9067A4D2CA1381900C5342B /* SandboxView.swift */; };
+		E906D75C2C97905C00E35ED4 /* AddHostSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = E906D75B2C97905C00E35ED4 /* AddHostSheet.swift */; };
 		E95DC38B2C5E93A70035FBD6 /* LoginView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E95DC38A2C5E93A70035FBD6 /* LoginView.swift */; };
 		E95DC38D2C5EDAC30035FBD6 /* VerifyCodeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E95DC38C2C5EDAC30035FBD6 /* VerifyCodeView.swift */; };
 		E95DC3942C5FF5890035FBD6 /* UserManagementPage.swift in Sources */ = {isa = PBXBuildFile; fileRef = E95DC3932C5FF5890035FBD6 /* UserManagementPage.swift */; };
@@ -38,7 +40,9 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
-		E95DC3882C5DA4780035FBD6 /* AuthTestView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthTestView.swift; sourceTree = "<group>"; };
+		E9067A4B2CA129BA00C5342B /* CommonFunctions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CommonFunctions.swift; sourceTree = "<group>"; };
+		E9067A4D2CA1381900C5342B /* SandboxView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SandboxView.swift; sourceTree = "<group>"; };
+		E906D75B2C97905C00E35ED4 /* AddHostSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddHostSheet.swift; sourceTree = "<group>"; };
 		E95DC38A2C5E93A70035FBD6 /* LoginView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginView.swift; sourceTree = "<group>"; };
 		E95DC38C2C5EDAC30035FBD6 /* VerifyCodeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VerifyCodeView.swift; sourceTree = "<group>"; };
 		E95DC3932C5FF5890035FBD6 /* UserManagementPage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserManagementPage.swift; sourceTree = "<group>"; };
@@ -81,10 +85,19 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		E906D75A2C978FFE00E35ED4 /* OtherViews */ = {
+			isa = PBXGroup;
+			children = (
+				E979D5652C8D606D00070658 /* PushNotificationTestView.swift */,
+				E906D75B2C97905C00E35ED4 /* AddHostSheet.swift */,
+				E9067A4D2CA1381900C5342B /* SandboxView.swift */,
+			);
+			path = OtherViews;
+			sourceTree = "<group>";
+		};
 		E95DC3902C5FF4D80035FBD6 /* AuthFlowViews */ = {
 			isa = PBXGroup;
 			children = (
-				E95DC3882C5DA4780035FBD6 /* AuthTestView.swift */,
 				E95DC38C2C5EDAC30035FBD6 /* VerifyCodeView.swift */,
 				E95DC38A2C5E93A70035FBD6 /* LoginView.swift */,
 				E95DC39E2C6030480035FBD6 /* SignUpView.swift */,
@@ -102,6 +115,7 @@
 				E979D5492C82A32200070658 /* HostList.swift */,
 				E979D5592C8698A800070658 /* GuestRow.swift */,
 				E979D55B2C869BEA00070658 /* GuestList.swift */,
+				E9067A4B2CA129BA00C5342B /* CommonFunctions.swift */,
 			);
 			path = ReusableComponents;
 			sourceTree = "<group>";
@@ -156,10 +170,10 @@
 				E979D54B2C82B1AE00070658 /* hosts.json */,
 				E979D5572C86973300070658 /* guests.json */,
 				E9F08D842B34C33700E3474A /* Preview Content */,
+				E906D75A2C978FFE00E35ED4 /* OtherViews */,
 				E95DC3922C5FF5230035FBD6 /* ManagementPages */,
 				E95DC3912C5FF5040035FBD6 /* ReusableComponents */,
 				E95DC3902C5FF4D80035FBD6 /* AuthFlowViews */,
-				E979D5652C8D606D00070658 /* PushNotificationTestView.swift */,
 			);
 			path = PartyPushMobileApp;
 			sourceTree = "<group>";
@@ -257,17 +271,19 @@
 				E979D5442C829CAA00070658 /* ModelData.swift in Sources */,
 				E95DC38B2C5E93A70035FBD6 /* LoginView.swift in Sources */,
 				E95DC3942C5FF5890035FBD6 /* UserManagementPage.swift in Sources */,
-				E95DC3892C5DA4780035FBD6 /* AuthTestView.swift in Sources */,
 				E95DC39F2C6030480035FBD6 /* SignUpView.swift in Sources */,
 				E979D5422C82994100070658 /* User.swift in Sources */,
 				E979D55A2C8698A800070658 /* GuestRow.swift in Sources */,
+				E906D75C2C97905C00E35ED4 /* AddHostSheet.swift in Sources */,
 				E95DC39B2C6021790035FBD6 /* StyleComponents.swift in Sources */,
 				E9F08D7F2B34C33500E3474A /* PartyPushMobileApp.swift in Sources */,
 				E979D5502C86901800070658 /* Guest.swift in Sources */,
 				E95DC3972C5FF5A30035FBD6 /* GuestManagementPage.swift in Sources */,
 				E95DC39D2C602B6F0035FBD6 /* SessionManager.swift in Sources */,
 				E979D55C2C869BEA00070658 /* GuestList.swift in Sources */,
+				E9067A4E2CA1381900C5342B /* SandboxView.swift in Sources */,
 				E95DC3A42C61DF930035FBD6 /* AuthUser.swift in Sources */,
+				E9067A4C2CA129BA00C5342B /* CommonFunctions.swift in Sources */,
 				E979D5662C8D606D00070658 /* PushNotificationTestView.swift in Sources */,
 				E95DC38D2C5EDAC30035FBD6 /* VerifyCodeView.swift in Sources */,
 				E979D54E2C82B1DC00070658 /* Host.swift in Sources */,
