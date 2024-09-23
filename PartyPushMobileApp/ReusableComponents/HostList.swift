@@ -6,7 +6,6 @@
 //
 
 import SwiftUI
-import JWTDecode
 
 struct HostList: View {
     

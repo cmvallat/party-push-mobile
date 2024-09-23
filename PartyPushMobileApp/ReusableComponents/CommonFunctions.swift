@@ -33,7 +33,7 @@ func sendNotification(authUser: AuthUser, title: String, body: String)
         }
 }
 
-// Todo: determine if we need this function? Or do we just need to add the token to the call above? If we don't need it, make sure to remove JWTDecode dependency
+// Todo: determine if we need this function? Or do we just need to add the token to the API call? If we don't need it, make sure to remove JWTDecode dependency
 func authorizeCall(authUser: AuthUser) -> AuthUser
 {
     let accessToken = try? decode(jwt: authUser.accessToken)

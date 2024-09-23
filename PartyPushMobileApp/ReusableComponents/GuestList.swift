@@ -6,12 +6,11 @@
 //
 
 import SwiftUI
-import JWTDecode
 
 struct GuestList: View {
     
     @StateObject var viewModel = ViewModel()
-    @State private var showAddPartyView = false
+    @State private var showJoinPartyView = false
     let authUser: AuthUser
 
     var body: some View {
