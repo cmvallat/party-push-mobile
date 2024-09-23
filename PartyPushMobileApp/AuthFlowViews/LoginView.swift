@@ -14,10 +14,7 @@ struct LoginView: View {
     let authUser: AuthUser
     @State var email = ""
     @State var password = ""
-    @State private var showEmailPopover: Bool = false
     @State private var showPasswordPopover: Bool = false
-    @State private var showForgotPasswordMessage: Bool = false
-    @State private var forgotPasswordMessage: String = ""
     
     var body: some View {
         NavigationView {
@@ -53,12 +50,17 @@ struct LoginView: View {
                     .padding([.leading,.trailing], 15)
                     
                     Button(action:{
+                        // try to login
                         authUser.email = email
                         authUser.password = password
                         let res = sessionManager.login(authUser: authUser)
                         if(res == "Success")
                         {
                             sessionManager.showSession(authUser: authUser)
+                        }
+                        else
+                        {
+                            // Todo: handle failed login
                         }
                     })
                     {
@@ -76,10 +78,12 @@ struct LoginView: View {
                             .tint(Color(red: 0, green: 0, blue: 0.9))
                     }
                     .padding(.bottom, 75)
+                    
                 }
                 .glass(cornerRadius: 20.0)
                 
                 Spacer()
+                
                 Button("Don't have an account? Sign up", action: {
                     sessionManager.showSignUp()
                 })

@@ -6,11 +6,11 @@
 //
 
 import SwiftUI
-import JWTDecode
 
 struct GuestList: View {
     
     @StateObject var viewModel = ViewModel()
+    @State private var showJoinPartyView = false
     let authUser: AuthUser
 
     var body: some View {
@@ -23,6 +23,16 @@ struct GuestList: View {
                 })
                 {
                     Label("Refresh", systemImage: "arrow.clockwise.circle.fill")
+                        .tint(Color(red: 0, green: 0.65, blue: 0))
+                }
+                
+                Spacer()
+                
+                Button(action:{
+                    // Todo: add toggle for join party view here
+                })
+                {
+                    Label("Join party", systemImage: "magnifyingglass.circle.fill")
                         .tint(Color(red: 0, green: 0.65, blue: 0))
                 }
             }
@@ -46,6 +56,9 @@ struct GuestList: View {
                 Text("Select a party")
             }
         }
+//        .refreshable {
+//            viewModel.getPartiesAttending(authUser: authUser)
+//        }
     }
 }
 
@@ -57,15 +70,16 @@ extension GuestList
         
         func getPartiesAttending(authUser: AuthUser)
         {
-            authorizeCall(authUser: authUser)
-            
-            let queryItems = [URLQueryItem(name: "cognito_username", value: authUser.cognito_username.uuidString)]
+            let authorizedUser = authorizeCall(authUser: authUser)
+
+            let queryItems = [URLQueryItem(name: "cognito_username", value: authorizedUser.cognito_username.uuidString)]
+            // Todo: store url somewhere?
             var urlComps = URLComponents(string: "https://phmbstdnr3.execute-api.us-east-1.amazonaws.com/Test")!
             urlComps.queryItems = queryItems
-            let path = urlComps.url!
-            var request = URLRequest(url: path)
+            // Todo: don't use force unwrap
+            var request = URLRequest(url: urlComps.url!)
             request.httpMethod = "GET"
-            request.setValue(authUser.idToken, forHTTPHeaderField: "AccessToken")
+            request.setValue(authorizedUser.idToken, forHTTPHeaderField: "AccessToken")
             
             let task = URLSession.shared.dataTask(with: request){
                 if let error = $2
@@ -74,7 +88,6 @@ extension GuestList
                 } 
                 else if let data = $0, let hosts = try? JSONDecoder().decode([Host].self, from: data)
                 {
-                    // Todo: don't use force unwrap here
                     DispatchQueue.main.async
                     { [weak self] in
                         self?.hosts = hosts
@@ -82,32 +95,6 @@ extension GuestList
                 }
             }
             task.resume()
-        }
-        
-        func authorizeCall(authUser: AuthUser)
-        {
-            // check if the email on the idToken matches
-            // the email we assigned at login/sign up
-            let accessToken = try? decode(jwt: authUser.accessToken)
-            let idToken = try? decode(jwt: authUser.idToken)
-            let cognito_username_from_accessToken = accessToken?["username"].string ?? "defaultAccessToken"
-            let cognito_username_from_idToken = idToken?["cognito:username"].string ?? "defaultIdToken"
-            
-            if(cognito_username_from_accessToken != cognito_username_from_idToken)
-            {
-                // if the cognito username of the tokens don't match,
-                // then we have a problem and shouldn't be accessing this API
-                // Todo: handle here
-            }
-            else
-            {
-                // if they do match, we're good to call the API
-                // for the requested user's objects
-                
-                // either cognito_username variable works here
-                // since they would be the same in this check
-                authUser.cognito_username = UUID(uuidString: cognito_username_from_accessToken) ?? UUID()
-            }
         }
     }
 }

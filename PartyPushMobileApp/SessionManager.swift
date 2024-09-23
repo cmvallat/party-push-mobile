@@ -18,7 +18,7 @@ enum AuthState{
 final class SessionManager : ObservableObject {
     @Published var authState: AuthState = .signUp
     
-    //Todo: get these from Secrets Manager
+    // not sensitive so we don't need to store elsewhere
     let clientId: String = "up7gikj8g2jb4lpvqekgdumap"
     let cognitoUrl: URL = URL(string: "https://cognito-idp.us-east-1.amazonaws.com/")!
     
@@ -99,7 +99,7 @@ final class SessionManager : ObservableObject {
             "Username" : authUser.email,
             "ClientId": clientId
         ]
-        var returnMessage = waitForRequest(authUser: authUser, url: "AWSCognitoIdentityProviderService.ForgotPassword", method: "Post", parameters: parameters)
+        let returnMessage = waitForRequest(authUser: authUser, url: "AWSCognitoIdentityProviderService.ForgotPassword", method: "Post", parameters: parameters)
         
         return returnMessage.0
     }

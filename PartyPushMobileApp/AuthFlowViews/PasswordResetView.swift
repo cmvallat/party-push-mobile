@@ -14,14 +14,13 @@ struct PasswordResetView: View {
     let authUser: AuthUser
     @State var code = ""
     @State var password = ""
-    @State private var showVerificationPopover: Bool = false
-    @State private var showPasswordPopover: Bool = false
     @State private var showResetPasswordMessage: Bool = false
     @State private var resetPasswordMessage: String = ""
     
     var body: some View {
         NavigationStack{
             VStack {
+                
                 Spacer()
                 
                 VStack{
@@ -30,39 +29,13 @@ struct PasswordResetView: View {
                         .padding([.top], 100)
                         .padding([.leading,.trailing], 15)
                     
-                    LabeledContent {
-                        TextField("Verification Code", text: $code)
-                            .textFieldStyle(.roundedBorder)
-                    } label: {
-                        Button("", systemImage: "info.circle")
-                        {
-                            showVerificationPopover.toggle()
-                        }
-                        .tint(.black)
-                        .popover(isPresented: $showVerificationPopover, attachmentAnchor: .point(.topTrailing), content: {
-                            Text("The verification code sent to your email to reset your password.")
-                                .presentationCompactAdaptation(.popover)
-                                .padding([.leading, .trailing], 5)
-                        })
-                    }
-                    .padding([.leading,.trailing], 15)
+                    TextField("Verification Code", text: $code)
+                        .textFieldStyle(.roundedBorder)
+                        .padding([.leading,.trailing], 15)
                     
-                    LabeledContent {
-                        SecureField("New Password", text: $password)
-                            .textFieldStyle(.roundedBorder)
-                    } label: {
-                        Button("", systemImage: "info.circle")
-                        {
-                            showPasswordPopover.toggle()
-                        }
-                        .tint(.black)
-                        .popover(isPresented: $showPasswordPopover, attachmentAnchor: .point(.bottomTrailing), content: {
-                            Text("This will be the new password associated with your account.")
-                                .presentationCompactAdaptation(.popover)
-                                .padding([.leading, .trailing], 5)
-                        })
-                    }
-                    .padding([.leading,.trailing], 15)
+                    SecureField("New Password", text: $password)
+                        .textFieldStyle(.roundedBorder)
+                        .padding([.leading,.trailing], 15)
                     
                     Button(action:{
                         resetPasswordMessage = sessionManager.resetPassword(authUser: authUser, newPassword: password, confirmationCode: code)
@@ -97,20 +70,6 @@ struct PasswordResetView: View {
             }
             .padding()
             .background(Gradient(colors: [.blue, .pink]).opacity(0.2))
-//            .toolbarBackground(Color.black.opacity(0.2), for: .navigationBar)
-//            .toolbarBackground(.visible, for: .navigationBar)
-//            .toolbar {
-//                ToolbarItemGroup(placement: .navigationBarTrailing) {
-//                    Button("Login") {
-//                        sessionManager.showLogin(authUser: authUser)
-//                    }
-//                    .tint(Color(red: 0, green: 0, blue: 0.9))
-//                    Button("Sign up") {
-//                        sessionManager.showSignUp()
-//                    }
-//                    .tint(Color(red: 0, green: 0, blue: 0.9))
-//                }
-//            }
         }
     }
 }

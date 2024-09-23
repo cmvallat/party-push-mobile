@@ -49,8 +49,20 @@ class StyleHelpers{
         func body(content: Content) -> some View {
             content
                 .background {
-                    GlassView(cornerRadius: cornerRadius, fill: fill, opacity: opacity, shadowRadius: shadowRadius)
-                }
+                    GlassView(cornerRadius: cornerRadius, fill: fill, opacity: opacity, shadowRadius: shadowRadius)}
         }
+    }
+    
+    struct CheckboxToggleStyle: ToggleStyle {
+      func makeBody(configuration: Self.Configuration) -> some View {
+        HStack {
+          configuration.label
+          Spacer()
+          Image(systemName: configuration.isOn ? "checkmark.square" : "square")
+            .resizable()
+            .frame(width: 24, height: 24)
+            .onTapGesture { configuration.isOn.toggle() }
+        }
+      }
     }
 }

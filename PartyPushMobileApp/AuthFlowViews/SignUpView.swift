@@ -15,12 +15,11 @@ struct SignUpView: View {
     @State var username = ""
     @State var password = ""
     @State private var showUsernamePopover: Bool = false
-    @State private var showVerificationView = false
-    @State private var isSigningUp = false
 
     var body: some View {
         NavigationView {
             VStack{
+                
                 Spacer()
                 
                 VStack{
@@ -55,25 +54,21 @@ struct SignUpView: View {
                     }
                     .padding([.leading,.trailing], 15)
                     
-                    // code for if we want to implement NavLink instead of button
-//                    NavigationLink(destination: VerifyCodeView(), label: {
-//                        Label("Submit", systemImage: "arrowshape.turn.up.forward.fill")
-//                            .tint(Color(red: 0, green: 0.65, blue: 0))
-//                    })
-//                    .navigationTitle("Sign up")
-//                    .navigationBarHidden(true)
-//                    .padding(.bottom, 100)
-                    
                     Button(action: {
+                        // try to sign in
                         authUser.email = email
                         authUser.password = password
                         authUser.username = username
                         let res = sessionManager.signUp(authUser: authUser)
                         // if we get "Success" back, it means we signed up AND logged in correctly
-                        // otherwise, we will automatically go to verify code
+                        // otherwise, we will automatically go to VerifyCodeView
                         if(res == "Success")
                         {
                             sessionManager.showSession(authUser: authUser)
+                        }
+                        else
+                        {
+                            // Todo: handle failed sign up
                         }
                     }){
                         Label("Submit", systemImage: "arrowshape.turn.up.forward.fill")
@@ -85,6 +80,7 @@ struct SignUpView: View {
                 .glass(cornerRadius: 20.0)
                 
                 Spacer()
+                
                 Button("Already have an account? Login here", action: {
                     sessionManager.showLogin(authUser: authUser)
                 })
@@ -96,6 +92,7 @@ struct SignUpView: View {
     }
 }
 
+// Todo: investigate whether we need this (I don't think we do)
 extension Color {
     init(hex: Int, opacity: Double = 1) {
         self.init(

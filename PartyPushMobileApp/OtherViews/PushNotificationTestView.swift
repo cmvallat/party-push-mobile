@@ -7,7 +7,8 @@
 
 import SwiftUI
 
-struct PushNotificationTestView: View {
+struct PushNotificationTestView: View
+{
     @UIApplicationDelegateAdaptor(AppDelegate.self) var appDelegate
 
     init() {
@@ -15,15 +16,9 @@ struct PushNotificationTestView: View {
     }
 
     var body: some View {
-        Button("Send notifications") {
-//            sendNotification();
+        Button("Send test notification") {
+            sendNotification(authUser: AuthUser(), title: "Party Push", body: "This is a test notification from Party Push")
         }
-    }
-}
-
-struct ContentView_Previews: PreviewProvider {
-    static var previews: some View {
-        PushNotificationTestView()
     }
 }
 

@@ -19,11 +19,15 @@ struct VerifyCodeView: View {
     @StateObject var viewModel = ViewModel()
 
     var body: some View {
-        NavigationStack{
-            VStack{
+        NavigationStack
+        {
+            VStack
+            {
                 Spacer()
-                VStack{
-                    Text("Looks like you haven't verified your account yet. Please enter the verification code from your email below:")
+                
+                VStack
+                {
+                    Text("Please enter the verification code from your email:")
                         .multilineTextAlignment(.center)
                         .padding([.top], 100)
                         .padding([.leading,.trailing], 15)
@@ -35,12 +39,15 @@ struct VerifyCodeView: View {
                     Button(action:
                             {
                         let response = sessionManager.verifyEmail(authUser: authUser, confirmationCode: code)
-                        // if email is verified, add the user to the db and
-                        // move to the user management page
                         if(response == "Success")
                         {
-                                viewModel.addUser(authUser: authUser)
+                            // if email is verified, add the user to the db and move to the user management page
+                            viewModel.addUser(authUser: authUser)
                             sessionManager.showSession(authUser: authUser)
+                        }
+                        else
+                        {
+                           // Todo: handle failed verification
                         }
                     })
                     {
@@ -124,17 +131,23 @@ extension VerifyCodeView{
         
         func addUser(authUser: AuthUser)
         {
-            setCognitoUsername(authUser: authUser)
-            
+            let authorizeUser = authorizeCall(authUser: authUser)
+            // Todo: store url somewhere?
             let path = "https://dlnhzdvr74.execute-api.us-east-1.amazonaws.com/Test/"
+            // Todo: don't use force unwrap
             var request = URLRequest(url: URL(string: path)!)
             request.httpMethod = "POST"
             
-            let userToAdd = User(username: authUser.username, email: authUser.email, cognito_username: authUser.cognito_username)
+            let userToAdd = User(
+                username: authorizeUser.username,
+                email: authorizeUser.email,
+                cognito_username: authorizeUser.cognito_username)
+            
             if let userData = try? JSONEncoder().encode(userToAdd){
                 request.httpBody = userData
             }
             
+            // Todo: standardize error handling here and in other API calls
             let task = URLSession.shared.dataTask(with: request){
                 if let error = $2
                 {
@@ -155,33 +168,6 @@ extension VerifyCodeView{
             }
             task.resume()
         }
-        
-        func setCognitoUsername(authUser: AuthUser)
-        {
-            // check if the email on the idToken matches
-            // the email we assigned at login/sign up
-            let accessToken = try? decode(jwt: authUser.accessToken)
-            let idToken = try? decode(jwt: authUser.idToken)
-            let cognito_username_from_accessToken = accessToken?["username"].string ?? "defaultAccessToken"
-            let cognito_username_from_idToken = idToken?["cognito:username"].string ?? "defaultIdToken"
-            
-            if(cognito_username_from_accessToken != cognito_username_from_idToken)
-            {
-                // if the cognito username of the tokens don't match,
-                // then we have a problem and shouldn't be accessing this API
-                // Todo: handle here
-            }
-            else
-            {
-                // if they do match, we're good to call the API
-                // for the requested user's objects
-                
-                // either cognito_username variable works here
-                // since they would be the same in this check
-                authUser.cognito_username = UUID(uuidString: cognito_username_from_accessToken) ?? UUID()
-            }
-        }
-        
     }
 }
     
