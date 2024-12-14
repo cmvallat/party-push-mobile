@@ -1,6 +1,6 @@
 import SwiftUI
 
-struct HostManagementPage: View {
+struct DemoView: View {
     
     var host: Host
     var demoFoodListFromApi: [Food]
@@ -8,8 +8,6 @@ struct HostManagementPage: View {
     @State private var showingFoodDeleteAlert: Bool = false
     @State private var showingGuestDeleteAlert: Bool = false
     @State private var showFoodPopover: Bool = false
-    @State private var itemToDelete: Food?
-
     
     var body: some View {
         VStack {
@@ -41,13 +39,21 @@ struct HostManagementPage: View {
                             }
 //                            .padding(50)
                         }
+                        .alert("Are you sure you want to remove this item? It will alert all guests that it has been removed from the party.", isPresented: $showingFoodDeleteAlert){
+                            Button("Delete", role: .destructive)
+                            {
+                                print("new delete clause")
+                                showingFoodDeleteAlert = false
+                            }
+                        }
                         .swipeActions(edge: .trailing)
                         {
                             // Delete item button
-                            Button(role: .destructive) { print("deleted food")
+                            Button {
+                                showingFoodDeleteAlert.toggle()
                             }
                             label: {
-                                Label("Delete", systemImage: "trash")
+                                Label("Delete", systemImage: "trash.fill")
                             }
                             .tint(Color.red)
                             
@@ -69,9 +75,9 @@ struct HostManagementPage: View {
                                 Label("Refilled", systemImage: "arrow.trianglehead.2.counterclockwise")
                             }
                             .tint(Color.green)
+                            
                         }
-                    }
-                    header: {
+                    } header: {
                         Text("Food/Drinks")
                             .font(.headline)
                     }
@@ -84,12 +90,23 @@ struct HostManagementPage: View {
                                 }
                             }
                             .swipeActions {
-                                Button(role: .destructive) { print("deleted guest")
-                                }
-                                label: {
-                                    Label("Delete", systemImage: "trash")
-                                }
-                            }
+                                Button("Remove", role: .destructive) {
+                                    showingGuestDeleteAlert = true
+                                        }
+                                    }
+                                    .tint(Color.red)
+//                                    .confirmationDialog(
+//                                        Text("Are you sure you want to remove this guest from your party?"),
+//                                        isPresented: $showingGuestDeleteAlert,
+//                                        titleVisibility: .visible
+//                                    ) {
+//                                         Button("Delete", role: .destructive) {
+//                                         withAnimation {
+//                                            print("removed guest")
+//                                         }
+//                                    }
+//                                }
+
                     } header: {
                         HStack{
                             Text("Guests")
@@ -116,5 +133,5 @@ struct HostManagementPage: View {
 }
 
 #Preview {
-    HostManagementPage(host: hosts[0], demoFoodListFromApi: food, demoGuestListFromApi: guests)
+    DemoView(host: hosts[0], demoFoodListFromApi: food, demoGuestListFromApi: guests)
 }

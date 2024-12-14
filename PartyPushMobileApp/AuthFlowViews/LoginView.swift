@@ -95,6 +95,7 @@ struct LoginView: View {
     }
 }
 
+
 #Preview {
     LoginView(authUser: AuthUser())
 }

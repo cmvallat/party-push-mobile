@@ -9,10 +9,12 @@ import SwiftUI
 
 struct AddHostSheet: View 
 {
+    let authUser: AuthUser
     @State var partyName = ""
     @State var partyCode = ""
     @Binding var showAddPartyView: Bool
     @State private var inviteOnly: Bool = false
+    @StateObject var viewModel = ViewModel()
     
     var body: some View
     {
@@ -52,7 +54,16 @@ struct AddHostSheet: View
                   .padding()
             
             Button(action:{
-                //Todo: call add-host api
+                viewModel.addHost(
+                    authUser: authUser,
+                    partyName: partyName,
+                    partyCode: partyCode,
+                    isPrivate: inviteOnly ? 1 : 0)
+                // if we successfully added a host, dismiss the sheet to go back to UMPage
+                if(viewModel.response == "Success!")
+                {
+                    showAddPartyView.toggle()
+                }
             })
             {
                 Label("Submit", systemImage: "arrowshape.turn.up.forward.fill")
@@ -66,6 +77,56 @@ struct AddHostSheet: View
     }
 }
 
+extension AddHostSheet{
+    class ViewModel: ObservableObject{
+        @Published var response = ""
+        
+        func addHost(authUser: AuthUser, partyName: String, partyCode: String, isPrivate: Int)
+        {
+            let authorizedUser = authorizeCall(authUser: authUser)
+            // Todo: store url somewhere?
+            let path = "https://34eb9x2j6f.execute-api.us-east-1.amazonaws.com/Prod/hello"
+            // Todo: don't use force unwrap
+            var request = URLRequest(url: URL(string: path)!)
+            request.httpMethod = "POST"
+            request.setValue(authorizedUser.idToken, forHTTPHeaderField: "AccessToken")
+            
+            let hostToAdd = Host(
+                username: "Cmvallattest",
+                party_name: partyName,
+                party_code: partyCode,
+                invite_only: isPrivate,
+                cognito_username: authorizedUser.cognito_username)
+            
+            if let hostData = try? JSONEncoder().encode(hostToAdd){
+                request.httpBody = hostData
+            }
+            
+            // Todo: standardize error handling here and in other API calls
+            let task = URLSession.shared.dataTask(with: request){
+                if let error = $2
+                {
+                    print(error)
+                }
+                else if let data = $0
+                {
+                    let apiResponse = try? JSONDecoder().decode(ApiResponseFormat.self, from: data)
+                    print("---> data: \n \(String(data: data, encoding: .utf8) as AnyObject) \n")
+                    DispatchQueue.main.async{ [weak self] in
+                        self?.response = apiResponse?.body ?? "failed to decode"
+                    }
+                }
+                else
+                {
+                    self.response = "Something went wrong in addUser call"
+                }
+                print("response: " + self.response)
+            }
+            task.resume()
+        }
+    }
+}
+
 #Preview {
-    AddHostSheet(showAddPartyView: .constant(true))
+    AddHostSheet(authUser: AuthUser(), showAddPartyView: .constant(true))
 }

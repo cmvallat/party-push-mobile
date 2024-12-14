@@ -9,7 +9,11 @@
 /* Begin PBXBuildFile section */
 		E9067A4C2CA129BA00C5342B /* CommonFunctions.swift in Sources */ = {isa = PBXBuildFile; fileRef = E9067A4B2CA129BA00C5342B /* CommonFunctions.swift */; };
 		E9067A4E2CA1381900C5342B /* SandboxView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E9067A4D2CA1381900C5342B /* SandboxView.swift */; };
+		E9067A522CA503A600C5342B /* CategorizedHost.swift in Sources */ = {isa = PBXBuildFile; fileRef = E9067A512CA503A600C5342B /* CategorizedHost.swift */; };
+		E9067A542CA650AB00C5342B /* Food.swift in Sources */ = {isa = PBXBuildFile; fileRef = E9067A532CA650A900C5342B /* Food.swift */; };
+		E9067A562CA6559000C5342B /* food.json in Resources */ = {isa = PBXBuildFile; fileRef = E9067A552CA6559000C5342B /* food.json */; };
 		E906D75C2C97905C00E35ED4 /* AddHostSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = E906D75B2C97905C00E35ED4 /* AddHostSheet.swift */; };
+		E94B0C192CAA0E3500079199 /* DemoView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E94B0C182CAA0E3500079199 /* DemoView.swift */; };
 		E95DC38B2C5E93A70035FBD6 /* LoginView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E95DC38A2C5E93A70035FBD6 /* LoginView.swift */; };
 		E95DC38D2C5EDAC30035FBD6 /* VerifyCodeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E95DC38C2C5EDAC30035FBD6 /* VerifyCodeView.swift */; };
 		E95DC3942C5FF5890035FBD6 /* UserManagementPage.swift in Sources */ = {isa = PBXBuildFile; fileRef = E95DC3932C5FF5890035FBD6 /* UserManagementPage.swift */; };
@@ -42,7 +46,11 @@
 /* Begin PBXFileReference section */
 		E9067A4B2CA129BA00C5342B /* CommonFunctions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CommonFunctions.swift; sourceTree = "<group>"; };
 		E9067A4D2CA1381900C5342B /* SandboxView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SandboxView.swift; sourceTree = "<group>"; };
+		E9067A512CA503A600C5342B /* CategorizedHost.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CategorizedHost.swift; sourceTree = "<group>"; };
+		E9067A532CA650A900C5342B /* Food.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Food.swift; sourceTree = "<group>"; };
+		E9067A552CA6559000C5342B /* food.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = food.json; sourceTree = "<group>"; };
 		E906D75B2C97905C00E35ED4 /* AddHostSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddHostSheet.swift; sourceTree = "<group>"; };
+		E94B0C182CAA0E3500079199 /* DemoView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DemoView.swift; sourceTree = "<group>"; };
 		E95DC38A2C5E93A70035FBD6 /* LoginView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginView.swift; sourceTree = "<group>"; };
 		E95DC38C2C5EDAC30035FBD6 /* VerifyCodeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VerifyCodeView.swift; sourceTree = "<group>"; };
 		E95DC3932C5FF5890035FBD6 /* UserManagementPage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserManagementPage.swift; sourceTree = "<group>"; };
@@ -91,6 +99,7 @@
 				E979D5652C8D606D00070658 /* PushNotificationTestView.swift */,
 				E906D75B2C97905C00E35ED4 /* AddHostSheet.swift */,
 				E9067A4D2CA1381900C5342B /* SandboxView.swift */,
+				E94B0C182CAA0E3500079199 /* DemoView.swift */,
 			);
 			path = OtherViews;
 			sourceTree = "<group>";
@@ -133,11 +142,13 @@
 		E95DC3A22C61DF830035FBD6 /* Models */ = {
 			isa = PBXGroup;
 			children = (
+				E9067A532CA650A900C5342B /* Food.swift */,
 				E95DC3A32C61DF930035FBD6 /* AuthUser.swift */,
 				E979D5412C82994100070658 /* User.swift */,
 				E979D5432C829CAA00070658 /* ModelData.swift */,
 				E979D54D2C82B1DC00070658 /* Host.swift */,
 				E979D54F2C86901800070658 /* Guest.swift */,
+				E9067A512CA503A600C5342B /* CategorizedHost.swift */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -167,6 +178,7 @@
 				E95DC39C2C602B6F0035FBD6 /* SessionManager.swift */,
 				E9F08D822B34C33700E3474A /* Assets.xcassets */,
 				E979D5472C829EC500070658 /* users.json */,
+				E9067A552CA6559000C5342B /* food.json */,
 				E979D54B2C82B1AE00070658 /* hosts.json */,
 				E979D5572C86973300070658 /* guests.json */,
 				E9F08D842B34C33700E3474A /* Preview Content */,
@@ -253,6 +265,7 @@
 				E979D5482C829EC500070658 /* users.json in Resources */,
 				E9F08D862B34C33700E3474A /* Preview Assets.xcassets in Resources */,
 				E9F08D832B34C33700E3474A /* Assets.xcassets in Resources */,
+				E9067A562CA6559000C5342B /* food.json in Resources */,
 				E979D5582C86973400070658 /* guests.json in Resources */,
 				E979D54C2C82B1AE00070658 /* hosts.json in Resources */,
 			);
@@ -274,10 +287,12 @@
 				E95DC39F2C6030480035FBD6 /* SignUpView.swift in Sources */,
 				E979D5422C82994100070658 /* User.swift in Sources */,
 				E979D55A2C8698A800070658 /* GuestRow.swift in Sources */,
+				E9067A542CA650AB00C5342B /* Food.swift in Sources */,
 				E906D75C2C97905C00E35ED4 /* AddHostSheet.swift in Sources */,
 				E95DC39B2C6021790035FBD6 /* StyleComponents.swift in Sources */,
 				E9F08D7F2B34C33500E3474A /* PartyPushMobileApp.swift in Sources */,
 				E979D5502C86901800070658 /* Guest.swift in Sources */,
+				E9067A522CA503A600C5342B /* CategorizedHost.swift in Sources */,
 				E95DC3972C5FF5A30035FBD6 /* GuestManagementPage.swift in Sources */,
 				E95DC39D2C602B6F0035FBD6 /* SessionManager.swift in Sources */,
 				E979D55C2C869BEA00070658 /* GuestList.swift in Sources */,
@@ -285,6 +300,7 @@
 				E95DC3A42C61DF930035FBD6 /* AuthUser.swift in Sources */,
 				E9067A4C2CA129BA00C5342B /* CommonFunctions.swift in Sources */,
 				E979D5662C8D606D00070658 /* PushNotificationTestView.swift in Sources */,
+				E94B0C192CAA0E3500079199 /* DemoView.swift in Sources */,
 				E95DC38D2C5EDAC30035FBD6 /* VerifyCodeView.swift in Sources */,
 				E979D54E2C82B1DC00070658 /* Host.swift in Sources */,
 				E95DC3AA2C81740D0035FBD6 /* PasswordResetPrompt.swift in Sources */,
@@ -426,6 +442,7 @@
 				DEVELOPMENT_TEAM = 8TRXBFW3M2;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = PartyPushMobileApp/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = "Party Push";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
@@ -439,9 +456,13 @@
 				MARKETING_VERSION = 1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = vallatventures.PartyPushMobileApp;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
+				SUPPORTS_MACCATALYST = NO;
+				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
+				SUPPORTS_XR_DESIGNED_FOR_IPHONE_IPAD = NO;
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
+				TARGETED_DEVICE_FAMILY = 1;
 			};
 			name = Debug;
 		};
@@ -457,6 +478,7 @@
 				DEVELOPMENT_TEAM = 8TRXBFW3M2;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = PartyPushMobileApp/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = "Party Push";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
@@ -470,9 +492,13 @@
 				MARKETING_VERSION = 1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = vallatventures.PartyPushMobileApp;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
+				SUPPORTS_MACCATALYST = NO;
+				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
+				SUPPORTS_XR_DESIGNED_FOR_IPHONE_IPAD = NO;
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
+				TARGETED_DEVICE_FAMILY = 1;
 			};
 			name = Release;
 		};

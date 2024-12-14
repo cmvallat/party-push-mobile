@@ -46,7 +46,7 @@ struct GuestList: View {
                 }
                 List(viewModel.hosts, id: \.self) { host in
                     NavigationLink {
-                        HostManagementPage(host: host)
+//                        HostManagementPage(host: host)
                     } label: {
                         HostRow(host: host)
                     }
@@ -64,6 +64,8 @@ struct GuestList: View {
 
 extension GuestList
 {
+    // Todo: change call to deserialize to Guest
+    // this will be used for guest lists for each Host
     class ViewModel: ObservableObject
     {
         @Published var hosts = [Host]()

@@ -1,0 +1,37 @@
+[
+  {
+    "item_name": "Doritos",
+    "party_code": "nag26",
+    "status": "full",
+    "cognito_username": "82ddbcbd-5a0a-4841-a713-62e6f0f4f8bf",
+    "username": "nickgeorgiou"
+  },
+  {
+    "item_name": "Chips",
+    "party_code": "cmvcatan",
+    "status": "full",
+    "cognito_username": "95b3832d-9ecf-47ae-8405-73e9112c321c",
+    "username": "christianvallat"
+  },
+  {
+    "item_name": "Mich Ultra beer",
+    "party_code": "cmvcatan",
+    "status": "full",
+    "cognito_username": "95b3832d-9ecf-47ae-8405-73e8112c321c",
+    "username": "christianvallat"
+  },
+  {
+    "item_name": "Oreos",
+    "party_code": "cmvcatan",
+    "status": "low",
+    "cognito_username": "95b3832d-9ecf-47ae-0405-73e9112c321c",
+    "username": "christianvallat"
+  },
+  {
+    "item_name": "Sour Patch Kids",
+    "party_code": "nickdemo",
+    "status": "full",
+    "cognito_username": "549814b8-3011-70aa-69e7-e0252cd8d04a",
+    "username": "partypushuser"
+  }
+]
