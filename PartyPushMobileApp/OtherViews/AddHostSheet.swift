@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-struct AddHostSheet: View 
+struct AddHostSheet: View
 {
     let authUser: AuthUser
     @State var partyName = ""

@@ -14,7 +14,7 @@ struct Guest: Hashable, Codable, Identifiable
     var guest_name: String
     var party_code: String
     var at_party: Int
-    var cognito_username: String
+    var cognito_username: UUID
     
     var id: String{
         username
