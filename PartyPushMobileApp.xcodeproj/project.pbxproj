@@ -38,6 +38,7 @@
 		E979D55C2C869BEA00070658 /* GuestList.swift in Sources */ = {isa = PBXBuildFile; fileRef = E979D55B2C869BEA00070658 /* GuestList.swift */; };
 		E979D55F2C8D530F00070658 /* JWTDecode in Frameworks */ = {isa = PBXBuildFile; productRef = E979D55E2C8D530F00070658 /* JWTDecode */; };
 		E979D5662C8D606D00070658 /* PushNotificationTestView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E979D5652C8D606D00070658 /* PushNotificationTestView.swift */; };
+		E9D8A0372D2F59D2001F0C00 /* ExampleAPIResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = E9D8A0362D2F59D2001F0C00 /* ExampleAPIResponse.swift */; };
 		E9F08D7F2B34C33500E3474A /* PartyPushMobileApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = E9F08D7E2B34C33500E3474A /* PartyPushMobileApp.swift */; };
 		E9F08D832B34C33700E3474A /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = E9F08D822B34C33700E3474A /* Assets.xcassets */; };
 		E9F08D862B34C33700E3474A /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = E9F08D852B34C33700E3474A /* Preview Assets.xcassets */; };
@@ -75,6 +76,7 @@
 		E979D55B2C869BEA00070658 /* GuestList.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GuestList.swift; sourceTree = "<group>"; };
 		E979D5602C8D59AE00070658 /* PartyPushMobileApp.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = PartyPushMobileApp.entitlements; sourceTree = "<group>"; };
 		E979D5652C8D606D00070658 /* PushNotificationTestView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PushNotificationTestView.swift; sourceTree = "<group>"; };
+		E9D8A0362D2F59D2001F0C00 /* ExampleAPIResponse.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExampleAPIResponse.swift; sourceTree = "<group>"; };
 		E9F08D7B2B34C33500E3474A /* PartyPushMobileApp.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = PartyPushMobileApp.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		E9F08D7E2B34C33500E3474A /* PartyPushMobileApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PartyPushMobileApp.swift; sourceTree = "<group>"; };
 		E9F08D822B34C33700E3474A /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
@@ -149,6 +151,7 @@
 				E979D54D2C82B1DC00070658 /* Host.swift */,
 				E979D54F2C86901800070658 /* Guest.swift */,
 				E9067A512CA503A600C5342B /* CategorizedHost.swift */,
+				E9D8A0362D2F59D2001F0C00 /* ExampleAPIResponse.swift */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -286,6 +289,7 @@
 				E95DC3942C5FF5890035FBD6 /* UserManagementPage.swift in Sources */,
 				E95DC39F2C6030480035FBD6 /* SignUpView.swift in Sources */,
 				E979D5422C82994100070658 /* User.swift in Sources */,
+				E9D8A0372D2F59D2001F0C00 /* ExampleAPIResponse.swift in Sources */,
 				E979D55A2C8698A800070658 /* GuestRow.swift in Sources */,
 				E9067A542CA650AB00C5342B /* Food.swift in Sources */,
 				E906D75C2C97905C00E35ED4 /* AddHostSheet.swift in Sources */,

@@ -33,7 +33,8 @@ struct UserManagementPage: View {
                         Section{
                             ForEach(viewModel.hosting) { host in
                                 NavigationLink {
-//                                    HostManagementPage(host: host)
+//                                    SandboxView(host: host)
+                                    HostManagementPage(host: host, authUser: authUser)
                                 } label: {
                                     HostRow(host: host)
                                 }
@@ -50,7 +51,7 @@ struct UserManagementPage: View {
                         Section{
                             ForEach(viewModel.attending) { host in
                                 NavigationLink {
-//                                    HostManagementPage(host: host)
+                                    HostManagementPage(host: host, authUser: authUser)
                                 } label: {
                                     HostRow(host: host)
                                 }
@@ -61,7 +62,7 @@ struct UserManagementPage: View {
                                 .font(.headline)
                         }
                     //}
-                }
+                } // End of List
                 .background(Gradient(
                     colors: [.blue, .pink]).opacity(0.2))
                 .scrollContentBackground(.hidden)
@@ -93,7 +94,7 @@ struct UserManagementPage: View {
                 }
             } detail: {
                 Text("Select a party")
-            }
+            }// End of NavigationSplitView
             .overlay(Group {
                 if (viewModel.hosting.isEmpty && viewModel.attending.isEmpty)
                 {
