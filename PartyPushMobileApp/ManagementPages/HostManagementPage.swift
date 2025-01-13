@@ -3,12 +3,11 @@ import SwiftUI
 struct HostManagementPage: View {
     
     var host: Host
-//    var demoFoodListFromApi: [Food]
-//    var demoGuestListFromApi: [Guest]
+    // For testing:
+    // var demoFoodListFromApi: [Food]
+    // var demoGuestListFromApi: [Guest]
     @StateObject var viewModel = ViewModel()
     let authUser: AuthUser
-//    @State private var showingFoodDeleteAlert: Bool = false
-//    @State private var showingGuestDeleteAlert: Bool = false
     @State private var showGuestPopover: Bool = false
     @State private var itemToDelete: Food?
     @State var newFoodItem: String = ""
@@ -41,8 +40,10 @@ struct HostManagementPage: View {
                 
                 HStack{
                     Button{
-                        viewModel.addFood(authUser: authUser, itemName: newFoodItem, partyCode: host.party_code, status: "full") {
-                            (resp) in DispatchQueue.main.async {
+                        viewModel.addFood(authUser: authUser, itemName: newFoodItem, partyCode: host.party_code, status: "full")
+                            {
+                            (resp) in DispatchQueue.main.async
+                            {
                                 testString = resp
                             }
                         }
@@ -57,12 +58,11 @@ struct HostManagementPage: View {
                         .textFieldStyle(.roundedBorder)
                         .padding([.leading,.trailing], 15)
                 }
-
                 
-                Label("Item successfully added!", systemImage: "info.circle")
+                Label("\(testString)", systemImage: "info.circle")
                     .labelStyle(.titleOnly)
                     .tint(Color(red: 0, green: 0.65, blue: 0))
-                    .opacity(testString == "Success!" ? 1 : 0)
+//                    .opacity(testString == "Success!" ? 1 : 0)
                 
                 List{
                     Section{
@@ -102,7 +102,6 @@ struct HostManagementPage: View {
                                     }
                                 Spacer()
                             }
-//                            .padding(50)
                         }
                     }
                     header: {
@@ -177,20 +176,15 @@ extension HostManagementPage
             
             let queryItems = [URLQueryItem(name: "cognito_username", value: authorizedUser.cognito_username.uuidString), URLQueryItem(name: "party_code", value: host.party_code)]
             
-//            print(host.party_code)
-//            print(queryItems)
-//            print(authorizedUser)
-            
             // Todo: store url somewhere?
             var urlComps = URLComponents(string: "https://92q2nhqvgb.execute-api.us-east-1.amazonaws.com/Prod")!
             urlComps.queryItems = queryItems
+            
             // Todo: don't use force unwrap
             var request = URLRequest(url: urlComps.url!)
             request.httpMethod = "GET"
             request.setValue(authorizedUser.idToken, forHTTPHeaderField: "AccessToken")
-            
-//            print("about to call")
-            
+                        
             let task = URLSession.shared.dataTask(with: request){
                 if let error = $2
                 {
@@ -198,12 +192,9 @@ extension HostManagementPage
                 }
                 else if let data = $0, let foods = try? JSONDecoder().decode([Food].self, from: data)
                 {
-//                    print("inside loop")
                     DispatchQueue.main.async{
                         [weak self] in
                         self?.foods = foods
-//                        print(foods)
-//                        print(self?.foods ?? [])
                     }
                 }
                 else
@@ -221,9 +212,11 @@ extension HostManagementPage
             let authorizedUser = authorizeCall(authUser: authUser)
 
             let queryItems = [URLQueryItem(name: "party_code", value: host.party_code)]
+            
             // Todo: store url somewhere?
             var urlComps = URLComponents(string: "https://sihkfz9re8.execute-api.us-east-1.amazonaws.com/Prod")!
             urlComps.queryItems = queryItems
+            
             // Todo: don't use force unwrap
             var request = URLRequest(url: urlComps.url!)
             request.httpMethod = "GET"
@@ -256,12 +249,11 @@ extension HostManagementPage
             let authorizedUser = authorizeCall(authUser: authUser)
             
             let queryItems = [URLQueryItem(name: "cognito_username", value: authorizedUser.cognito_username.uuidString), URLQueryItem(name: "party_code", value: host.party_code),URLQueryItem(name: "item_name", value: item_name)]
-            
-//            print(queryItems)
-            
+                        
             // Todo: store url somewhere?
             var urlComps = URLComponents(string: "https://e8ro13vvl3.execute-api.us-east-1.amazonaws.com/Prod")!
             urlComps.queryItems = queryItems
+            
             // Todo: don't use force unwrap
             var request = URLRequest(url: urlComps.url!)
             request.httpMethod = "DELETE"
@@ -285,19 +277,16 @@ extension HostManagementPage
             let authorizedUser = authorizeCall(authUser: authUser)
             
             let queryItems = [URLQueryItem(name: "cognito_username", value: guest.cognito_username.uuidString), URLQueryItem(name: "party_code", value: host.party_code),URLQueryItem(name: "guest_name", value: guest.guest_name)]
-            
-//            print(queryItems)
-            
+
             // Todo: store url somewhere?
             var urlComps = URLComponents(string: "https://sl83ejal53.execute-api.us-east-1.amazonaws.com/Prod")!
             urlComps.queryItems = queryItems
+            
             // Todo: don't use force unwrap
             var request = URLRequest(url: urlComps.url!)
             request.httpMethod = "DELETE"
             request.setValue(authorizedUser.idToken, forHTTPHeaderField: "AccessToken")
-            
-//            print("about to call")
-            
+                        
             let task = URLSession.shared.dataTask(with: request){
                 if let error = $2
                 {
@@ -314,8 +303,10 @@ extension HostManagementPage
         func addFood(authUser: AuthUser, itemName: String, partyCode: String, status: String, completion: @escaping (String) -> Void)
         {
             let authorizedUser = authorizeCall(authUser: authUser)
+            
             // Todo: store url somewhere?
             let path = "https://nm1c3v9jc9.execute-api.us-east-1.amazonaws.com/Prod"
+            
             // Todo: don't use force unwrap
             var request = URLRequest(url: URL(string: path)!)
             request.httpMethod = "POST"
@@ -336,20 +327,20 @@ extension HostManagementPage
             let task = URLSession.shared.dataTask(with: request){
                 if let error = $2
                 {
-                    completion("first if statement failure")
+                    completion("Something went wrong adding that food item...")
                 }
                 else if let data = $0
                 {
                     let apiResponse = try? JSONDecoder().decode(ExampleAPIResponse.self, from: data)
+                    
                     print("---> data: \n \(String(data: data, encoding: .utf8) as AnyObject) \n")
+                    
                     completion(apiResponse?.message ?? "failed to decode")
                 }
                 else
                 {
                     completion("else clause error")
-//                    self.addFoodResponse = "Something went wrong in addUser call"
                 }
-                //print("response: " + self.addFoodResponse)
             }
             task.resume()
         } //End of function
@@ -357,8 +348,10 @@ extension HostManagementPage
         func reportFood(authUser: AuthUser, itemName: String, partyCode: String, status: String)
         {
             let authorizedUser = authorizeCall(authUser: authUser)
+            
             // Todo: store url somewhere?
             let path = "https://bj0fdfpzjb.execute-api.us-east-1.amazonaws.com/Prod"
+            
             // Todo: don't use force unwrap
             var request = URLRequest(url: URL(string: path)!)
             request.httpMethod = "PUT"
@@ -384,7 +377,9 @@ extension HostManagementPage
                 else if let data = $0
                 {
                     let apiResponse = try? JSONDecoder().decode(ApiResponseFormat.self, from: data)
+                    
                     print("---> data: \n \(String(data: data, encoding: .utf8) as AnyObject) \n")
+                    
                     DispatchQueue.main.async{ [weak self] in
                         self?.reportFoodResponse = apiResponse?.body ?? "failed to decode"
                     }

@@ -53,19 +53,25 @@ struct AddHostSheet: View
             .toggleStyle(StyleHelpers.CheckboxToggleStyle())
                   .padding()
             
-            Button(action:{
+            Button{
                 viewModel.addHost(
                     authUser: authUser,
                     partyName: partyName,
                     partyCode: partyCode,
                     isPrivate: inviteOnly ? 1 : 0)
-                // if we successfully added a host, dismiss the sheet to go back to UMPage
-                if(viewModel.response == "Success!")
                 {
-                    showAddPartyView.toggle()
+                (resp) in DispatchQueue.main.async
+                {
+                    // if we successfully added a host, dismiss the sheet to go back to UMPage
+                    if(resp == "Success!")
+                    {
+                        showAddPartyView.toggle()
+                    }
                 }
-            })
-            {
+            }
+                print("\(partyName) created")
+            }
+            label: {
                 Label("Submit", systemImage: "arrowshape.turn.up.forward.fill")
                     .tint(Color(red: 0, green: 0.65, blue: 0))
             }
@@ -81,11 +87,13 @@ extension AddHostSheet{
     class ViewModel: ObservableObject{
         @Published var response = ""
         
-        func addHost(authUser: AuthUser, partyName: String, partyCode: String, isPrivate: Int)
+        func addHost(authUser: AuthUser, partyName: String, partyCode: String, isPrivate: Int, completion: @escaping (String) -> Void)
         {
             let authorizedUser = authorizeCall(authUser: authUser)
+            
             // Todo: store url somewhere?
             let path = "https://34eb9x2j6f.execute-api.us-east-1.amazonaws.com/Prod/hello"
+            
             // Todo: don't use force unwrap
             var request = URLRequest(url: URL(string: path)!)
             request.httpMethod = "POST"
@@ -106,21 +114,20 @@ extension AddHostSheet{
             let task = URLSession.shared.dataTask(with: request){
                 if let error = $2
                 {
-                    print(error)
+                    completion("first if statement error")
                 }
                 else if let data = $0
                 {
-                    let apiResponse = try? JSONDecoder().decode(ApiResponseFormat.self, from: data)
+                    let apiResponse = try? JSONDecoder().decode(ExampleAPIResponse.self, from: data)
+                    
                     print("---> data: \n \(String(data: data, encoding: .utf8) as AnyObject) \n")
-                    DispatchQueue.main.async{ [weak self] in
-                        self?.response = apiResponse?.body ?? "failed to decode"
-                    }
+                    
+                    completion(apiResponse?.message ?? "failed to decode")
                 }
                 else
                 {
-                    self.response = "Something went wrong in addUser call"
+                    completion("else clause error")
                 }
-                print("response: " + self.response)
             }
             task.resume()
         }
