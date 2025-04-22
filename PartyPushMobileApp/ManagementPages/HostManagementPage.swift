@@ -1,4 +1,5 @@
 import SwiftUI
+//import Foundation
 
 struct HostManagementPage: View {
     
@@ -10,9 +11,8 @@ struct HostManagementPage: View {
     let authUser: AuthUser
     @State private var showGuestPopover: Bool = false
     @State private var itemToDelete: Food?
+    @State private var showAddFoodView = false
     @State var newFoodItem: String = ""
-    @State var showAddFoodErrorMessage = false
-    @State var testString = ""
 
     var body: some View {
         VStack
@@ -37,32 +37,6 @@ struct HostManagementPage: View {
                     .font(.subheadline)
                 
                 Divider()
-                
-                HStack{
-                    Button{
-                        viewModel.addFood(authUser: authUser, itemName: newFoodItem, partyCode: host.party_code, status: "full")
-                            {
-                            (resp) in DispatchQueue.main.async
-                            {
-                                testString = resp
-                            }
-                        }
-                        print("\(newFoodItem) added")
-                    }
-                    label: {
-                        Label("Add Food", systemImage: "plus.circle")
-                    }
-                    .tint(Color(red: 0, green: 0.65, blue: 0))
-                    
-                    TextField("New food item", text: $newFoodItem)
-                        .textFieldStyle(.roundedBorder)
-                        .padding([.leading,.trailing], 15)
-                }
-                
-                Label("\(testString)", systemImage: "info.circle")
-                    .labelStyle(.titleOnly)
-                    .tint(Color(red: 0, green: 0.65, blue: 0))
-//                    .opacity(testString == "Success!" ? 1 : 0)
                 
                 List{
                     Section{
@@ -97,17 +71,27 @@ struct HostManagementPage: View {
                                         }
                                         label: {
                                             Label("Refilled", systemImage: "arrow.trianglehead.2.counterclockwise")
-                                        }
+                                        }//5
                                         .tint(Color.green)
-                                    }
+                                    }//4
                                 Spacer()
-                            }
+                            } //3
+                        }//2
+                        Button {
+                            // show add food sheet
+                            showAddFoodView.toggle()
+                        } label: {
+                            Label("Add", systemImage: "plus")
                         }
-                    }
+                    }//1
+//                    .toolbar {
+//                    }
                     header: {
                         Text("Food/Drinks")
                             .font(.headline)
                     }
+                    .headerProminence(.increased)
+
 
                     Section{
                         // add toggle for current/invited guests
@@ -142,12 +126,16 @@ struct HostManagementPage: View {
                             })
                         }
                     }
+                    .headerProminence(.increased)
                 }
             }
             .padding()
             
             Spacer()
         }
+        .sheet(isPresented: $showAddFoodView, content: {
+            AddFoodSheet(host: host, authUser: authUser, showAddFoodView: $showAddFoodView)
+        })
         .refreshable {
             viewModel.getFoodList(authUser: authUser, host: host)
             viewModel.getGuestList(authUser: authUser, host: host)
@@ -170,6 +158,10 @@ extension HostManagementPage
         @Published var addFoodResponse = ""
         @Published var reportFoodResponse = ""
         
+//        func getFoodList(authUser: AuthUser, host: Host completion: @escaping (String) -> Void)
+//        {
+//        }
+        
         func getFoodList(authUser: AuthUser, host: Host)
         {
             let authorizedUser = authorizeCall(authUser: authUser)
@@ -190,11 +182,15 @@ extension HostManagementPage
                 {
                     print(error)
                 }
-                else if let data = $0, let foods = try? JSONDecoder().decode([Food].self, from: data)
+//                else if let data = $0
+//                {
+                else if let data = $0, let resp = try? JSONDecoder().decode(APIResponse<Food>.self, from: data)
                 {
+                    let foodList = resp.data
+                    
                     DispatchQueue.main.async{
                         [weak self] in
-                        self?.foods = foods
+                        self?.foods = foodList
                     }
                 }
                 else
@@ -229,6 +225,9 @@ extension HostManagementPage
                 }
                 else if let data = $0, let guests = try? JSONDecoder().decode([Guest].self, from: data)
                 {
+                    let s = String(data: $0!, encoding: .utf8)!
+                    print(s)
+                    
                     DispatchQueue.main.async
                     { [weak self] in
                         self?.guests = guests
@@ -300,50 +299,54 @@ extension HostManagementPage
             task.resume()
         } // End of function
         
-        func addFood(authUser: AuthUser, itemName: String, partyCode: String, status: String, completion: @escaping (String) -> Void)
-        {
-            let authorizedUser = authorizeCall(authUser: authUser)
-            
-            // Todo: store url somewhere?
-            let path = "https://nm1c3v9jc9.execute-api.us-east-1.amazonaws.com/Prod"
-            
-            // Todo: don't use force unwrap
-            var request = URLRequest(url: URL(string: path)!)
-            request.httpMethod = "POST"
-            request.setValue(authorizedUser.idToken, forHTTPHeaderField: "AccessToken")
-            
-            let foodToAdd = Food(
-                item_name: itemName,
-                party_code: partyCode,
-                status: status,
-                username: "cmvallattest",
-                cognito_username: authorizedUser.cognito_username)
-            
-            if let foodData = try? JSONEncoder().encode(foodToAdd){
-                request.httpBody = foodData
-            }
-            
-            // Todo: standardize error handling here and in other API calls
-            let task = URLSession.shared.dataTask(with: request){
-                if let error = $2
-                {
-                    completion("Something went wrong adding that food item...")
-                }
-                else if let data = $0
-                {
-                    let apiResponse = try? JSONDecoder().decode(ExampleAPIResponse.self, from: data)
-                    
-                    print("---> data: \n \(String(data: data, encoding: .utf8) as AnyObject) \n")
-                    
-                    completion(apiResponse?.message ?? "failed to decode")
-                }
-                else
-                {
-                    completion("else clause error")
-                }
-            }
-            task.resume()
-        } //End of function
+//        func addFood(authUser: AuthUser, itemName: String, partyCode: String, status: String, completion: @escaping (String) -> Void)
+//        {
+//            let authorizedUser = authorizeCall(authUser: authUser)
+//            
+//            // Todo: store url somewhere?
+//            let path = "https://nm1c3v9jc9.execute-api.us-east-1.amazonaws.com/Prod"
+//            
+//            // Todo: don't use force unwrap
+//            var request = URLRequest(url: URL(string: path)!)
+//            request.httpMethod = "POST"
+//            request.setValue(authorizedUser.idToken, forHTTPHeaderField: "AccessToken")
+//            
+//            let foodToAdd = Food(
+//                item_name: itemName,
+//                party_code: partyCode,
+//                status: status,
+//                username: "cmvallattest",
+//                cognito_username: authorizedUser.cognito_username)
+//            
+//            if let foodData = try? JSONEncoder().encode(foodToAdd){
+//                request.httpBody = foodData
+//            }
+//            
+//            // Todo: standardize error handling here and in other API calls
+//            let task = URLSession.shared.dataTask(with: request){
+//                if $2 != nil
+//                {
+//                    completion("Uh oh! Something went wrong")
+//                }
+//                else if let data = $0
+//                {
+//                    // decode to string because it won't return the added object, just a success or failure message
+//                    if let decoded = try? JSONDecoder().decode(APIResponse<EmptyCodable>.self, from: data) {
+//                        completion(decoded.message)
+//                    } else {
+//                        completion("Uh oh! Something went wrong")
+//                    }
+//                    
+//                    // For debugging:
+////                    print("---> data: \n \((String(data: data, encoding: .utf8) ?? "nil") as String) \n")
+//                }
+//                else
+//                {
+//                    completion("Uh oh! Something went wrong")
+//                }
+//            }
+//            task.resume()
+//        } //End of function
         
         func reportFood(authUser: AuthUser, itemName: String, partyCode: String, status: String)
         {

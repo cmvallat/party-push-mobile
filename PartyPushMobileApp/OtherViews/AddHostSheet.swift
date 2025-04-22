@@ -118,7 +118,7 @@ extension AddHostSheet{
                 }
                 else if let data = $0
                 {
-                    let apiResponse = try? JSONDecoder().decode(ExampleAPIResponse.self, from: data)
+                    let apiResponse = try? JSONDecoder().decode(APIResponse<Host>.self, from: data)
                     
                     print("---> data: \n \(String(data: data, encoding: .utf8) as AnyObject) \n")
                     

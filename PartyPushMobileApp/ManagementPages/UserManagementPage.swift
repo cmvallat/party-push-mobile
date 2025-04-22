@@ -42,7 +42,7 @@ struct UserManagementPage: View {
                             .listRowBackground(Color.pink.opacity(0.1))
                         }
                         header: {
-                            Text("Parties you're hosting")
+                            Text("Hosting")
                                 .font(.headline)
                         }
                     //}
@@ -58,7 +58,7 @@ struct UserManagementPage: View {
                             }
                             .listRowBackground(Color.blue.opacity(0.1))
                         } header: {
-                            Text("Parties you're attending")
+                            Text("Attending")
                                 .font(.headline)
                         }
                     //}
@@ -68,10 +68,10 @@ struct UserManagementPage: View {
                 .scrollContentBackground(.hidden)
 //                .animation(.smooth, value: showAttendingParties)
 //                .animation(.smooth, value: showHostingParties)
-                .navigationTitle("Select a party")
+                .navigationTitle("Your parties")
                 .toolbar{
-                    ToolbarItem(placement: .topBarTrailing)
-                    {
+//                    ToolbarItem(placement: .topBarTrailing)
+//                    {
                         HStack
                         {
                             Button(action:{
@@ -90,10 +90,10 @@ struct UserManagementPage: View {
                             }
                             .tint(Color(red: 0, green: 0.65, blue: 0))
                         }
-                    }
+//                    }
                 }
             } detail: {
-                Text("Select a party")
+                Text("Your parties")
             }// End of NavigationSplitView
             .overlay(Group {
                 if (viewModel.hosting.isEmpty && viewModel.attending.isEmpty)
