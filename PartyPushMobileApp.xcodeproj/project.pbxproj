@@ -41,6 +41,9 @@
 		E9B2D6122DB2B8C50042EB19 /* APIResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = E9B2D6112DB2B8C10042EB19 /* APIResponse.swift */; };
 		E9B2D6142DB73B830042EB19 /* EmptyCodable.swift in Sources */ = {isa = PBXBuildFile; fileRef = E9B2D6132DB73B800042EB19 /* EmptyCodable.swift */; };
 		E9B2D6162DB84D130042EB19 /* AddFoodSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = E9B2D6152DB84D100042EB19 /* AddFoodSheet.swift */; };
+		E9B2D6182DB85A6A0042EB19 /* HostManagementPageViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = E9B2D6172DB85A630042EB19 /* HostManagementPageViewModel.swift */; };
+		E9B2D61A2DB85A930042EB19 /* UserManagementPageViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = E9B2D6192DB85A8E0042EB19 /* UserManagementPageViewModel.swift */; };
+		E9B2D61C2DB85F240042EB19 /* ApiService.swift in Sources */ = {isa = PBXBuildFile; fileRef = E9B2D61B2DB85F1B0042EB19 /* ApiService.swift */; };
 		E9F08D7F2B34C33500E3474A /* PartyPushMobileApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = E9F08D7E2B34C33500E3474A /* PartyPushMobileApp.swift */; };
 		E9F08D832B34C33700E3474A /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = E9F08D822B34C33700E3474A /* Assets.xcassets */; };
 		E9F08D862B34C33700E3474A /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = E9F08D852B34C33700E3474A /* Preview Assets.xcassets */; };
@@ -81,6 +84,9 @@
 		E9B2D6112DB2B8C10042EB19 /* APIResponse.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = APIResponse.swift; sourceTree = "<group>"; };
 		E9B2D6132DB73B800042EB19 /* EmptyCodable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EmptyCodable.swift; sourceTree = "<group>"; };
 		E9B2D6152DB84D100042EB19 /* AddFoodSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddFoodSheet.swift; sourceTree = "<group>"; };
+		E9B2D6172DB85A630042EB19 /* HostManagementPageViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HostManagementPageViewModel.swift; sourceTree = "<group>"; };
+		E9B2D6192DB85A8E0042EB19 /* UserManagementPageViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserManagementPageViewModel.swift; sourceTree = "<group>"; };
+		E9B2D61B2DB85F1B0042EB19 /* ApiService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ApiService.swift; sourceTree = "<group>"; };
 		E9F08D7B2B34C33500E3474A /* PartyPushMobileApp.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = PartyPushMobileApp.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		E9F08D7E2B34C33500E3474A /* PartyPushMobileApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PartyPushMobileApp.swift; sourceTree = "<group>"; };
 		E9F08D822B34C33700E3474A /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
@@ -126,6 +132,7 @@
 		E95DC3912C5FF5040035FBD6 /* ReusableComponents */ = {
 			isa = PBXGroup;
 			children = (
+				E9B2D61B2DB85F1B0042EB19 /* ApiService.swift */,
 				E95DC39A2C6021790035FBD6 /* StyleComponents.swift */,
 				E979D5452C829D3900070658 /* HostRow.swift */,
 				E979D5492C82A32200070658 /* HostList.swift */,
@@ -139,9 +146,11 @@
 		E95DC3922C5FF5230035FBD6 /* ManagementPages */ = {
 			isa = PBXGroup;
 			children = (
+				E9B2D6192DB85A8E0042EB19 /* UserManagementPageViewModel.swift */,
+				E9B2D6172DB85A630042EB19 /* HostManagementPageViewModel.swift */,
 				E95DC3932C5FF5890035FBD6 /* UserManagementPage.swift */,
-				E95DC3962C5FF5A30035FBD6 /* GuestManagementPage.swift */,
 				E95DC3982C5FF5B20035FBD6 /* HostManagementPage.swift */,
+				E95DC3962C5FF5A30035FBD6 /* GuestManagementPage.swift */,
 			);
 			path = ManagementPages;
 			sourceTree = "<group>";
@@ -290,6 +299,7 @@
 				E95DC3992C5FF5B20035FBD6 /* HostManagementPage.swift in Sources */,
 				E979D54A2C82A32200070658 /* HostList.swift in Sources */,
 				E95DC3A82C7FFAAA0035FBD6 /* PasswordResetView.swift in Sources */,
+				E9B2D61A2DB85A930042EB19 /* UserManagementPageViewModel.swift in Sources */,
 				E979D5442C829CAA00070658 /* ModelData.swift in Sources */,
 				E95DC38B2C5E93A70035FBD6 /* LoginView.swift in Sources */,
 				E95DC3942C5FF5890035FBD6 /* UserManagementPage.swift in Sources */,
@@ -303,9 +313,11 @@
 				E979D5502C86901800070658 /* Guest.swift in Sources */,
 				E9067A522CA503A600C5342B /* CategorizedHost.swift in Sources */,
 				E95DC3972C5FF5A30035FBD6 /* GuestManagementPage.swift in Sources */,
+				E9B2D61C2DB85F240042EB19 /* ApiService.swift in Sources */,
 				E95DC39D2C602B6F0035FBD6 /* SessionManager.swift in Sources */,
 				E979D55C2C869BEA00070658 /* GuestList.swift in Sources */,
 				E9067A4E2CA1381900C5342B /* SandboxView.swift in Sources */,
+				E9B2D6182DB85A6A0042EB19 /* HostManagementPageViewModel.swift in Sources */,
 				E95DC3A42C61DF930035FBD6 /* AuthUser.swift in Sources */,
 				E9067A4C2CA129BA00C5342B /* CommonFunctions.swift in Sources */,
 				E9B2D6122DB2B8C50042EB19 /* APIResponse.swift in Sources */,
