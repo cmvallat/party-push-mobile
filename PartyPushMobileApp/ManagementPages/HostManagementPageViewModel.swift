@@ -37,12 +37,9 @@ class HostManagementViewModel: ObservableObject {
                self.isLoading = false
            }
        }
-    
-//    func refresh(authUser: AuthUser, host: Host) {
-//        getFoodList(authUser: authUser, host: host)
-//        getGuestList(authUser: authUser, host: host)
-//    }
 
+// In case they are needed later:
+    
 //    func getFoodList(authUser: AuthUser, host: Host) {
 //        APIService.getFoodList(authUser: authUser, host: host) { [weak self] foods in
 //            DispatchQueue.main.async {

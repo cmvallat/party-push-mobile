@@ -28,6 +28,7 @@ struct UserManagementPage: View {
                     } header: {
                         Text("Hosting").font(.headline)
                     }
+                    .headerProminence(.increased)
 
                     Section {
                         ForEach(viewModel.attending) { host in
@@ -41,6 +42,7 @@ struct UserManagementPage: View {
                     } header: {
                         Text("Attending").font(.headline)
                     }
+                    .headerProminence(.increased)
                 }
                 .background(Gradient(colors: [.blue, .pink]).opacity(0.2))
                 .scrollContentBackground(.hidden)
@@ -72,6 +74,14 @@ struct UserManagementPage: View {
 //                        .padding()
 //                }
 //            })
+            // Overlay for showing no parties
+            .overlay(
+                Group {
+                    if viewModel.hosting.isEmpty && viewModel.attending.isEmpty {
+                        Text("You aren't hosting or attending any parties right now. Try adding or joining a party and swiping down to refresh.")
+                            .padding()
+                    }
+            })
             .overlay(
                 Group {
                     if viewModel.isLoading {
@@ -88,7 +98,10 @@ struct UserManagementPage: View {
             )
         }
         .sheet(isPresented: $showAddPartyView) {
-            AddHostSheet(authUser: authUser, showAddPartyView: $showAddPartyView)
+            AddHostSheet(authUser: authUser, showAddPartyView: $showAddPartyView, onPartyAdded: {
+                viewModel.loadParties(authUser: authUser) // Trigger loadParties from the viewModel
+            })
+            
         }
         .refreshable {
             viewModel.loadParties(authUser: authUser)
@@ -100,6 +113,6 @@ struct UserManagementPage: View {
     }
 }
 
-#Preview {
-    UserManagementPage(authUser: AuthUser())
-}
+//#Preview {
+//    UserManagementPage(authUser: AuthUser())
+//}

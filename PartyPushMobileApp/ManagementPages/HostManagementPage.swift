@@ -55,7 +55,14 @@ struct HostManagementPage: View {
             }
         )
         .sheet(isPresented: $showAddFoodView) {
-            AddFoodSheet(host: host, authUser: authUser, showAddFoodView: $showAddFoodView)
+            AddFoodSheet(
+                host: host,
+                authUser: authUser,
+                showAddFoodView: $showAddFoodView,
+                onFoodAdded: {
+                    viewModel.refresh(authUser: authUser, host: host)
+                }
+            )
         }
         .refreshable {
             viewModel.refresh(authUser: authUser, host: host)
@@ -69,10 +76,24 @@ struct HostManagementPage: View {
         Section {
             ForEach(viewModel.foods) { row in
                 HStack {
+                    // display a helpful icon based on the food item's current status
+                    if(row.status == "out")
+                    {
+                        Image(systemName: "exclamationmark.shield.fill").foregroundStyle(.red)
+                    }
+                    else if(row.status == "low")
+                    {
+                        Image(systemName: "exclamationmark.triangle.fill").foregroundStyle(.yellow)
+                    }
+                    else if(row.status == "full")
+                    {
+                        Image(systemName: "checkmark.circle.fill").foregroundStyle(.green)
+                    }
                     Text(row.item_name)
                         .swipeActions(edge: .trailing) {
                             Button(role: .destructive) {
                                 viewModel.deleteFoodItem(authUser: authUser, host: host, itemName: row.item_name)
+                                viewModel.refresh(authUser: authUser, host: host)
                             } label: {
                                 Label("Delete", systemImage: "trash")
                             }
@@ -80,13 +101,16 @@ struct HostManagementPage: View {
 
                             Button {
                                 viewModel.reportFood(authUser: authUser, itemName: row.item_name, partyCode: host.party_code, status: "low")
+                                viewModel.refresh(authUser: authUser, host: host)
                             } label: {
                                 Label("Low", systemImage: "exclamationmark.triangle.fill")
                             }
                             .tint(.yellow)
 
+//                            exclamationmark.shield.fill
                             Button {
                                 viewModel.reportFood(authUser: authUser, itemName: row.item_name, partyCode: host.party_code, status: "full")
+                                viewModel.refresh(authUser: authUser, host: host)
                             } label: {
                                 Label("Refilled", systemImage: "arrow.trianglehead.2.counterclockwise")
                             }
@@ -95,7 +119,6 @@ struct HostManagementPage: View {
                     Spacer()
                 }
             }
-
             Button {
                 showAddFoodView.toggle()
             } label: {

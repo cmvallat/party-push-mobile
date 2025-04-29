@@ -67,7 +67,7 @@ enum APIService {
                 completion([])
                 return
             }
-            completion(decoded.data)
+            completion(decoded.data ?? [])
         }.resume()
     }
 
@@ -85,7 +85,7 @@ enum APIService {
                 completion([])
                 return
             }
-            completion(decoded.data)
+            completion(decoded.data ?? [])
         }.resume()
     }
 
@@ -151,4 +151,101 @@ enum APIService {
             }
         }.resume()
     }
+
+    static func addFoodItem(authUser: AuthUser, itemName: String, partyCode: String, status: String, completion: @escaping (String) -> Void)
+    {
+        let authorizedUser = authorizeCall(authUser: authUser)
+        
+        // Todo: store url somewhere?
+        let path = "https://nm1c3v9jc9.execute-api.us-east-1.amazonaws.com/Prod"
+        
+        // Todo: don't use force unwrap
+        var request = URLRequest(url: URL(string: path)!)
+        request.httpMethod = "POST"
+        request.setValue(authorizedUser.idToken, forHTTPHeaderField: "AccessToken")
+        
+        let foodToAdd = Food(
+            item_name: itemName,
+            party_code: partyCode,
+            status: status,
+            username: "cmvallattest",
+            cognito_username: authorizedUser.cognito_username)
+        
+        if let foodData = try? JSONEncoder().encode(foodToAdd){
+            request.httpBody = foodData
+        }
+        
+        // Todo: standardize error handling here and in other API calls
+        let task = URLSession.shared.dataTask(with: request){
+            if $2 != nil
+            {
+                completion("Uh oh! Something went wrong")
+            }
+            else if let data = $0
+            {
+                // decode to string because it won't return the added object, just a success or failure message
+                if let decoded = try? JSONDecoder().decode(APIResponse<EmptyCodable>.self, from: data) {
+                    completion(decoded.message)
+                } else {
+                    completion("Uh oh! Something went wrong")
+                }
+                
+                // For debugging:
+//                    print("---> data: \n \((String(data: data, encoding: .utf8) ?? "nil") as String) \n")
+            }
+            else
+            {
+                completion("Uh oh! Something went wrong")
+            }
+        }
+        task.resume()
+    } //End of function
+    
+    static func addHost(authUser: AuthUser, partyName: String, partyCode: String, inviteOnly: Int, completion: @escaping (Result<Void, APIError>) -> Void) {
+            guard let url = URL(string: "https://34eb9x2j6f.execute-api.us-east-1.amazonaws.com/Prod/hello") else {
+                completion(.failure(.invalidURL))
+                return
+            }
+
+            var request = URLRequest(url: url)
+            request.httpMethod = "POST"
+            request.setValue(authUser.idToken, forHTTPHeaderField: "AccessToken")
+
+            let hostToAdd = Host(
+                username: "Cmvallattest",
+                party_name: partyName,
+                party_code: partyCode,
+                invite_only: inviteOnly,
+                cognito_username: authUser.cognito_username
+            )
+
+            do {
+                request.httpBody = try JSONEncoder().encode(hostToAdd)
+            } catch {
+                completion(.failure(.encodingError))
+                return
+            }
+
+            URLSession.shared.dataTask(with: request) { data, response, error in
+                if let error = error {
+                    completion(.failure(.serverError(error.localizedDescription)))
+                    return
+                }
+                guard let data = data else {
+                    completion(.failure(.noData))
+                    return
+                }
+                do {
+                    print("---> data: \n \((String(data: data, encoding: .utf8) ?? "nil") as String) \n")
+                    let decodedResponse = try JSONDecoder().decode(APIResponse<EmptyCodable>.self, from: data)
+                    if decodedResponse.message == "Success!" {
+                        completion(.success(()))
+                    } else {
+                        completion(.failure(.serverError(decodedResponse.message)))
+                    }
+                } catch {
+                    completion(.failure(.decodingError))
+                }
+            }.resume()
+        }
 }
