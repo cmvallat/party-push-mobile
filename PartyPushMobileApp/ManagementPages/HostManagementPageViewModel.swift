@@ -64,11 +64,39 @@ class HostManagementViewModel: ObservableObject {
         APIService.deleteGuest(authUser: authUser, host: host, guest: guest)
     }
 
-    func reportFood(authUser: AuthUser, itemName: String, partyCode: String, status: String) {
+    func reportFood(authUser: AuthUser, itemName: String, partyCode: String, status: String, completion: @escaping (Bool) -> Void) {
         APIService.reportFood(authUser: authUser, itemName: itemName, partyCode: partyCode, status: status) { [weak self] response in
             DispatchQueue.main.async {
                 self?.reportFoodResponse = response
+                // You decide if the server reply was successful
+                completion(response.lowercased().contains("success")) // or however your server responds
             }
         }
     }
+    
+    func updateFoodStatusLocally(itemName: String, newStatus: String) {
+        if let index = foods.firstIndex(where: { $0.item_name == itemName }) {
+            foods[index].status = newStatus
+        }
+    }
+    
+    func optimisticallyReportFoodStatus(authUser: AuthUser, host: Host, itemName: String, newStatus: String) {
+        let oldStatus = foods.first(where: { $0.item_name == itemName })?.status ?? ""
+
+        // update locally first
+        updateFoodStatusLocally(itemName: itemName, newStatus: newStatus)
+
+        // update in database
+        reportFood(authUser: authUser, itemName: itemName, partyCode: host.party_code, status: newStatus) { [weak self] success in
+            guard let self = self else { return }
+            if !success {
+                // roll back if failed
+                self.updateFoodStatusLocally(itemName: itemName, newStatus: oldStatus)
+            } else {
+                // refresh to fully sync if success
+//                self.refresh(authUser: authUser, host: host)
+            }
+        }
+    }
+
 }

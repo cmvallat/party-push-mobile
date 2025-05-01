@@ -44,6 +44,7 @@
 		E9B2D6202DBC6E5B0042EB19 /* AddFoodViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = E9B2D61F2DBC6E500042EB19 /* AddFoodViewModel.swift */; };
 		E9B2D6242DBDCC4D0042EB19 /* GuestManagementPageViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = E9B2D6232DBDCC460042EB19 /* GuestManagementPageViewModel.swift */; };
 		E9B2D6262DBDDE470042EB19 /* AddHostViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = E9B2D6252DBDDE430042EB19 /* AddHostViewModel.swift */; };
+		E9B2D6282DC18C5C0042EB19 /* Food+UI.swift in Sources */ = {isa = PBXBuildFile; fileRef = E9B2D6272DC18C570042EB19 /* Food+UI.swift */; };
 		E9F08D7F2B34C33500E3474A /* PartyPushMobileApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = E9F08D7E2B34C33500E3474A /* PartyPushMobileApp.swift */; };
 		E9F08D832B34C33700E3474A /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = E9F08D822B34C33700E3474A /* Assets.xcassets */; };
 		E9F08D862B34C33700E3474A /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = E9F08D852B34C33700E3474A /* Preview Assets.xcassets */; };
@@ -87,6 +88,7 @@
 		E9B2D61F2DBC6E500042EB19 /* AddFoodViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddFoodViewModel.swift; sourceTree = "<group>"; };
 		E9B2D6232DBDCC460042EB19 /* GuestManagementPageViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GuestManagementPageViewModel.swift; sourceTree = "<group>"; };
 		E9B2D6252DBDDE430042EB19 /* AddHostViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddHostViewModel.swift; sourceTree = "<group>"; };
+		E9B2D6272DC18C570042EB19 /* Food+UI.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Food+UI.swift"; sourceTree = "<group>"; };
 		E9F08D7B2B34C33500E3474A /* PartyPushMobileApp.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = PartyPushMobileApp.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		E9F08D7E2B34C33500E3474A /* PartyPushMobileApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PartyPushMobileApp.swift; sourceTree = "<group>"; };
 		E9F08D822B34C33700E3474A /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
@@ -125,6 +127,7 @@
 		E906D75A2C978FFE00E35ED4 /* OtherViews */ = {
 			isa = PBXGroup;
 			children = (
+				E9B2D6272DC18C570042EB19 /* Food+UI.swift */,
 				E9B2D6252DBDDE430042EB19 /* AddHostViewModel.swift */,
 				E9B2D61F2DBC6E500042EB19 /* AddFoodViewModel.swift */,
 				E9B2D6152DB84D100042EB19 /* AddFoodSheet.swift */,
@@ -335,6 +338,7 @@
 				E979D55C2C869BEA00070658 /* GuestList.swift in Sources */,
 				E9067A4E2CA1381900C5342B /* SandboxView.swift in Sources */,
 				E9B2D6182DB85A6A0042EB19 /* HostManagementPageViewModel.swift in Sources */,
+				E9B2D6282DC18C5C0042EB19 /* Food+UI.swift in Sources */,
 				E95DC3A42C61DF930035FBD6 /* AuthUser.swift in Sources */,
 				E9067A4C2CA129BA00C5342B /* CommonFunctions.swift in Sources */,
 				E9B2D6262DBDDE470042EB19 /* AddHostViewModel.swift in Sources */,

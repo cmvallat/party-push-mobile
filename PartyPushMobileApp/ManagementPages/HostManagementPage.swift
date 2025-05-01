@@ -34,6 +34,20 @@ struct HostManagementPage: View {
                 List {
                     foodSection
                     guestSection
+                    HStack {
+                        Spacer()
+                        Button(action: {
+                            // Your action
+                        }) {
+                            Text("End party")
+                                .foregroundColor(.white)
+                                .padding()
+                                .background(Color.red)
+                                .cornerRadius(10)
+                        }
+                        Spacer()
+                    }
+                    .listRowBackground(Color.clear)
                 }
             }
             .padding()
@@ -77,20 +91,10 @@ struct HostManagementPage: View {
             ForEach(viewModel.foods) { row in
                 HStack {
                     // display a helpful icon based on the food item's current status
-                    if(row.status == "out")
-                    {
-                        Image(systemName: "exclamationmark.shield.fill").foregroundStyle(.red)
-                    }
-                    else if(row.status == "low")
-                    {
-                        Image(systemName: "exclamationmark.triangle.fill").foregroundStyle(.yellow)
-                    }
-                    else if(row.status == "full")
-                    {
-                        Image(systemName: "checkmark.circle.fill").foregroundStyle(.green)
-                    }
+                    row.statusIcon.foregroundStyle(row.statusColor)
+
                     Text(row.item_name)
-                        .swipeActions(edge: .trailing) {
+                        .swipeActions(edge: .leading) {
                             Button(role: .destructive) {
                                 viewModel.deleteFoodItem(authUser: authUser, host: host, itemName: row.item_name)
                                 viewModel.refresh(authUser: authUser, host: host)
@@ -98,19 +102,24 @@ struct HostManagementPage: View {
                                 Label("Delete", systemImage: "trash")
                             }
                             .tint(.red)
+                        }
+                        .swipeActions(edge: .trailing) {
+                            Button {
+                                viewModel.optimisticallyReportFoodStatus(authUser: authUser, host: host, itemName: row.item_name, newStatus: "out")
+                            } label: {
+                                Label("Out", systemImage: "exclamationmark.shield.fill")
+                            }
+                            .tint(.red)
 
                             Button {
-                                viewModel.reportFood(authUser: authUser, itemName: row.item_name, partyCode: host.party_code, status: "low")
-                                viewModel.refresh(authUser: authUser, host: host)
+                                viewModel.optimisticallyReportFoodStatus(authUser: authUser, host: host, itemName: row.item_name, newStatus: "low")
                             } label: {
                                 Label("Low", systemImage: "exclamationmark.triangle.fill")
                             }
                             .tint(.yellow)
 
-//                            exclamationmark.shield.fill
                             Button {
-                                viewModel.reportFood(authUser: authUser, itemName: row.item_name, partyCode: host.party_code, status: "full")
-                                viewModel.refresh(authUser: authUser, host: host)
+                                viewModel.optimisticallyReportFoodStatus(authUser: authUser, host: host, itemName: row.item_name, newStatus: "full")
                             } label: {
                                 Label("Refilled", systemImage: "arrow.trianglehead.2.counterclockwise")
                             }
