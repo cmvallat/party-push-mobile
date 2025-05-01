@@ -87,7 +87,7 @@ struct LoginView: View {
                 Button("Don't have an account? Sign up", action: {
                     sessionManager.showSignUp()
                 })
-                .tint(Color(red: 0, green: 0.5, blue: 0.9))
+                .tint(Color(red: 0, green: 0, blue: 0.9))
             }
             .padding()
             .background(Gradient(colors: [.blue, .pink]).opacity(0.2))
