@@ -33,7 +33,7 @@ struct UserManagementPage: View {
                     Section {
                         ForEach(viewModel.attending) { host in
                             NavigationLink {
-                                HostManagementPage(host: host, authUser: authUser)
+                                GuestManagementPage(host: host, authUser: authUser)
                             } label: {
                                 HostRow(host: host)
                             }

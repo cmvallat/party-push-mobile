@@ -68,8 +68,8 @@ class HostManagementViewModel: ObservableObject {
         APIService.reportFood(authUser: authUser, itemName: itemName, partyCode: partyCode, status: status) { [weak self] response in
             DispatchQueue.main.async {
                 self?.reportFoodResponse = response
-                // You decide if the server reply was successful
-                completion(response.lowercased().contains("success")) // or however your server responds
+                // If the server reply was successful
+                completion(response.lowercased().contains("success"))
             }
         }
     }
