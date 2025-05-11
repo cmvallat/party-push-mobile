@@ -61,15 +61,15 @@ class HostManagementViewModel: ObservableObject {
     }
 
     func deleteGuest(authUser: AuthUser, host: Host, guest: Guest) {
-        APIService.deleteGuest(authUser: authUser, host: host, guest: guest)
+        APIService.deleteGuest(authUser: authUser, party_code: host.party_code, cognito_username: guest.cognito_username)
     }
 
     func reportFood(authUser: AuthUser, itemName: String, partyCode: String, status: String, completion: @escaping (Bool) -> Void) {
         APIService.reportFood(authUser: authUser, itemName: itemName, partyCode: partyCode, status: status) { [weak self] response in
             DispatchQueue.main.async {
                 self?.reportFoodResponse = response
-                // You decide if the server reply was successful
-                completion(response.lowercased().contains("success")) // or however your server responds
+                // If the server reply was successful
+                completion(response.lowercased().contains("success"))
             }
         }
     }

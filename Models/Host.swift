@@ -15,6 +15,7 @@ struct Host: Hashable, Codable, Identifiable {
     var invite_only: Int
     var cognito_username: UUID
     var isHostedParty: Bool? = true
+    var description: String?
     
     var id: String{
         party_code

@@ -88,6 +88,25 @@ enum APIService {
             completion(decoded.data ?? [])
         }.resume()
     }
+    
+    static func registerDeviceToken(username: String, deviceToken: String, completion: @escaping (String) -> Void) {
+        var urlComps = URLComponents(string: "https://qyb4z6bik0.execute-api.us-east-1.amazonaws.com/Prod/hello")!
+        urlComps.queryItems = [URLQueryItem(name: "username", value: username),
+                               URLQueryItem(name: "deviceToken", value: deviceToken)
+        ]
+        
+        var request = URLRequest(url: urlComps.url!)
+        request.httpMethod = "GET"
+        
+        URLSession.shared.dataTask(with: request) { data, _, error in
+            guard let data = data, error == nil,
+                  let decoded = try? JSONDecoder().decode(APIResponse<EmptyCodable>.self, from: data) else {
+                completion("failed to decode message")
+                return
+            }
+            completion(decoded.message)
+        }.resume()
+    }
 
     static func deleteFoodItem(authUser: AuthUser, host: Host, itemName: String) {
         var urlComps = URLComponents(string: "https://e8ro13vvl3.execute-api.us-east-1.amazonaws.com/Prod")!
@@ -104,12 +123,11 @@ enum APIService {
         URLSession.shared.dataTask(with: request).resume()
     }
 
-    static func deleteGuest(authUser: AuthUser, host: Host, guest: Guest) {
+    static func deleteGuest(authUser: AuthUser, party_code: String, cognito_username: UUID) {
         var urlComps = URLComponents(string: "https://sl83ejal53.execute-api.us-east-1.amazonaws.com/Prod")!
         urlComps.queryItems = [
-            URLQueryItem(name: "cognito_username", value: guest.cognito_username.uuidString),
-            URLQueryItem(name: "party_code", value: host.party_code),
-            URLQueryItem(name: "guest_name", value: guest.guest_name)
+            URLQueryItem(name: "cognito_username", value: cognito_username.uuidString),
+            URLQueryItem(name: "party_code", value: party_code),
         ]
         
         var request = URLRequest(url: urlComps.url!)

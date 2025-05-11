@@ -26,7 +26,7 @@ struct HostManagementPage: View {
                     .font(.title2)
                     .padding(.bottom, 10)
 
-                Text("Add description here if we want to add it to the Host object schema in the database.")
+                Text((host.description ?? "No description currently"))
                     .font(.subheadline)
 
                 Divider()
