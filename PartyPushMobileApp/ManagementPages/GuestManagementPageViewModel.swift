@@ -47,7 +47,11 @@ class GuestManagementViewModel: ObservableObject {
 //            }
 //        }
 //    }
-
+    
+    func deleteGuest(authUser: AuthUser, party_code: String, cognito_username: UUID) {
+        // TODO: add other handling in here; otherwise, just call APIService directly from View
+        APIService.deleteGuest(authUser: authUser, party_code: party_code, cognito_username: cognito_username)
+    }
 
     func reportFood(authUser: AuthUser, itemName: String, partyCode: String, status: String, completion: @escaping (Bool) -> Void) {
         APIService.reportFood(authUser: authUser, itemName: itemName, partyCode: partyCode, status: status) { [weak self] response in

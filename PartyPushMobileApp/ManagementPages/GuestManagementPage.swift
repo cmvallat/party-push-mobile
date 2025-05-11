@@ -7,6 +7,7 @@ struct GuestManagementPage: View {
     @StateObject private var viewModel = GuestManagementViewModel()
     @State private var showGuestPopover: Bool = false
     @State private var showAddFoodView = false
+    @State private var showLeavePartyConfirmation = false
 
     var body: some View {
         VStack {
@@ -26,7 +27,7 @@ struct GuestManagementPage: View {
                     .font(.title2)
                     .padding(.bottom, 10)
 
-                Text("Add description here if we want to add it to the Host object schema in the database.")
+                Text((host.description ?? "No description currently"))
                     .font(.subheadline)
 
                 Divider()
@@ -36,7 +37,7 @@ struct GuestManagementPage: View {
                     HStack {
                         Spacer()
                         Button(action: {
-                            // Your action
+                            showLeavePartyConfirmation = true
                         }) {
                             Text("Leave party")
                                 .foregroundColor(.white)
@@ -47,6 +48,16 @@ struct GuestManagementPage: View {
                         Spacer()
                     }
                     .listRowBackground(Color.clear)
+                    .alert("Are you sure you want to leave this party?", isPresented: $showLeavePartyConfirmation) {
+                        Button("Leave", role: .destructive) {
+                            viewModel.deleteGuest(
+                                authUser: authUser,
+                                party_code: host.party_code,
+                                cognito_username: authUser.cognito_username
+                            )
+                        }
+                        Button("Cancel", role: .cancel) {}
+                    }
                 }
             }
             .padding()
