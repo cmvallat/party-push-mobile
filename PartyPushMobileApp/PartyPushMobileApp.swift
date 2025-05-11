@@ -18,11 +18,11 @@ struct PartyPushMobileApp: App {
             switch sessionManager.authState{
                 
             case .login(let authUser):
-                LoginView(authUser: authUser)
+                NicksLoginView(authUser: authUser)
                     .environmentObject(sessionManager)
                 
             case .signUp:
-                SignUpView()
+                NicksSignUpView()
                     .environmentObject(sessionManager)
                 
             case .verifyCode(let authUser):

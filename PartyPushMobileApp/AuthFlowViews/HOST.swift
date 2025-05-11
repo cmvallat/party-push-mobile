@@ -8,8 +8,12 @@
 import SwiftUI
 
 struct NicksLoginView: View {
-    @State private var username: String = ""
-    @State private var password: String = ""
+    @EnvironmentObject var sessionManager: SessionManager
+    
+    let authUser: AuthUser
+    @State var email = ""
+    @State var password = ""
+    @State private var showPasswordPopover: Bool = false
     
     var body: some View {
         VStack {
@@ -17,21 +21,34 @@ struct NicksLoginView: View {
                 Divider()
                     .padding(.vertical)
                 TextField(
-                    "Username",
-                    text: $username
+                    "Email Address",
+                    text: $email
                 )
                   .textFieldStyle(.roundedBorder)
                   .font(.title)
                   .frame(width: 300)
-                TextField(
+                  .autocapitalization(.none)
+                SecureField(
                     "Password",
                     text: $password
                 )
                   .textFieldStyle(.roundedBorder)
                   .font(.title)
                   .frame(width: 300)
+                  .autocapitalization(.none)
                 Button("Log In") {
-                    
+                    // try to login
+                    authUser.email = email
+                    authUser.password = password
+                    let res = sessionManager.login(authUser: authUser)
+                    if(res == "Success")
+                    {
+                        sessionManager.showSession(authUser: authUser)
+                    }
+                    else
+                    {
+                        // Todo: handle failed login
+                    }
                 }
                   .foregroundColor(.white)
                   .frame(maxWidth: 300, maxHeight: 45)
@@ -40,7 +57,17 @@ struct NicksLoginView: View {
                   .clipShape(RoundedRectangle(cornerRadius: 5))
                   
                 Button("Forgot Password?") {
-                    
+                    sessionManager.showPasswordReset(authUser: authUser)
+                }
+                  .foregroundColor(.blue)
+                  .frame(maxWidth: 300, maxHeight: 45)
+                  .clipShape(RoundedRectangle(cornerRadius: 5))
+                  .overlay(
+                      RoundedRectangle(cornerRadius: 6)
+                          .stroke(.blue, lineWidth: 2)
+                  )
+                Button("Sign Up") {
+                    sessionManager.showSignUp()
                 }
                   .foregroundColor(.blue)
                   .frame(maxWidth: 300, maxHeight: 45)
@@ -65,5 +92,5 @@ struct NicksLoginView: View {
 }
 
 #Preview {
-    NicksLoginView()
+    NicksLoginView(authUser: AuthUser())
 }
