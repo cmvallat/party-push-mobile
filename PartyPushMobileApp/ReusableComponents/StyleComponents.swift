@@ -65,4 +65,20 @@ class StyleHelpers{
         }
       }
     }
+    
+    struct CustomButton: View {
+        var label: String
+        var color: String
+        
+        var body: some View {
+            Button(label) {
+                
+            }
+              .foregroundColor(.white)
+              .frame(maxWidth: 300, maxHeight: 45)
+              .font(.headline)
+              .background(.blue)
+              .clipShape(RoundedRectangle(cornerRadius: 5))
+        }
+    }
 }

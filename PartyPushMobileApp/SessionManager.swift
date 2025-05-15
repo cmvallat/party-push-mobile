@@ -30,10 +30,6 @@ final class SessionManager : ObservableObject {
         authState = .signUp
     }
     
-    func showVerifyCode(authUser: AuthUser){
-        authState = .verifyCode(authUser: authUser)
-    }
-    
     func showSession(authUser: AuthUser){
         authState = .session(authUser: authUser)
     }
@@ -54,10 +50,10 @@ final class SessionManager : ObservableObject {
         {
             retCode.0 = login(authUser: authUser)
         }
-        if(retCode.0 == "User is not confirmed.")
-        {
-            self.showVerifyCode(authUser: retCode.1)
-        }
+//        if(retCode.0 == "User is not confirmed.")
+//        {
+//            self.showVerifyCode(authUser: retCode.1)
+//        }
         return retCode.0
     }
     
@@ -81,10 +77,10 @@ final class SessionManager : ObservableObject {
             authUser.refreshToken = result.1.refreshToken
 //            self.showSession(authUser: authUser)
         }
-        else if(result.0 == "User is not confirmed.")
-        {
-            self.showVerifyCode(authUser: result.1)
-        }
+//        else if(result.0 == "User is not confirmed.")
+//        {
+//            self.showVerifyCode(authUser: result.1)
+//        }
         else if(result.0 == "Incorrect username or password")
         {
             // Todo: handle

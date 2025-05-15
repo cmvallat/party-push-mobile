@@ -8,7 +8,6 @@
 import SwiftUI
 
 struct LoginView: View {
-    
     @EnvironmentObject var sessionManager: SessionManager
     
     let authUser: AuthUser
@@ -17,81 +16,78 @@ struct LoginView: View {
     @State private var showPasswordPopover: Bool = false
     
     var body: some View {
-        NavigationView {
-            VStack {
-                Spacer()
-                
-                VStack{
-                    Text("Party Push Login")
-                        .multilineTextAlignment(.center)
-                        .font(.title)
-                        .padding([.top], 100)
-                        .padding([.leading,.trailing], 15)
-                    
-                    TextField("Email address", text: $email)
-                        .textFieldStyle(.roundedBorder)
-                        .padding([.leading,.trailing], 15)
-                    
-                    LabeledContent {
-                        SecureField("Password", text: $password)
-                            .textFieldStyle(.roundedBorder)
-                    } label: {
-                        Button("", systemImage: "info.circle")
-                        {
-                            showPasswordPopover.toggle()
-                        }
-                        .tint(.black)
-                        .popover(isPresented: $showPasswordPopover, attachmentAnchor: .point(.bottomTrailing), content: {
-                            Text("We will never store your password in order to protect your data.")
-                                .presentationCompactAdaptation(.popover)
-                                .padding([.leading, .trailing], 5)
-                        })
-                    }
-                    .padding([.leading,.trailing], 15)
-                    
-                    Button(action:{
-                        // try to login
-                        authUser.email = email
-                        authUser.password = password
-                        let res = sessionManager.login(authUser: authUser)
-                        if(res == "Success")
-                        {
-                            sessionManager.showSession(authUser: authUser)
-                        }
-                        else
-                        {
-                            // Todo: handle failed login
-                        }
-                    })
+        VStack {
+            Section(header: Text("Log In to My Account").font(.largeTitle)) {
+                Divider()
+                    .padding(.vertical)
+                TextField(
+                    "Email Address",
+                    text: $email
+                )
+                  .textFieldStyle(.roundedBorder)
+                  .font(.title)
+                  .frame(width: 300)
+                  .autocapitalization(.none)
+                SecureField(
+                    "Password",
+                    text: $password
+                )
+                  .textFieldStyle(.roundedBorder)
+                  .font(.title)
+                  .frame(width: 300)
+                  .autocapitalization(.none)
+                Button("Log In") {
+                    // try to login
+                    authUser.email = email
+                    authUser.password = password
+                    let res = sessionManager.login(authUser: authUser)
+                    if(res == "Success")
                     {
-                        Label("Login", systemImage: "checkmark.seal.fill")
-                            .tint(Color(red: 0, green: 0.65, blue: 0))
+                        sessionManager.showSession(authUser: authUser)
                     }
-                    .padding([.top,.bottom], 5)
-
-                    Button(action:{
-                        // show the password reset view, logic will be handled there
-                            sessionManager.showPasswordReset(authUser: authUser)
-                    })
+                    else
                     {
-                        Label("Forgot password", systemImage: "envelope.fill")
-                            .tint(Color(red: 0, green: 0, blue: 0.9))
+                        // Todo: handle failed login
                     }
-                    .padding(.bottom, 75)
-                    
                 }
-                .glass(cornerRadius: 20.0)
-                
-                Spacer()
-                
-                Button("Don't have an account? Sign up", action: {
+//                  .foregroundColor(.white)
+//                  .frame(maxWidth: 300, maxHeight: 45)
+//                  .font(.headline)
+//                  .background(.blue)
+//                  .clipShape(RoundedRectangle(cornerRadius: 5))
+                  
+                Button("Forgot Password?") {
+                    sessionManager.showPasswordReset(authUser: authUser)
+                }
+                  .foregroundColor(.blue)
+                  .frame(maxWidth: 300, maxHeight: 45)
+                  .clipShape(RoundedRectangle(cornerRadius: 5))
+                  .overlay(
+                      RoundedRectangle(cornerRadius: 6)
+                          .stroke(.blue, lineWidth: 2)
+                  )
+                Button("Sign Up") {
                     sessionManager.showSignUp()
-                })
-                .tint(Color(red: 0, green: 0, blue: 0.9))
+                }
+                  .foregroundColor(.blue)
+                  .frame(maxWidth: 300, maxHeight: 45)
+                  .clipShape(RoundedRectangle(cornerRadius: 5))
+                  .overlay(
+                      RoundedRectangle(cornerRadius: 6)
+                          .stroke(.blue, lineWidth: 2)
+                  )
+                
             }
-            .padding()
-            .background(Gradient(colors: [.blue, .pink]).opacity(0.2))
         }
+        .frame(
+              minWidth: 0,
+              maxWidth: .infinity,
+              minHeight: 0,
+              maxHeight: .infinity,
+              alignment: .topLeading
+            )
+        .padding(.vertical)
+        .background(Color(uiColor: UIColor.systemGray6))
     }
 }
 
