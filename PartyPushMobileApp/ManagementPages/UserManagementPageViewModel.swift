@@ -11,7 +11,6 @@ class UserManagementViewModel: ObservableObject {
     @Published var hosting = [Host]()
     @Published var attending = [Host]()
     @Published var isLoading: Bool = false
-    @Published var errorMessage: String?
     
 // In case they are needed later:
 //    func getPartiesHosting(authUser: AuthUser) {
