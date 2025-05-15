@@ -49,6 +49,8 @@
 		E9F08D7F2B34C33500E3474A /* PartyPushMobileApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = E9F08D7E2B34C33500E3474A /* PartyPushMobileApp.swift */; };
 		E9F08D832B34C33700E3474A /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = E9F08D822B34C33700E3474A /* Assets.xcassets */; };
 		E9F08D862B34C33700E3474A /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = E9F08D852B34C33700E3474A /* Preview Assets.xcassets */; };
+		E9F305D32DD3BD6F00405C51 /* PartySearchViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = E9F305D22DD3BD6200405C51 /* PartySearchViewModel.swift */; };
+		E9F305D52DD3DCBA00405C51 /* PartySearchView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E9F305D42DD3DCB400405C51 /* PartySearchView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -95,6 +97,8 @@
 		E9F08D7E2B34C33500E3474A /* PartyPushMobileApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PartyPushMobileApp.swift; sourceTree = "<group>"; };
 		E9F08D822B34C33700E3474A /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		E9F08D852B34C33700E3474A /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
+		E9F305D22DD3BD6200405C51 /* PartySearchViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PartySearchViewModel.swift; sourceTree = "<group>"; };
+		E9F305D42DD3DCB400405C51 /* PartySearchView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PartySearchView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
@@ -129,12 +133,13 @@
 		E906D75A2C978FFE00E35ED4 /* OtherViews */ = {
 			isa = PBXGroup;
 			children = (
-				E9B2D6272DC18C570042EB19 /* Food+UI.swift */,
-				E9B2D6252DBDDE430042EB19 /* AddHostViewModel.swift */,
-				E9B2D61F2DBC6E500042EB19 /* AddFoodViewModel.swift */,
-				E9B2D6152DB84D100042EB19 /* AddFoodSheet.swift */,
-				E979D5652C8D606D00070658 /* PushNotificationTestView.swift */,
+				E9F305D42DD3DCB400405C51 /* PartySearchView.swift */,
+				E9F305D22DD3BD6200405C51 /* PartySearchViewModel.swift */,
 				E906D75B2C97905C00E35ED4 /* AddHostSheet.swift */,
+				E9B2D6252DBDDE430042EB19 /* AddHostViewModel.swift */,
+				E9B2D6152DB84D100042EB19 /* AddFoodSheet.swift */,
+				E9B2D61F2DBC6E500042EB19 /* AddFoodViewModel.swift */,
+				E979D5652C8D606D00070658 /* PushNotificationTestView.swift */,
 				E9067A4D2CA1381900C5342B /* SandboxView.swift */,
 				E94B0C182CAA0E3500079199 /* DemoView.swift */,
 			);
@@ -157,6 +162,7 @@
 		E95DC3912C5FF5040035FBD6 /* ReusableComponents */ = {
 			isa = PBXGroup;
 			children = (
+				E9B2D6272DC18C570042EB19 /* Food+UI.swift */,
 				E9B2D61B2DB85F1B0042EB19 /* ApiService.swift */,
 				E95DC39A2C6021790035FBD6 /* StyleComponents.swift */,
 				E979D5452C829D3900070658 /* HostRow.swift */,
@@ -171,12 +177,12 @@
 		E95DC3922C5FF5230035FBD6 /* ManagementPages */ = {
 			isa = PBXGroup;
 			children = (
-				E9B2D6232DBDCC460042EB19 /* GuestManagementPageViewModel.swift */,
-				E9B2D6192DB85A8E0042EB19 /* UserManagementPageViewModel.swift */,
-				E9B2D6172DB85A630042EB19 /* HostManagementPageViewModel.swift */,
 				E95DC3932C5FF5890035FBD6 /* UserManagementPage.swift */,
-				E95DC3982C5FF5B20035FBD6 /* HostManagementPage.swift */,
+				E9B2D6192DB85A8E0042EB19 /* UserManagementPageViewModel.swift */,
 				E95DC3962C5FF5A30035FBD6 /* GuestManagementPage.swift */,
+				E9B2D6232DBDCC460042EB19 /* GuestManagementPageViewModel.swift */,
+				E95DC3982C5FF5B20035FBD6 /* HostManagementPage.swift */,
+				E9B2D6172DB85A630042EB19 /* HostManagementPageViewModel.swift */,
 			);
 			path = ManagementPages;
 			sourceTree = "<group>";
@@ -338,6 +344,7 @@
 				E95DC3972C5FF5A30035FBD6 /* GuestManagementPage.swift in Sources */,
 				E9B2D61C2DB85F240042EB19 /* ApiService.swift in Sources */,
 				E95DC39D2C602B6F0035FBD6 /* SessionManager.swift in Sources */,
+				E9F305D52DD3DCBA00405C51 /* PartySearchView.swift in Sources */,
 				E979D55C2C869BEA00070658 /* GuestList.swift in Sources */,
 				E9067A4E2CA1381900C5342B /* SandboxView.swift in Sources */,
 				E9B2D6182DB85A6A0042EB19 /* HostManagementPageViewModel.swift in Sources */,
@@ -355,6 +362,7 @@
 				E95DC3AA2C81740D0035FBD6 /* PasswordResetPrompt.swift in Sources */,
 				E979D5462C829D3900070658 /* HostRow.swift in Sources */,
 				846639F12D82653500ACA794 /* HOST.swift in Sources */,
+				E9F305D32DD3BD6F00405C51 /* PartySearchViewModel.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
