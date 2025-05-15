@@ -219,7 +219,7 @@ enum APIService {
         task.resume()
     } //End of function
     
-    static func addHost(authUser: AuthUser, partyName: String, partyCode: String, inviteOnly: Int, completion: @escaping (Result<Void, APIError>) -> Void) {
+    static func addHost(authUser: AuthUser, partyName: String, partyCode: String, inviteOnly: Int, description: String, completion: @escaping (Result<Void, APIError>) -> Void) {
             guard let url = URL(string: "https://34eb9x2j6f.execute-api.us-east-1.amazonaws.com/Prod/hello") else {
                 completion(.failure(.invalidURL))
                 return
@@ -234,11 +234,60 @@ enum APIService {
                 party_name: partyName,
                 party_code: partyCode,
                 invite_only: inviteOnly,
-                cognito_username: authUser.cognito_username
+                cognito_username: authUser.cognito_username,
+                description: description
             )
 
             do {
                 request.httpBody = try JSONEncoder().encode(hostToAdd)
+            } catch {
+                completion(.failure(.encodingError))
+                return
+            }
+
+            URLSession.shared.dataTask(with: request) { data, response, error in
+                if let error = error {
+                    completion(.failure(.serverError(error.localizedDescription)))
+                    return
+                }
+                guard let data = data else {
+                    completion(.failure(.noData))
+                    return
+                }
+                do {
+                    print("---> data: \n \((String(data: data, encoding: .utf8) ?? "nil") as String) \n")
+                    let decodedResponse = try JSONDecoder().decode(APIResponse<EmptyCodable>.self, from: data)
+                    if decodedResponse.message == "Success!" {
+                        completion(.success(()))
+                    } else {
+                        completion(.failure(.serverError(decodedResponse.message)))
+                    }
+                } catch {
+                    completion(.failure(.decodingError))
+                }
+            }.resume()
+        }
+    
+    static func addGuest(authUser: AuthUser, guestName: String, partyCode: String, atParty: Int, completion: @escaping (Result<Void, APIError>) -> Void) {
+            guard let url = URL(string: "https://xt1sdav9qk.execute-api.us-east-1.amazonaws.com/Prod/hello") else {
+                completion(.failure(.invalidURL))
+                return
+            }
+
+            var request = URLRequest(url: url)
+            request.httpMethod = "POST"
+            request.setValue(authUser.idToken, forHTTPHeaderField: "AccessToken")
+
+            let guestToAdd = Guest(
+                username: authUser.username,
+                guest_name: guestName,
+                party_code: partyCode,
+                at_party: atParty,
+                cognito_username: authUser.cognito_username
+            )
+
+            do {
+                request.httpBody = try JSONEncoder().encode(guestToAdd)
             } catch {
                 completion(.failure(.encodingError))
                 return

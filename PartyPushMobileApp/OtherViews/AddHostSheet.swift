@@ -37,12 +37,17 @@ struct AddHostSheet: View {
             TextField("Party Code", text: $viewModel.partyCode)
                 .textFieldStyle(.roundedBorder)
                 .padding([.leading, .trailing], 15)
+            
+            TextField("Description", text: $viewModel.desc)
+                .textFieldStyle(.roundedBorder)
+                .padding([.leading, .trailing], 15)
 
-            Toggle(isOn: $viewModel.inviteOnly) {
-                Text("Private party")
-            }
-            .toggleStyle(StyleHelpers.CheckboxToggleStyle())
-            .padding()
+            // TODO: uncomment when adding feature back in or add feature flag
+//            Toggle(isOn: $viewModel.inviteOnly) {
+//                Text("Private party")
+//            }
+//            .toggleStyle(StyleHelpers.CheckboxToggleStyle())
+//            .padding()
 
             Button {
                 viewModel.addHost(authUser: authUser) {

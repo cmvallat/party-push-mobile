@@ -53,4 +53,4 @@ class UserManagementViewModel: ObservableObject {
                self.isLoading = false
            }
        }
-   }
+}

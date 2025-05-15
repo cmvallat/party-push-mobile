@@ -11,7 +11,8 @@ import Foundation
 class AddHostViewModel: ObservableObject {
     @Published var partyName = ""
     @Published var partyCode = ""
-    @Published var inviteOnly = false
+    @Published var desc = ""
+//    @Published var inviteOnly = false
     @Published var isLoading = false
     @Published var errorMessage: String?
 
@@ -21,7 +22,10 @@ class AddHostViewModel: ObservableObject {
             authUser: authUser,
             partyName: partyName,
             partyCode: partyCode,
-            inviteOnly: inviteOnly ? 1 : 0
+            // TODO: uncomment when adding feature back in or add feature flag
+            // inviteOnly: inviteOnly ? 1 : 0
+            inviteOnly: 0,
+            description: desc
         ) { [weak self] result in
             DispatchQueue.main.async {
                 self?.isLoading = false
