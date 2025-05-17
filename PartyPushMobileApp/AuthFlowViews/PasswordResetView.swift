@@ -64,7 +64,7 @@ struct PasswordResetView: View {
                         .opacity(showResetPasswordMessage ? 1 : 0)
                         .padding(.bottom, 50)
                 }
-                .glass(cornerRadius: 20.0)
+//                .glass(cornerRadius: 20.0)
                 
                 Spacer()
             }
