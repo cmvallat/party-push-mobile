@@ -1,5 +1,5 @@
 //
-//  LoginView.swift
+//  LoginPage.swift
 //  Song_Requester
 //
 //  Created by Christian Vallat on 8/3/24.
@@ -7,65 +7,44 @@
 
 import SwiftUI
 
-struct LoginView: View {
+struct LoginPage: View {
     @EnvironmentObject var sessionManager: SessionManager
-    
-    let authUser: AuthUser
-    @State var email = ""
-    @State var password = ""
-    @State private var showPasswordPopover: Bool = false
+    @StateObject private var viewModel = LoginPageViewModel()
     
     var body: some View {
         VStack {
             Section(header: Text("Log In to My Account").font(.largeTitle)) {
                 Divider()
                     .padding(.vertical)
-                TextField(
-                    "Email Address",
-                    text: $email
-                )
+                
+                TextField("Email", text: $viewModel.email)
                   .textFieldStyle(.roundedBorder)
                   .font(.title)
                   .frame(width: 300)
                   .autocapitalization(.none)
-                SecureField(
-                    "Password",
-                    text: $password
-                )
+                
+                SecureField("Password", text: $viewModel.password)
                   .textFieldStyle(.roundedBorder)
                   .font(.title)
                   .frame(width: 300)
                   .autocapitalization(.none)
+                
                 Button("Log In") {
-                    // try to login
-                    authUser.email = email
-                    authUser.password = password
-                    let res = sessionManager.login(authUser: authUser)
-                    if(res == "Success")
-                    {
-                        sessionManager.showSession(authUser: authUser)
-                    }
-                    else
-                    {
-                        // Todo: handle failed login
-                    }
+                    viewModel.login(sessionManager: sessionManager)
                 }
-//                  .foregroundColor(.white)
-//                  .frame(maxWidth: 300, maxHeight: 45)
-//                  .font(.headline)
-//                  .background(.blue)
-//                  .clipShape(RoundedRectangle(cornerRadius: 5))
                   
                 Button("Forgot Password?") {
-                    sessionManager.showPasswordReset(authUser: authUser)
+                    let user = AuthUser()
+                    user.username = viewModel.email
+                    sessionManager.showPasswordReset(authUser: user)
                 }
                   .foregroundColor(.blue)
                   .frame(maxWidth: 300, maxHeight: 45)
                   .clipShape(RoundedRectangle(cornerRadius: 5))
                   .overlay(
                       RoundedRectangle(cornerRadius: 6)
-                          .stroke(.blue, lineWidth: 2)
-                  )
+                          .stroke(.blue, lineWidth: 2))
+                
                 Button("Sign Up") {
                     sessionManager.showSignUp()
                 }
@@ -74,9 +53,13 @@ struct LoginView: View {
                   .clipShape(RoundedRectangle(cornerRadius: 5))
                   .overlay(
                       RoundedRectangle(cornerRadius: 6)
-                          .stroke(.blue, lineWidth: 2)
-                  )
+                          .stroke(.blue, lineWidth: 2))
                 
+                if let error = viewModel.errorMessage {
+                    Text(error)
+                        .foregroundColor(.red)
+                        .frame(width: 300)
+                }
             }
         }
         .frame(
@@ -91,7 +74,6 @@ struct LoginView: View {
     }
 }
 
-
-#Preview {
-    LoginView(authUser: AuthUser())
-}
+//#Preview {
+//    LoginPage()
+//}

@@ -15,22 +15,21 @@ struct PartyPushMobileApp: App {
     
     var body: some Scene {
         WindowGroup {
-            switch sessionManager.authState{
-                
-            case .login(let authUser):
-                LoginView(authUser: authUser)
-                    .environmentObject(sessionManager)
-                
-            case .signUp:
-                SignUpView()
-                    .environmentObject(sessionManager)
-                
-            case .session(let authUser):
-                UserManagementPage(authUser: authUser)
-                    .environmentObject(sessionManager)
-                
+            switch sessionManager.authState {
+            case .unauthorized(let flow):
+                switch flow {
+                case .login:
+                    LoginPage()
+                        .environmentObject(sessionManager)
+                case .signUp:
+                    SignUpPage()
+                        .environmentObject(sessionManager)
+                }
             case .resetPassword(let authUser):
                 PasswordResetPrompt(authUser: authUser)
+                    .environmentObject(sessionManager)
+            case .session(let authUser):
+                UserManagementPage(authUser: authUser)
                     .environmentObject(sessionManager)
             }
         }

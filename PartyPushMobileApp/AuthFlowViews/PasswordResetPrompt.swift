@@ -58,7 +58,7 @@ struct PasswordResetPrompt: View {
                         .padding(.top, 5)
                         .padding(.bottom, 100)
                     }
-                    .glass(cornerRadius: 20.0)
+//                    .glass(cornerRadius: 20.0)
                     
                     Spacer()
                 }
@@ -76,7 +76,7 @@ struct PasswordResetPrompt: View {
                             authUser.email = ""
                             authUser.password = ""
                             authUser.username = ""
-                            sessionManager.showLogin(authUser: authUser)
+//                            sessionManager.login(authUser: authUser)
                         }
                         .tint(Color(red: 0, green: 0, blue: 0.9))
                         Button("Sign up")
