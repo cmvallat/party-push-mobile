@@ -89,6 +89,33 @@ enum APIService {
         }.resume()
     }
     
+    static func getUser(cognito_username: UUID, completion: @escaping (User?) -> Void) {
+        var urlComps = URLComponents(string: "https://9bn7w86we7.execute-api.us-east-1.amazonaws.com/Prod/hello")!
+        urlComps.queryItems = [URLQueryItem(name: "cognito_username", value: cognito_username.uuidString)]
+        
+        var request = URLRequest(url: urlComps.url!)
+        request.httpMethod = "GET"
+        
+        print("ApiService: " + cognito_username.uuidString)
+
+        
+        URLSession.shared.dataTask(with: request) { data, response, error in
+                guard let data = data, error == nil else {
+                    print("Error: \(error?.localizedDescription ?? "Unknown error")")
+                    completion(nil)
+                    return
+                }
+
+                do {
+                    let decoded = try JSONDecoder().decode(APIResponse<User>.self, from: data)
+                    completion(decoded.data?.first) // might be nil if user is not found
+                } catch {
+                    print("Decoding error: \(error.localizedDescription)")
+                    completion(nil)
+                }
+            }.resume()
+    }
+    
     static func registerDeviceToken(username: String, deviceToken: String, completion: @escaping (String) -> Void) {
         var urlComps = URLComponents(string: "https://qyb4z6bik0.execute-api.us-east-1.amazonaws.com/Prod/hello")!
         urlComps.queryItems = [URLQueryItem(name: "username", value: username),

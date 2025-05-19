@@ -50,6 +50,7 @@ struct UserManagementPage: View {
                 .toolbar {
                     HStack {
                         Button(action: {
+                            print("authUser username" + authUser.username)
                             showAddPartyView.toggle()
                         }) {
                             Label("Join party", systemImage: "magnifyingglass.circle.fill")
@@ -101,7 +102,6 @@ struct UserManagementPage: View {
             AddHostSheet(authUser: authUser, showAddPartyView: $showAddPartyView, onPartyAdded: {
                 viewModel.loadParties(authUser: authUser) // Trigger loadParties from the viewModel
             })
-            
         }
         .refreshable {
             viewModel.loadParties(authUser: authUser)
@@ -109,6 +109,13 @@ struct UserManagementPage: View {
         .onAppear {
             sendNotification(authUser: authUser, title: "Party Push", body: "Hi, welcome back to party push!")
             viewModel.loadParties(authUser: authUser)
+//            viewModel.fetchUsername(cognitoUsername: authUser.cognitoId) { username in
+//                if let username = username {
+//                    authUser.username = username
+//                } else {
+//                    print("User not found.")
+//                }
+//            }
         }
     }
 }

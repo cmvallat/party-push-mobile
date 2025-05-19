@@ -94,7 +94,6 @@ final class SessionManager : ObservableObject {
         if result.0 == "Success" {
             let user = AuthUser()
             user.email = email
-            user.username = email
             user.accessToken = result.1.accessToken
             user.idToken = result.1.idToken
             user.refreshToken = result.1.refreshToken
