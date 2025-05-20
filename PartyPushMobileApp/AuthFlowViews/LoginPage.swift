@@ -16,45 +16,42 @@ struct LoginPage: View {
             Section(header: Text("Log In to My Account").font(.largeTitle)) {
                 Divider()
                     .padding(.vertical)
-                
-                TextField("Email", text: $viewModel.email)
-                  .textFieldStyle(.roundedBorder)
-                  .font(.title)
-                  .frame(width: 300)
-                  .autocapitalization(.none)
-                
-                SecureField("Password", text: $viewModel.password)
-                  .textFieldStyle(.roundedBorder)
-                  .font(.title)
-                  .frame(width: 300)
-                  .autocapitalization(.none)
-                
-                Button("Log In") {
-                    viewModel.login(sessionManager: sessionManager)
-                }
-                  
-                Button("Forgot Password?") {
-                    let user = AuthUser()
-                    user.username = viewModel.email
-                    sessionManager.showPasswordReset(authUser: user)
-                }
-                  .foregroundColor(.blue)
-                  .frame(maxWidth: 300, maxHeight: 45)
-                  .clipShape(RoundedRectangle(cornerRadius: 5))
-                  .overlay(
-                      RoundedRectangle(cornerRadius: 6)
-                          .stroke(.blue, lineWidth: 2))
-                
-                Button("Sign Up") {
-                    sessionManager.showSignUp()
-                }
-                  .foregroundColor(.blue)
-                  .frame(maxWidth: 300, maxHeight: 45)
-                  .clipShape(RoundedRectangle(cornerRadius: 5))
-                  .overlay(
-                      RoundedRectangle(cornerRadius: 6)
-                          .stroke(.blue, lineWidth: 2))
-                
+                AuthFlowTextField(
+                    label: "Email Address",
+                    value: $viewModel.email,
+                    secure: false
+                )
+                AuthFlowTextField(
+                    label: "Password",
+                    value: $viewModel.password,
+                    secure: true
+                )
+                AuthFlowButton(
+                    label: "Log In",
+                    isPrimary: true,
+                    color: .blue,
+                    onClick: {
+                        viewModel.login(sessionManager: sessionManager)
+                    }
+                )
+                AuthFlowButton(
+                    label: "Forgot Password?",
+                    isPrimary: false,
+                    color: .blue,
+                    onClick: {
+                        let user = AuthUser()
+                        user.username = viewModel.email
+                        sessionManager.showPasswordReset(authUser: user)
+                    }
+                )
+                AuthFlowButton(
+                    label: "Sign Up",
+                    isPrimary: false,
+                    color: .blue,
+                    onClick: {
+                        sessionManager.showSignUp()
+                    }
+                )
                 if let error = viewModel.errorMessage {
                     Text(error)
                         .foregroundColor(.red)

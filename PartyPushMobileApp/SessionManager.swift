@@ -7,14 +7,6 @@
 
 import Foundation
 
-//enum AuthState{
-//    case signUp
-//    case login(authUser: AuthUser)
-////    case verifyCode(authUser: AuthUser)
-//    case session(authUser: AuthUser)
-//    case resetPassword(authUser: AuthUser)
-//}
-
 enum AuthState {
     case unauthorized(LoginFlow)
     case resetPassword(authUser: AuthUser)

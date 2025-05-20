@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		8472BBC12DD7D5DD009352E8 /* AuthFlowButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8472BBC02DD7D5D5009352E8 /* AuthFlowButton.swift */; };
+		8472BBC32DD7E436009352E8 /* AuthFlowTextField.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8472BBC22DD7E42F009352E8 /* AuthFlowTextField.swift */; };
 		E9067A4C2CA129BA00C5342B /* CommonFunctions.swift in Sources */ = {isa = PBXBuildFile; fileRef = E9067A4B2CA129BA00C5342B /* CommonFunctions.swift */; };
 		E9067A4E2CA1381900C5342B /* SandboxView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E9067A4D2CA1381900C5342B /* SandboxView.swift */; };
 		E9067A522CA503A600C5342B /* CategorizedHost.swift in Sources */ = {isa = PBXBuildFile; fileRef = E9067A512CA503A600C5342B /* CategorizedHost.swift */; };
@@ -52,6 +54,8 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		8472BBC02DD7D5D5009352E8 /* AuthFlowButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthFlowButton.swift; sourceTree = "<group>"; };
+		8472BBC22DD7E42F009352E8 /* AuthFlowTextField.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthFlowTextField.swift; sourceTree = "<group>"; };
 		E9067A4B2CA129BA00C5342B /* CommonFunctions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CommonFunctions.swift; sourceTree = "<group>"; };
 		E9067A4D2CA1381900C5342B /* SandboxView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SandboxView.swift; sourceTree = "<group>"; };
 		E9067A512CA503A600C5342B /* CategorizedHost.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CategorizedHost.swift; sourceTree = "<group>"; };
@@ -157,6 +161,8 @@
 		E95DC3912C5FF5040035FBD6 /* ReusableComponents */ = {
 			isa = PBXGroup;
 			children = (
+				8472BBC22DD7E42F009352E8 /* AuthFlowTextField.swift */,
+				8472BBC02DD7D5D5009352E8 /* AuthFlowButton.swift */,
 				E9B2D61B2DB85F1B0042EB19 /* ApiService.swift */,
 				E95DC39A2C6021790035FBD6 /* StyleComponents.swift */,
 				E979D5452C829D3900070658 /* HostRow.swift */,
@@ -322,6 +328,7 @@
 				E95DC3A82C7FFAAA0035FBD6 /* PasswordResetView.swift in Sources */,
 				E9B2D61E2DBC6E110042EB19 /* APIError.swift in Sources */,
 				E9B2D61A2DB85A930042EB19 /* UserManagementPageViewModel.swift in Sources */,
+				8472BBC32DD7E436009352E8 /* AuthFlowTextField.swift in Sources */,
 				E979D5442C829CAA00070658 /* ModelData.swift in Sources */,
 				E95DC38B2C5E93A70035FBD6 /* LoginPage.swift in Sources */,
 				E9B2D6242DBDCC4D0042EB19 /* GuestManagementPageViewModel.swift in Sources */,
@@ -348,6 +355,7 @@
 				E9067A4C2CA129BA00C5342B /* CommonFunctions.swift in Sources */,
 				E9B2D6262DBDDE470042EB19 /* AddHostViewModel.swift in Sources */,
 				E9B2D6122DB2B8C50042EB19 /* APIResponse.swift in Sources */,
+				8472BBC12DD7D5DD009352E8 /* AuthFlowButton.swift in Sources */,
 				E979D5662C8D606D00070658 /* PushNotificationTestView.swift in Sources */,
 				E94B0C192CAA0E3500079199 /* DemoView.swift in Sources */,
 				E9B2D6142DB73B830042EB19 /* EmptyCodable.swift in Sources */,
