@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		8438B2F22DDFF56C0090D7A5 /* PASSRESET.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8438B2F12DDFF5640090D7A5 /* PASSRESET.swift */; };
 		8472BBC12DD7D5DD009352E8 /* AuthFlowButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8472BBC02DD7D5D5009352E8 /* AuthFlowButton.swift */; };
 		8472BBC32DD7E436009352E8 /* AuthFlowTextField.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8472BBC22DD7E42F009352E8 /* AuthFlowTextField.swift */; };
 		E9067A4C2CA129BA00C5342B /* CommonFunctions.swift in Sources */ = {isa = PBXBuildFile; fileRef = E9067A4B2CA129BA00C5342B /* CommonFunctions.swift */; };
@@ -54,6 +55,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		8438B2F12DDFF5640090D7A5 /* PASSRESET.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PASSRESET.swift; sourceTree = "<group>"; };
 		8472BBC02DD7D5D5009352E8 /* AuthFlowButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthFlowButton.swift; sourceTree = "<group>"; };
 		8472BBC22DD7E42F009352E8 /* AuthFlowTextField.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthFlowTextField.swift; sourceTree = "<group>"; };
 		E9067A4B2CA129BA00C5342B /* CommonFunctions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CommonFunctions.swift; sourceTree = "<group>"; };
@@ -148,6 +150,7 @@
 		E95DC3902C5FF4D80035FBD6 /* AuthFlowViews */ = {
 			isa = PBXGroup;
 			children = (
+				8438B2F12DDFF5640090D7A5 /* PASSRESET.swift */,
 				E95DC38A2C5E93A70035FBD6 /* LoginPage.swift */,
 				E9C1CD2B2DD7EB93001FFBD5 /* LoginPageViewModel.swift */,
 				E95DC39E2C6030480035FBD6 /* SignUpPage.swift */,
@@ -330,6 +333,7 @@
 				E9B2D61A2DB85A930042EB19 /* UserManagementPageViewModel.swift in Sources */,
 				8472BBC32DD7E436009352E8 /* AuthFlowTextField.swift in Sources */,
 				E979D5442C829CAA00070658 /* ModelData.swift in Sources */,
+				8438B2F22DDFF56C0090D7A5 /* PASSRESET.swift in Sources */,
 				E95DC38B2C5E93A70035FBD6 /* LoginPage.swift in Sources */,
 				E9B2D6242DBDCC4D0042EB19 /* GuestManagementPageViewModel.swift in Sources */,
 				E9C1CD2C2DD7EBA1001FFBD5 /* LoginPageViewModel.swift in Sources */,

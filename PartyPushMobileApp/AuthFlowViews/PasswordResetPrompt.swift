@@ -30,7 +30,7 @@ struct PasswordResetPrompt: View {
                             .textFieldStyle(.roundedBorder)
                             .padding([.leading,.trailing], 15)
                         
-                        NavigationLink(destination: PasswordResetView(authUser: authUser),
+                        NavigationLink(destination: PasswordResetView(),
                                        tag: 1, selection: $advanceToNextView){
                         }
                                        .navigationTitle("Send new code")
