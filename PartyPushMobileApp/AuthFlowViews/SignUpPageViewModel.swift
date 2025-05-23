@@ -26,13 +26,14 @@ final class SignUpPageViewModel: ObservableObject {
         errorMessage = nil
         sessionManager.signUp(email: email, password: password, username: username) { result in
             switch result {
-            case .success(let authUser):
+            case .success(let returnedAuthUser):
                 // set authUser so when we prompt for verify email, we have updated info
-                self.authUser.username = authUser.username
-                self.authUser.email = authUser.email
-                self.authUser.password = authUser.password
-                self.showModal = true
-
+                DispatchQueue.main.async {
+                    self.authUser.username = returnedAuthUser.username
+                    self.authUser.email = returnedAuthUser.email
+                    self.authUser.password = returnedAuthUser.password
+                    self.showModal = true
+                }
             case .failure(let error):
                 DispatchQueue.main.async {
                     self.errorMessage = error.localizedDescription
@@ -41,44 +42,34 @@ final class SignUpPageViewModel: ObservableObject {
         }
     }
 
-    
     func verifyEmail(sessionManager: SessionManager, authUser: AuthUser, confirmationCode: String) {
         sessionManager.verifyEmail(authUser: authUser, confirmationCode: confirmationCode) { result in
             switch result {
-            case "Success":
-                    sessionManager.login(email: authUser.email, password: authUser.password) { loginResult in
-                        DispatchQueue.main.async {
-                            switch loginResult {
-                            case .success(let user):
-                                sessionManager.showSession(authUser: user)
-                                self.verificationStatus = "Success"
-                            case .failure(let error):
-                                self.errorMessage = "Login failed after verification: \(error.localizedDescription)"
-                            }
-                        }
+            case .success:
+                DispatchQueue.main.async {
+                    self.verificationStatus = "Success"
                 }
-            default:
-                    DispatchQueue.main.async {
-                        self.errorMessage = "Verification failed: \(result)"
-                    }
+            case .failure(let responseString):
+                DispatchQueue.main.async {
+                    self.errorMessage = responseString.localizedDescription
+                }
             }
         }
     }
-
     
     func addUser(authUser: AuthUser)
     {
         let authorizeUser = authorizeCall(authUser: authUser)
         // Todo: store url somewhere?
         let path = "https://dlnhzdvr74.execute-api.us-east-1.amazonaws.com/Test/"
+        
         // Todo: don't use force unwrap
         var request = URLRequest(url: URL(string: path)!)
         request.httpMethod = "POST"
         
         let userToAdd = User(
             username: authorizeUser.username,
-            email: authorizeUser.email,
-            cognito_username: authorizeUser.cognito_username)
+            email: authorizeUser.email)
         
         if let userData = try? JSONEncoder().encode(userToAdd){
             request.httpBody = userData
@@ -106,4 +97,3 @@ final class SignUpPageViewModel: ObservableObject {
         task.resume()
     }
 }
-

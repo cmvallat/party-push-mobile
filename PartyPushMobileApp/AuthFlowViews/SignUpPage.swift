@@ -44,7 +44,7 @@ struct SignUpPage: View {
                         isPrimary: false,
                         color: .blue,
                         onClick: {
-                            // viewModel.signUp(sessionManager: sessionManager)
+                            viewModel.signUp(sessionManager: sessionManager)
                             showSheet = true
                         }
                     )
@@ -84,7 +84,6 @@ struct SignUpPage: View {
                                 showResendCodeMessage = false
                             }
                         }
-                        
                     }
                     AuthFlowButton(
                         label: "Already have an account? Log in",
@@ -104,6 +103,7 @@ struct SignUpPage: View {
             .onChange(of: viewModel.verificationStatus, initial: false) { oldValue, newValue in
                 if newValue == "Success" {
                     viewModel.addUser(authUser: viewModel.authUser)
+                    sessionManager.showSession(authUser: viewModel.authUser)
                 }
             }
             .onChange(of: viewModel.errorMessage, initial: false) { _, newMessage in
@@ -125,7 +125,7 @@ struct SignUpPage: View {
     }
 }
 
-
-#Preview {
-    SignUpPage()
-}
+//
+//#Preview {
+//    SignUpPage()
+//}

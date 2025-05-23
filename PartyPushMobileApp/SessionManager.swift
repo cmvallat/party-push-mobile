@@ -23,7 +23,9 @@ final class SessionManager : ObservableObject {
     @Published var authState: AuthState = .unauthorized(.login)
 
     // not sensitive so we don't need to store elsewhere
-    let clientId: String = "up7gikj8g2jb4lpvqekgdumap"
+//    let clientId: String = "up7gikj8g2jb4lpvqekgdumap"
+    let clientId: String = "2bvppaqrastqtsnilgpi6kttr5"
+    
     let cognitoUrl: URL = URL(string: "https://cognito-idp.us-east-1.amazonaws.com/")!
     
     func showSession(authUser: AuthUser) {
@@ -43,19 +45,25 @@ final class SessionManager : ObservableObject {
     }
     
     func signUp(email: String, password: String, username: String, completion: @escaping (Result<AuthUser, Error>) -> Void) {
+        let authUser = AuthUser()
+        authUser.username = username
+        authUser.password = password
+        authUser.email = email
+        
         print("Attempting sign up for \(email)")
         
         let parameters: [String: Any] = [
-            "Username": email,
-            "Password": password,
-            "ClientId": clientId
+            "Username": authUser.username,
+            "Password": authUser.password,
+            "ClientId": clientId,
+            "UserAttributes": [
+                [
+                    "Name": "email",
+                    "Value": authUser.email
+                ]
+            ]
         ]
-        
-        let authUser = AuthUser()
-        authUser.email = email
-        authUser.password = password
-        authUser.username = username
-        
+
         let result = waitForRequest(authUser: authUser, url: "AWSCognitoIdentityProviderService.SignUp", method: "POST", parameters: parameters)
         
         if result.0 == "Success" {
@@ -67,43 +75,47 @@ final class SessionManager : ObservableObject {
         }
     }
     
-    func login(email: String, password: String, completion: @escaping (Result<AuthUser, Error>) -> Void) {
-        print("Attempting login for \(email)")
-
-        let tempUser = AuthUser()
-
+    func login(username: String, password: String, completion: @escaping (Result<AuthUser, Error>) -> Void) {
+        let authUser = AuthUser()
+        authUser.username = username
+        authUser.password = password
+        
+        print("login: Username ( \(authUser.username) )")
+        print("login: Password ( \(authUser.password) )")
+        
         let parameters: [String: Any] = [
             "AuthFlow": "USER_PASSWORD_AUTH",
             "AuthParameters": [
-                "USERNAME": email,
-                "PASSWORD": password
+                "USERNAME" : authUser.username,
+                "PASSWORD": authUser.password,
             ],
             "ClientId": clientId
         ]
         
-        let result = waitForRequest(authUser: tempUser, url: "AWSCognitoIdentityProviderService.InitiateAuth", method: "POST", parameters: parameters)
-
-        if result.0 == "Success" {
-            let user = AuthUser()
-            user.email = email
-            user.accessToken = result.1.accessToken
-            user.idToken = result.1.idToken
-            user.refreshToken = result.1.refreshToken
-
-            completion(.success(user))
-
-        } else if result.0 == "Incorrect username or password" {
-//            print(result.0)
-            let error = NSError(domain: "", code: 0, userInfo: [NSLocalizedDescriptionKey: result.0])
-            completion(.failure(error))
-            
-        } else {
+        let result = waitForRequest(authUser: authUser, url: "AWSCognitoIdentityProviderService.InitiateAuth", method: "Post", parameters: parameters)
+        
+        // we should not hit this clause - it should always be "User is not confirmed."
+        if(result.0 == "Success")
+        {
+            authUser.accessToken = result.1.accessToken
+            authUser.idToken = result.1.idToken
+            authUser.refreshToken = result.1.refreshToken
+            completion(.success(authUser))
+        }
+        // treat this as happy path
+        else if (result.0 == "User is not confirmed.") {
+            // set tokens so we can use them to make api calls
+            authUser.accessToken = result.1.accessToken
+            authUser.idToken = result.1.idToken
+            authUser.refreshToken = result.1.refreshToken
+            completion(.success(authUser))
+        }
+        else {
             let error = NSError(domain: "", code: 0, userInfo: [NSLocalizedDescriptionKey: result.0])
             completion(.failure(error))
         }
     }
 
-    
     func sendPasswordResetCode(authUser: AuthUser) -> String {
         print("sendPasswordResetCode: Username ( \(authUser.email) )")
         let parameters: [String: Any] = [
@@ -135,16 +147,12 @@ final class SessionManager : ObservableObject {
         return returnMessage.0
     }
     
-    func verifyEmail(
-        authUser: AuthUser,
-        confirmationCode: String,
-        completion: @escaping (String) -> Void
-    ) {
+    func verifyEmail(authUser: AuthUser, confirmationCode: String, completion: @escaping (Result<String, Error>) -> Void) {
         print("verifyEmail: Username ( \(authUser.email) )")
 
         let parameters: [String: Any] = [
             "ConfirmationCode": confirmationCode,
-            "Username": authUser.email,
+            "Username": authUser.username,
             "ClientId": clientId
         ]
 
@@ -152,22 +160,24 @@ final class SessionManager : ObservableObject {
 
         if result.0 == "Success" {
             // Login if verification succeeded
-            login(email: authUser.email, password: authUser.password) { loginResult in
+            login(username: authUser.username, password: authUser.password) { loginResult in
                 switch loginResult {
                 case .success:
                     DispatchQueue.main.async {
-                        completion("Success")
+                        completion(.success("Success"))
                     }
                 case .failure(let error):
                     DispatchQueue.main.async {
-                        completion("Login failed after verification: \(error.localizedDescription)")
+                        let err = NSError(domain: "", code: 0, userInfo: [NSLocalizedDescriptionKey: "Login failed after verification: \(error.localizedDescription)"])
+                        completion(.failure(err))
                     }
                 }
             }
         } else {
             // Verification failed
             DispatchQueue.main.async {
-                completion("Verification failed: \(result.0)")
+                let err = NSError(domain: "", code: 0, userInfo: [NSLocalizedDescriptionKey: "Verification failed: \(result.0)"])
+                completion(.failure(err))
             }
         }
     }

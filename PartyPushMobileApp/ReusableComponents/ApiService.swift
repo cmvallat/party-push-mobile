@@ -213,7 +213,7 @@ enum APIService {
             item_name: itemName,
             party_code: partyCode,
             status: status,
-            username: "cmvallattest",
+            username: authUser.username,
             cognito_username: authorizedUser.cognito_username)
         
         if let foodData = try? JSONEncoder().encode(foodToAdd){
@@ -257,7 +257,7 @@ enum APIService {
             request.setValue(authUser.idToken, forHTTPHeaderField: "AccessToken")
 
             let hostToAdd = Host(
-                username: "Cmvallattest",
+                username: authUser.username,
                 party_name: partyName,
                 party_code: partyCode,
                 invite_only: inviteOnly,

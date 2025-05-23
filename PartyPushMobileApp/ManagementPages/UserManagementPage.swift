@@ -68,14 +68,6 @@ struct UserManagementPage: View {
             } detail: {
                 Text("Your parties")
             }
-            // Overlay for showing no parties
-//            .overlay(Group {
-//                if viewModel.hosting.isEmpty && viewModel.attending.isEmpty {
-//                    Text("You aren't hosting or attending any parties right now. Try adding or joining a party and swiping down to refresh.")
-//                        .padding()
-//                }
-//            })
-            // Overlay for showing no parties
             .overlay(
                 Group {
                     if viewModel.hosting.isEmpty && viewModel.attending.isEmpty {
@@ -107,15 +99,9 @@ struct UserManagementPage: View {
             viewModel.loadParties(authUser: authUser)
         }
         .onAppear {
+            print("AU username: " + authUser.username)
             sendNotification(authUser: authUser, title: "Party Push", body: "Hi, welcome back to party push!")
             viewModel.loadParties(authUser: authUser)
-//            viewModel.fetchUsername(cognitoUsername: authUser.cognitoId) { username in
-//                if let username = username {
-//                    authUser.username = username
-//                } else {
-//                    print("User not found.")
-//                }
-//            }
         }
     }
 }

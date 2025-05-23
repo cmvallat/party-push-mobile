@@ -17,8 +17,8 @@ struct LoginPage: View {
                 Divider()
                     .padding(.vertical)
                 AuthFlowTextField(
-                    label: "Email Address",
-                    value: $viewModel.email,
+                    label: "Username",
+                    value: $viewModel.username,
                     secure: false
                 )
                 AuthFlowTextField(
@@ -40,7 +40,7 @@ struct LoginPage: View {
                     color: .blue,
                     onClick: {
                         let user = AuthUser()
-                        user.username = viewModel.email
+                        user.username = viewModel.username
                         sessionManager.showPasswordReset(authUser: user)
                     }
                 )
