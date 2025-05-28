@@ -50,6 +50,7 @@ struct UserManagementPage: View {
                 .toolbar {
                     HStack {
                         Button(action: {
+                            print("authUser username" + authUser.username)
                             showAddPartyView.toggle()
                         }) {
                             Label("Join party", systemImage: "magnifyingglass.circle.fill")
@@ -67,14 +68,6 @@ struct UserManagementPage: View {
             } detail: {
                 Text("Your parties")
             }
-            // Overlay for showing no parties
-//            .overlay(Group {
-//                if viewModel.hosting.isEmpty && viewModel.attending.isEmpty {
-//                    Text("You aren't hosting or attending any parties right now. Try adding or joining a party and swiping down to refresh.")
-//                        .padding()
-//                }
-//            })
-            // Overlay for showing no parties
             .overlay(
                 Group {
                     if viewModel.hosting.isEmpty && viewModel.attending.isEmpty {
@@ -101,7 +94,6 @@ struct UserManagementPage: View {
             AddHostSheet(authUser: authUser, showAddPartyView: $showAddPartyView, onPartyAdded: {
                 viewModel.loadParties(authUser: authUser) // Trigger loadParties from the viewModel
             })
-            
         }
         .refreshable {
             viewModel.loadParties(authUser: authUser)

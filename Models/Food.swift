@@ -13,7 +13,6 @@ struct Food: Hashable, Codable, Identifiable {
     var party_code: String
     var status: String
     var username: String
-    var cognito_username: UUID
     
     // Todo: add constraint to only have one item named the same at a party
     var id: String{

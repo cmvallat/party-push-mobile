@@ -11,10 +11,10 @@ import SwiftUI
 struct User: Hashable, Codable, Identifiable {
     var username: String
     var email: String
-    var cognito_username: UUID
-    
-    var id: UUID{
-        cognito_username
+    var sns_endpoint_arn: String?
+
+    var id: String{
+        username
     }
     
     var image: Image {

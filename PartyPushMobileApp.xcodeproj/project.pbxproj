@@ -7,21 +7,21 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		846639F12D82653500ACA794 /* HOST.swift in Sources */ = {isa = PBXBuildFile; fileRef = 846639F02D82653000ACA794 /* HOST.swift */; };
+		8438B2F22DDFF56C0090D7A5 /* PASSRESET.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8438B2F12DDFF5640090D7A5 /* PASSRESET.swift */; };
+		8472BBC12DD7D5DD009352E8 /* AuthFlowButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8472BBC02DD7D5D5009352E8 /* AuthFlowButton.swift */; };
+		8472BBC32DD7E436009352E8 /* AuthFlowTextField.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8472BBC22DD7E42F009352E8 /* AuthFlowTextField.swift */; };
 		E9067A4C2CA129BA00C5342B /* CommonFunctions.swift in Sources */ = {isa = PBXBuildFile; fileRef = E9067A4B2CA129BA00C5342B /* CommonFunctions.swift */; };
 		E9067A4E2CA1381900C5342B /* SandboxView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E9067A4D2CA1381900C5342B /* SandboxView.swift */; };
-		E9067A522CA503A600C5342B /* CategorizedHost.swift in Sources */ = {isa = PBXBuildFile; fileRef = E9067A512CA503A600C5342B /* CategorizedHost.swift */; };
 		E9067A542CA650AB00C5342B /* Food.swift in Sources */ = {isa = PBXBuildFile; fileRef = E9067A532CA650A900C5342B /* Food.swift */; };
 		E906D75C2C97905C00E35ED4 /* AddHostSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = E906D75B2C97905C00E35ED4 /* AddHostSheet.swift */; };
 		E94B0C192CAA0E3500079199 /* DemoView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E94B0C182CAA0E3500079199 /* DemoView.swift */; };
-		E95DC38B2C5E93A70035FBD6 /* LoginView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E95DC38A2C5E93A70035FBD6 /* LoginView.swift */; };
-		E95DC38D2C5EDAC30035FBD6 /* VerifyCodeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E95DC38C2C5EDAC30035FBD6 /* VerifyCodeView.swift */; };
+		E95DC38B2C5E93A70035FBD6 /* LoginPage.swift in Sources */ = {isa = PBXBuildFile; fileRef = E95DC38A2C5E93A70035FBD6 /* LoginPage.swift */; };
 		E95DC3942C5FF5890035FBD6 /* UserManagementPage.swift in Sources */ = {isa = PBXBuildFile; fileRef = E95DC3932C5FF5890035FBD6 /* UserManagementPage.swift */; };
 		E95DC3972C5FF5A30035FBD6 /* GuestManagementPage.swift in Sources */ = {isa = PBXBuildFile; fileRef = E95DC3962C5FF5A30035FBD6 /* GuestManagementPage.swift */; };
 		E95DC3992C5FF5B20035FBD6 /* HostManagementPage.swift in Sources */ = {isa = PBXBuildFile; fileRef = E95DC3982C5FF5B20035FBD6 /* HostManagementPage.swift */; };
 		E95DC39B2C6021790035FBD6 /* StyleComponents.swift in Sources */ = {isa = PBXBuildFile; fileRef = E95DC39A2C6021790035FBD6 /* StyleComponents.swift */; };
 		E95DC39D2C602B6F0035FBD6 /* SessionManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = E95DC39C2C602B6F0035FBD6 /* SessionManager.swift */; };
-		E95DC39F2C6030480035FBD6 /* SignUpView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E95DC39E2C6030480035FBD6 /* SignUpView.swift */; };
+		E95DC39F2C6030480035FBD6 /* SignUpPage.swift in Sources */ = {isa = PBXBuildFile; fileRef = E95DC39E2C6030480035FBD6 /* SignUpPage.swift */; };
 		E95DC3A42C61DF930035FBD6 /* AuthUser.swift in Sources */ = {isa = PBXBuildFile; fileRef = E95DC3A32C61DF930035FBD6 /* AuthUser.swift */; };
 		E95DC3A82C7FFAAA0035FBD6 /* PasswordResetView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E95DC3A72C7FFAAA0035FBD6 /* PasswordResetView.swift */; };
 		E95DC3AA2C81740D0035FBD6 /* PasswordResetPrompt.swift in Sources */ = {isa = PBXBuildFile; fileRef = E95DC3A92C81740D0035FBD6 /* PasswordResetPrompt.swift */; };
@@ -46,27 +46,29 @@
 		E9B2D6242DBDCC4D0042EB19 /* GuestManagementPageViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = E9B2D6232DBDCC460042EB19 /* GuestManagementPageViewModel.swift */; };
 		E9B2D6262DBDDE470042EB19 /* AddHostViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = E9B2D6252DBDDE430042EB19 /* AddHostViewModel.swift */; };
 		E9B2D6282DC18C5C0042EB19 /* Food+UI.swift in Sources */ = {isa = PBXBuildFile; fileRef = E9B2D6272DC18C570042EB19 /* Food+UI.swift */; };
+		E9C1CD2C2DD7EBA1001FFBD5 /* LoginPageViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = E9C1CD2B2DD7EB93001FFBD5 /* LoginPageViewModel.swift */; };
+		E9C1CD2E2DD7EBBC001FFBD5 /* SignUpPageViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = E9C1CD2D2DD7EBB9001FFBD5 /* SignUpPageViewModel.swift */; };
 		E9F08D7F2B34C33500E3474A /* PartyPushMobileApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = E9F08D7E2B34C33500E3474A /* PartyPushMobileApp.swift */; };
 		E9F08D832B34C33700E3474A /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = E9F08D822B34C33700E3474A /* Assets.xcassets */; };
 		E9F08D862B34C33700E3474A /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = E9F08D852B34C33700E3474A /* Preview Assets.xcassets */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
-		846639F02D82653000ACA794 /* HOST.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HOST.swift; sourceTree = "<group>"; };
+		8438B2F12DDFF5640090D7A5 /* PASSRESET.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PASSRESET.swift; sourceTree = "<group>"; };
+		8472BBC02DD7D5D5009352E8 /* AuthFlowButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthFlowButton.swift; sourceTree = "<group>"; };
+		8472BBC22DD7E42F009352E8 /* AuthFlowTextField.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthFlowTextField.swift; sourceTree = "<group>"; };
 		E9067A4B2CA129BA00C5342B /* CommonFunctions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CommonFunctions.swift; sourceTree = "<group>"; };
 		E9067A4D2CA1381900C5342B /* SandboxView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SandboxView.swift; sourceTree = "<group>"; };
-		E9067A512CA503A600C5342B /* CategorizedHost.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CategorizedHost.swift; sourceTree = "<group>"; };
 		E9067A532CA650A900C5342B /* Food.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Food.swift; sourceTree = "<group>"; };
 		E906D75B2C97905C00E35ED4 /* AddHostSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddHostSheet.swift; sourceTree = "<group>"; };
 		E94B0C182CAA0E3500079199 /* DemoView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DemoView.swift; sourceTree = "<group>"; };
-		E95DC38A2C5E93A70035FBD6 /* LoginView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginView.swift; sourceTree = "<group>"; };
-		E95DC38C2C5EDAC30035FBD6 /* VerifyCodeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VerifyCodeView.swift; sourceTree = "<group>"; };
+		E95DC38A2C5E93A70035FBD6 /* LoginPage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginPage.swift; sourceTree = "<group>"; };
 		E95DC3932C5FF5890035FBD6 /* UserManagementPage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserManagementPage.swift; sourceTree = "<group>"; };
 		E95DC3962C5FF5A30035FBD6 /* GuestManagementPage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GuestManagementPage.swift; sourceTree = "<group>"; };
 		E95DC3982C5FF5B20035FBD6 /* HostManagementPage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HostManagementPage.swift; sourceTree = "<group>"; };
 		E95DC39A2C6021790035FBD6 /* StyleComponents.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StyleComponents.swift; sourceTree = "<group>"; };
 		E95DC39C2C602B6F0035FBD6 /* SessionManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SessionManager.swift; sourceTree = "<group>"; };
-		E95DC39E2C6030480035FBD6 /* SignUpView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignUpView.swift; sourceTree = "<group>"; };
+		E95DC39E2C6030480035FBD6 /* SignUpPage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignUpPage.swift; sourceTree = "<group>"; };
 		E95DC3A32C61DF930035FBD6 /* AuthUser.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthUser.swift; sourceTree = "<group>"; };
 		E95DC3A72C7FFAAA0035FBD6 /* PasswordResetView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PasswordResetView.swift; sourceTree = "<group>"; };
 		E95DC3A92C81740D0035FBD6 /* PasswordResetPrompt.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PasswordResetPrompt.swift; sourceTree = "<group>"; };
@@ -91,6 +93,8 @@
 		E9B2D6232DBDCC460042EB19 /* GuestManagementPageViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GuestManagementPageViewModel.swift; sourceTree = "<group>"; };
 		E9B2D6252DBDDE430042EB19 /* AddHostViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddHostViewModel.swift; sourceTree = "<group>"; };
 		E9B2D6272DC18C570042EB19 /* Food+UI.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Food+UI.swift"; sourceTree = "<group>"; };
+		E9C1CD2B2DD7EB93001FFBD5 /* LoginPageViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginPageViewModel.swift; sourceTree = "<group>"; };
+		E9C1CD2D2DD7EBB9001FFBD5 /* SignUpPageViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignUpPageViewModel.swift; sourceTree = "<group>"; };
 		E9F08D7B2B34C33500E3474A /* PartyPushMobileApp.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = PartyPushMobileApp.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		E9F08D7E2B34C33500E3474A /* PartyPushMobileApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PartyPushMobileApp.swift; sourceTree = "<group>"; };
 		E9F08D822B34C33700E3474A /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
@@ -144,10 +148,11 @@
 		E95DC3902C5FF4D80035FBD6 /* AuthFlowViews */ = {
 			isa = PBXGroup;
 			children = (
-				846639F02D82653000ACA794 /* HOST.swift */,
-				E95DC38C2C5EDAC30035FBD6 /* VerifyCodeView.swift */,
-				E95DC38A2C5E93A70035FBD6 /* LoginView.swift */,
-				E95DC39E2C6030480035FBD6 /* SignUpView.swift */,
+				8438B2F12DDFF5640090D7A5 /* PASSRESET.swift */,
+				E95DC38A2C5E93A70035FBD6 /* LoginPage.swift */,
+				E9C1CD2B2DD7EB93001FFBD5 /* LoginPageViewModel.swift */,
+				E95DC39E2C6030480035FBD6 /* SignUpPage.swift */,
+				E9C1CD2D2DD7EBB9001FFBD5 /* SignUpPageViewModel.swift */,
 				E95DC3A72C7FFAAA0035FBD6 /* PasswordResetView.swift */,
 				E95DC3A92C81740D0035FBD6 /* PasswordResetPrompt.swift */,
 			);
@@ -157,6 +162,8 @@
 		E95DC3912C5FF5040035FBD6 /* ReusableComponents */ = {
 			isa = PBXGroup;
 			children = (
+				8472BBC22DD7E42F009352E8 /* AuthFlowTextField.swift */,
+				8472BBC02DD7D5D5009352E8 /* AuthFlowButton.swift */,
 				E9B2D61B2DB85F1B0042EB19 /* ApiService.swift */,
 				E95DC39A2C6021790035FBD6 /* StyleComponents.swift */,
 				E979D5452C829D3900070658 /* HostRow.swift */,
@@ -193,7 +200,6 @@
 				E979D5432C829CAA00070658 /* ModelData.swift */,
 				E979D54D2C82B1DC00070658 /* Host.swift */,
 				E979D54F2C86901800070658 /* Guest.swift */,
-				E9067A512CA503A600C5342B /* CategorizedHost.swift */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -318,15 +324,19 @@
 			files = (
 				E95DC3992C5FF5B20035FBD6 /* HostManagementPage.swift in Sources */,
 				E979D54A2C82A32200070658 /* HostList.swift in Sources */,
+				E9C1CD2E2DD7EBBC001FFBD5 /* SignUpPageViewModel.swift in Sources */,
 				E95DC3A82C7FFAAA0035FBD6 /* PasswordResetView.swift in Sources */,
 				E9B2D61E2DBC6E110042EB19 /* APIError.swift in Sources */,
 				E9B2D61A2DB85A930042EB19 /* UserManagementPageViewModel.swift in Sources */,
+				8472BBC32DD7E436009352E8 /* AuthFlowTextField.swift in Sources */,
 				E979D5442C829CAA00070658 /* ModelData.swift in Sources */,
-				E95DC38B2C5E93A70035FBD6 /* LoginView.swift in Sources */,
+				8438B2F22DDFF56C0090D7A5 /* PASSRESET.swift in Sources */,
+				E95DC38B2C5E93A70035FBD6 /* LoginPage.swift in Sources */,
 				E9B2D6242DBDCC4D0042EB19 /* GuestManagementPageViewModel.swift in Sources */,
+				E9C1CD2C2DD7EBA1001FFBD5 /* LoginPageViewModel.swift in Sources */,
 				E9B2D6202DBC6E5B0042EB19 /* AddFoodViewModel.swift in Sources */,
 				E95DC3942C5FF5890035FBD6 /* UserManagementPage.swift in Sources */,
-				E95DC39F2C6030480035FBD6 /* SignUpView.swift in Sources */,
+				E95DC39F2C6030480035FBD6 /* SignUpPage.swift in Sources */,
 				E979D5422C82994100070658 /* User.swift in Sources */,
 				E979D55A2C8698A800070658 /* GuestRow.swift in Sources */,
 				E9067A542CA650AB00C5342B /* Food.swift in Sources */,
@@ -334,7 +344,6 @@
 				E95DC39B2C6021790035FBD6 /* StyleComponents.swift in Sources */,
 				E9F08D7F2B34C33500E3474A /* PartyPushMobileApp.swift in Sources */,
 				E979D5502C86901800070658 /* Guest.swift in Sources */,
-				E9067A522CA503A600C5342B /* CategorizedHost.swift in Sources */,
 				E95DC3972C5FF5A30035FBD6 /* GuestManagementPage.swift in Sources */,
 				E9B2D61C2DB85F240042EB19 /* ApiService.swift in Sources */,
 				E95DC39D2C602B6F0035FBD6 /* SessionManager.swift in Sources */,
@@ -346,15 +355,14 @@
 				E9067A4C2CA129BA00C5342B /* CommonFunctions.swift in Sources */,
 				E9B2D6262DBDDE470042EB19 /* AddHostViewModel.swift in Sources */,
 				E9B2D6122DB2B8C50042EB19 /* APIResponse.swift in Sources */,
+				8472BBC12DD7D5DD009352E8 /* AuthFlowButton.swift in Sources */,
 				E979D5662C8D606D00070658 /* PushNotificationTestView.swift in Sources */,
 				E94B0C192CAA0E3500079199 /* DemoView.swift in Sources */,
 				E9B2D6142DB73B830042EB19 /* EmptyCodable.swift in Sources */,
 				E9B2D6162DB84D130042EB19 /* AddFoodSheet.swift in Sources */,
-				E95DC38D2C5EDAC30035FBD6 /* VerifyCodeView.swift in Sources */,
 				E979D54E2C82B1DC00070658 /* Host.swift in Sources */,
 				E95DC3AA2C81740D0035FBD6 /* PasswordResetPrompt.swift in Sources */,
 				E979D5462C829D3900070658 /* HostRow.swift in Sources */,
-				846639F12D82653500ACA794 /* HOST.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

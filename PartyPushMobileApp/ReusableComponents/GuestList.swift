@@ -72,16 +72,16 @@ extension GuestList
         
         func getPartiesAttending(authUser: AuthUser)
         {
-            let authorizedUser = authorizeCall(authUser: authUser)
+//            let authorizedUser = authorizeCall(authUser: authUser)
 
-            let queryItems = [URLQueryItem(name: "cognito_username", value: authorizedUser.cognito_username.uuidString)]
+            let queryItems = [URLQueryItem(name: "username", value: authUser.username)]
             // Todo: store url somewhere?
             var urlComps = URLComponents(string: "https://phmbstdnr3.execute-api.us-east-1.amazonaws.com/Test")!
             urlComps.queryItems = queryItems
             // Todo: don't use force unwrap
             var request = URLRequest(url: urlComps.url!)
             request.httpMethod = "GET"
-            request.setValue(authorizedUser.idToken, forHTTPHeaderField: "AccessToken")
+            request.setValue(authUser.idToken, forHTTPHeaderField: "AccessToken")
             
             let task = URLSession.shared.dataTask(with: request){
                 if let error = $2

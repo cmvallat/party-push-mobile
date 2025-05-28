@@ -1,23 +1,20 @@
 [
   {
-    "username": "nickgeorgiou",
+    "username": "Nickg",
     "guest_name": "Nick Georgiou",
-    "party_code": "party2",
-    "at_party": 1,
-    "cognito_username": "82ddbcbd-5a0a-4841-a713-62e6f0f4f8bf"
+    "party_code": "cmvcatan",
+    "at_party": 1
   },
   {
-    "username": "christianvallat",
+    "username": "Cmvallattest",
     "guest_name": "Christian Vallat",
-    "party_code": "party2",
-    "at_party": 1,
-    "cognito_username": "95b3832d-9ecf-47ae-8405-73e9112c321c"
+    "party_code": "nickbday26",
+    "at_party": 1
   },
   {
-    "username": "phillipchoi",
-    "guest_name": "Phillip Choi",
-    "party_code": "party2",
-    "at_party": 1,
-    "cognito_username": "75e9c328-4b53-4aea-8bab-8f984e4c03e2"
+    "username": "ailiereid",
+    "guest_name": "Ailie Reid",
+    "party_code": "nickbday26",
+    "at_party": 1
   }
 ]
