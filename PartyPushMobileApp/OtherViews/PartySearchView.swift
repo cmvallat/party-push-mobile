@@ -62,26 +62,45 @@ struct SuggestionRow: View {
     @ObservedObject var viewModel: PartySearchViewModel
     @Binding var showJoinPartyView: Bool
     var onPartyJoined: () -> Void
+    @State private var promptForGuestName = false
+    @State private var guestName = ""
 
     var body: some View {
         Text(host.party_code)
             .padding(.vertical, 5)
-            .contentShape(Rectangle()) // <- This expands the tappable area
+            .contentShape(Rectangle())
             .onTapGesture {
-                print("trying to add " + authUser.username)
-                viewModel.addGuest(
-                    authUser: authUser,
-                    guestName: "David Kaufman", // should eventually be dynamic
-                    partyCode: host.party_code,
-                    atParty: 1
-                ) {
-                    showJoinPartyView.toggle()
-                    onPartyJoined()
-                    print("Joined party successfully.")
+                // Only show the alert — wait for confirmation before calling addGuest
+                promptForGuestName = true
+            }
+            .alert(
+                "Enter your name to join this party:",
+                isPresented: $promptForGuestName
+            ) {
+                TextField("Guest Name", text: $guestName)
+
+                Button("Join") {
+                    // Now we call addGuest only after user has entered name and tapped Join
+                    viewModel.addGuest(
+                        authUser: authUser,
+                        guestName: guestName,
+                        partyCode: host.party_code,
+                        atParty: 1
+                    ) {
+                        showJoinPartyView.toggle()
+                        onPartyJoined()
+                        print("Joined party successfully.")
+                    }
+                }
+
+                Button("Cancel", role: .cancel) {
+                    // Just dismiss the alert
+                    guestName = ""
                 }
             }
     }
 }
+
 
 
 struct PartySearchView: View{
