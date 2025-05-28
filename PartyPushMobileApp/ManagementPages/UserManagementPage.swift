@@ -16,102 +16,121 @@ struct UserManagementPage: View {
     let authUser: AuthUser
 
     var body: some View {
-            VStack {
-                NavigationSplitView {
-                    List {
-                        Section {
-                            ForEach(viewModel.hosting) { host in
-                                NavigationLink {
-                                    HostManagementPage(host: host, authUser: authUser)
-                                } label: {
-                                    HostRow(host: host)
-                                }
-                            }
-                            .listRowBackground(Color.pink.opacity(0.1))
-                        } header: {
-                            Text("Hosting").font(.headline)
-                        }
-                        .headerProminence(.increased)
-                        
-                        Section {
-                            ForEach(viewModel.attending) { host in
-                                NavigationLink {
-                                    GuestManagementPage(host: host, authUser: authUser)
-                                } label: {
-                                    HostRow(host: host)
-                                }
-                            }
-                            .listRowBackground(Color.blue.opacity(0.1))
-                        } header: {
-                            Text("Attending").font(.headline)
-                        }
-                        .headerProminence(.increased)
-                    }
-                    .background(Gradient(colors: [.blue, .pink]).opacity(0.2))
-                    .scrollContentBackground(.hidden)
+        VStack {
+            NavigationSplitView {
+                mainListView
                     .navigationTitle("Your parties")
                     .toolbar {
-                        HStack {
-                            Button(action: {
-                                showJoinPartyView.toggle()
-                            }) {
-                                Label("Join party", systemImage: "magnifyingglass.circle.fill")
-                            }
-                            .tint(Color.green)
-
-                            Button(action: {
-                                showAddPartyView.toggle()
-                            }) {
-                                Label("New party", systemImage: "plus.circle.fill")
-                            }
-                            .tint(Color.green)
-                        }
+                        toolbarButtons
                     }
+            } detail: {
+                Text("Your parties")
+            }
+            .overlay(emptyOverlay)
+            .overlay(loadingOverlay)
+        }
+        .sheet(isPresented: $showAddPartyView) {
+            AddHostSheet(authUser: authUser, showAddPartyView: $showAddPartyView) {
+                viewModel.loadParties(authUser: authUser)
+            }
+        }
+        .sheet(isPresented: $showJoinPartyView) {
+            PartySearchView(
+                authUser: authUser,
+                showJoinPartyView: $showJoinPartyView,
+                onPartyJoined: {
+                    viewModel.loadParties(authUser: authUser)
+                },
+                viewModel: searchViewModel
+            )
+        }
+        .refreshable {
+            viewModel.loadParties(authUser: authUser)
+        }
+        .onAppear {
+            sendNotification(authUser: authUser, title: "Party Push", body: "Hi, welcome back to party push!")
+            viewModel.loadParties(authUser: authUser)
+        }
+    }
 
-                } detail: {
-                    Text("Your parties")
+private var mainListView: some View {
+    List {
+        Section {
+            ForEach(viewModel.hosting) { host in
+                NavigationLink {
+                    HostManagementPage(host: host, authUser: authUser)
+                } label: {
+                    HostRow(host: host)
                 }
-                // Overlay for showing no parties
-                .overlay(
-                    Group {
-                        if viewModel.hosting.isEmpty && viewModel.attending.isEmpty {
-                            Text("You aren't hosting or attending any parties right now. Try adding or joining a party and swiping down to refresh.")
-                                .padding()
-                        }
-                    })
-                // Loading overlay
-                .overlay(
-                    Group {
-                        if viewModel.isLoading {
-                            ZStack {
-                                Color.black.opacity(0.3).ignoresSafeArea()
-                                ProgressView("Loading parties...")
-                                    .padding()
-                                    .background(Color.white)
-                                    .cornerRadius(12)
-                                    .shadow(radius: 10)
-                            }
-                        }
-                    }
-                )
-            } // End of VStack
-            .sheet(isPresented: $showAddPartyView) {
-                AddHostSheet(authUser: authUser, showAddPartyView: $showAddPartyView, onPartyAdded: {
-                    viewModel.loadParties(authUser: authUser) // Trigger loadParties from the viewModel
-                })
             }
-            .sheet(isPresented: $showJoinPartyView) {
-                PartySearchView(viewModel: searchViewModel)
+            .listRowBackground(Color.pink.opacity(0.1))
+        } header: {
+            Text("Hosting").font(.headline)
+        }
+        .headerProminence(.increased)
+
+        Section {
+            ForEach(viewModel.attending) { host in
+                NavigationLink {
+                    GuestManagementPage(host: host, authUser: authUser)
+                } label: {
+                    HostRow(host: host)
+                }
             }
-            .refreshable {
-                viewModel.loadParties(authUser: authUser)
+            .listRowBackground(Color.blue.opacity(0.1))
+        } header: {
+            Text("Attending").font(.headline)
+        }
+        .headerProminence(.increased)
+    }
+    .background(Gradient(colors: [.blue, .pink]).opacity(0.2))
+    .scrollContentBackground(.hidden)
+}
+
+private var emptyOverlay: some View {
+    Group {
+        if viewModel.hosting.isEmpty && viewModel.attending.isEmpty {
+            Text("You aren't hosting or attending any parties right now. Try adding or joining a party and swiping down to refresh.")
+                .padding()
+        }
+    }
+}
+
+private var loadingOverlay: some View {
+    Group {
+        if viewModel.isLoading {
+            ZStack {
+                Color.black.opacity(0.3).ignoresSafeArea()
+                ProgressView("Loading parties...")
+                    .padding()
+                    .background(Color.white)
+                    .cornerRadius(12)
+                    .shadow(radius: 10)
             }
-            .onAppear {
-                sendNotification(authUser: authUser, title: "Party Push", body: "Hi, welcome back to party push!")
-                viewModel.loadParties(authUser: authUser)
-            }
-    } // End of body
-} // End of view
+        }
+    }
+}
+
+private var toolbarButtons: some View {
+    HStack {
+        Button(action: {
+            showJoinPartyView.toggle()
+        }) {
+            Label("Join party", systemImage: "magnifyingglass.circle.fill")
+        }
+        .tint(Color.green)
+
+        Button(action: {
+            showAddPartyView.toggle()
+        }) {
+            Label("New party", systemImage: "plus.circle.fill")
+        }
+        .tint(Color.green)
+    }
+}
+} // End of struct
+
+
 
 //#Preview {
 //    UserManagementPage(authUser: AuthUser())

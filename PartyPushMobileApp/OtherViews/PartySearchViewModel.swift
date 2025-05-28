@@ -11,6 +11,8 @@ import Combine
 class PartySearchViewModel: ObservableObject {
     @Published var searchText: String = ""
     @Published var suggestions: [Host] = []
+    @Published var isLoading = false
+    @Published var errorMessage: String?
 
     private var cancellables = Set<AnyCancellable>()
 
@@ -29,7 +31,28 @@ class PartySearchViewModel: ObservableObject {
             }
             .store(in: &cancellables)
     }
+    
+    func addGuest(authUser: AuthUser, guestName: String, partyCode: String, atParty: Int, onSuccess: @escaping () -> Void) {
+        isLoading = true
+        APIService.addGuest(
+            authUser: authUser,
+            guestName: guestName,
+            partyCode: partyCode,
+            atParty: 1
+        ) { [weak self] result in
+            DispatchQueue.main.async {
+                self?.isLoading = false
+                switch result {
+                case .success:
+                    onSuccess()
+                case .failure(let error):
+                    self?.errorMessage = error.localizedDescription
+                }
+            }
+        }
+    }
 
+    @MainActor
     func fetchSuggestions(for query: String) async {
         guard !query.isEmpty else {
             DispatchQueue.main.async {

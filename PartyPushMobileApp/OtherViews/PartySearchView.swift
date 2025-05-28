@@ -10,6 +10,7 @@ import SwiftUI
 struct StylishSearchBar: View {
     @ObservedObject var viewModel: PartySearchViewModel
     @FocusState private var isSearchFieldFocused: Bool
+    
     var body: some View {
         ZStack(alignment: .leading){
             Capsule()
@@ -55,10 +56,41 @@ struct StylishSearchBar: View {
     }
 }
 
+struct SuggestionRow: View {
+    let host: Host
+    let authUser: AuthUser
+    @ObservedObject var viewModel: PartySearchViewModel
+    @Binding var showJoinPartyView: Bool
+    var onPartyJoined: () -> Void
+
+    var body: some View {
+        Text(host.party_code)
+            .padding(.vertical, 5)
+            .contentShape(Rectangle()) // <- This expands the tappable area
+            .onTapGesture {
+                print("trying to add " + authUser.username)
+                viewModel.addGuest(
+                    authUser: authUser,
+                    guestName: "David Kaufman", // should eventually be dynamic
+                    partyCode: host.party_code,
+                    atParty: 1
+                ) {
+                    showJoinPartyView.toggle()
+                    onPartyJoined()
+                    print("Joined party successfully.")
+                }
+            }
+    }
+}
+
+
 struct PartySearchView: View{
+    let authUser: AuthUser
+    @Binding var showJoinPartyView: Bool
+    var onPartyJoined: () -> Void
     @StateObject var viewModel: PartySearchViewModel
     @FocusState private var isSearchFieldFocused: Bool
-    
+
     var body: some View{
         ZStack{
             LinearGradient(gradient: Gradient(colors: [
@@ -75,8 +107,13 @@ struct PartySearchView: View{
                 StylishSearchBar(viewModel: viewModel)
                 if !viewModel.suggestions.isEmpty {
                     List(viewModel.suggestions) { result in
-                        Text(result.party_code)
-                            .padding(.vertical, 5)
+                        SuggestionRow(
+                            host: result,
+                            authUser: authUser,
+                            viewModel: viewModel,
+                            showJoinPartyView: $showJoinPartyView,
+                            onPartyJoined: onPartyJoined
+                        )
                     }
                     .scrollContentBackground(.hidden)
                     .listStyle(PlainListStyle())
@@ -96,6 +133,26 @@ struct PartySearchView: View{
                 isSearchFieldFocused = false
             }
             .animation(.easeInOut, value: viewModel.suggestions)
+            .overlay {
+                if viewModel.isLoading {
+                    ZStack {
+                        Color.black.opacity(0.3).ignoresSafeArea()
+                        ProgressView("Joining party...")
+                            .padding()
+                            .background(Color.white)
+                            .cornerRadius(12)
+                            .shadow(radius: 10)
+                    }
+                }
+            }
+            .alert("Error", isPresented: Binding<Bool>(
+                get: { viewModel.errorMessage != nil },
+                set: { _ in viewModel.errorMessage = nil }
+            )) {
+                Button("OK", role: .cancel) {}
+            } message: {
+                Text(viewModel.errorMessage ?? "Unknown error")
+            }
         }
     }
 }
