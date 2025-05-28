@@ -102,6 +102,7 @@ struct SignUpPage: View {
             }
             .onChange(of: viewModel.verificationStatus, initial: false) { oldValue, newValue in
                 if newValue == "Success" {
+                    // TODO: change to operate in DispatchGroup?
                     viewModel.addUser(authUser: viewModel.authUser)
                     sessionManager.showSession(authUser: viewModel.authUser)
                 }

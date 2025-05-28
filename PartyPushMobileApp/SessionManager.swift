@@ -93,21 +93,31 @@ final class SessionManager : ObservableObject {
         ]
         
         let result = waitForRequest(authUser: authUser, url: "AWSCognitoIdentityProviderService.InitiateAuth", method: "Post", parameters: parameters)
-        
-        // we should not hit this clause - it should always be "User is not confirmed."
+                
+        // happy path
         if(result.0 == "Success")
         {
             authUser.accessToken = result.1.accessToken
             authUser.idToken = result.1.idToken
             authUser.refreshToken = result.1.refreshToken
+            
+            print("success accessToken: " + authUser.accessToken)
+            print("success idToken: " + authUser.idToken)
+            print("success refreshToken: " + authUser.refreshToken)
+            
             completion(.success(authUser))
         }
-        // treat this as happy path
+        // if the user just signed up
         else if (result.0 == "User is not confirmed.") {
             // set tokens so we can use them to make api calls
             authUser.accessToken = result.1.accessToken
             authUser.idToken = result.1.idToken
             authUser.refreshToken = result.1.refreshToken
+            
+            print("not confirmed accessToken: " + authUser.accessToken)
+            print("not confirmed idToken: " + authUser.idToken)
+            print("not confirmed refreshToken: " + authUser.refreshToken)
+            
             completion(.success(authUser))
         }
         else {
@@ -147,7 +157,7 @@ final class SessionManager : ObservableObject {
         return returnMessage.0
     }
     
-    func verifyEmail(authUser: AuthUser, confirmationCode: String, completion: @escaping (Result<String, Error>) -> Void) {
+    func verifyEmail(authUser: AuthUser, confirmationCode: String, completion: @escaping (Result<AuthUser, Error>) -> Void) {
         print("verifyEmail: Username ( \(authUser.email) )")
 
         let parameters: [String: Any] = [
@@ -160,11 +170,12 @@ final class SessionManager : ObservableObject {
 
         if result.0 == "Success" {
             // Login if verification succeeded
-            login(username: authUser.username, password: authUser.password) { loginResult in
-                switch loginResult {
-                case .success:
+            login(username: authUser.username, password: authUser.password) { loggedInUser in
+                switch loggedInUser {
+                case .success(let user):
                     DispatchQueue.main.async {
-                        completion(.success("Success"))
+                        user.email = authUser.email
+                        completion(.success(user))
                     }
                 case .failure(let error):
                     DispatchQueue.main.async {

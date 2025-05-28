@@ -61,7 +61,7 @@ class HostManagementViewModel: ObservableObject {
     }
 
     func deleteGuest(authUser: AuthUser, host: Host, guest: Guest) {
-        APIService.deleteGuest(authUser: authUser, party_code: host.party_code, cognito_username: guest.cognito_username)
+        APIService.deleteGuest(authUser: authUser, party_code: host.party_code, username: guest.username)
     }
 
     func reportFood(authUser: AuthUser, itemName: String, partyCode: String, status: String, completion: @escaping (Bool) -> Void) {

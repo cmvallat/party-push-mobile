@@ -11,7 +11,6 @@
 		8472BBC32DD7E436009352E8 /* AuthFlowTextField.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8472BBC22DD7E42F009352E8 /* AuthFlowTextField.swift */; };
 		E9067A4C2CA129BA00C5342B /* CommonFunctions.swift in Sources */ = {isa = PBXBuildFile; fileRef = E9067A4B2CA129BA00C5342B /* CommonFunctions.swift */; };
 		E9067A4E2CA1381900C5342B /* SandboxView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E9067A4D2CA1381900C5342B /* SandboxView.swift */; };
-		E9067A522CA503A600C5342B /* CategorizedHost.swift in Sources */ = {isa = PBXBuildFile; fileRef = E9067A512CA503A600C5342B /* CategorizedHost.swift */; };
 		E9067A542CA650AB00C5342B /* Food.swift in Sources */ = {isa = PBXBuildFile; fileRef = E9067A532CA650A900C5342B /* Food.swift */; };
 		E906D75C2C97905C00E35ED4 /* AddHostSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = E906D75B2C97905C00E35ED4 /* AddHostSheet.swift */; };
 		E94B0C192CAA0E3500079199 /* DemoView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E94B0C182CAA0E3500079199 /* DemoView.swift */; };
@@ -58,7 +57,6 @@
 		8472BBC22DD7E42F009352E8 /* AuthFlowTextField.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthFlowTextField.swift; sourceTree = "<group>"; };
 		E9067A4B2CA129BA00C5342B /* CommonFunctions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CommonFunctions.swift; sourceTree = "<group>"; };
 		E9067A4D2CA1381900C5342B /* SandboxView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SandboxView.swift; sourceTree = "<group>"; };
-		E9067A512CA503A600C5342B /* CategorizedHost.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CategorizedHost.swift; sourceTree = "<group>"; };
 		E9067A532CA650A900C5342B /* Food.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Food.swift; sourceTree = "<group>"; };
 		E906D75B2C97905C00E35ED4 /* AddHostSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddHostSheet.swift; sourceTree = "<group>"; };
 		E94B0C182CAA0E3500079199 /* DemoView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DemoView.swift; sourceTree = "<group>"; };
@@ -199,7 +197,6 @@
 				E979D5432C829CAA00070658 /* ModelData.swift */,
 				E979D54D2C82B1DC00070658 /* Host.swift */,
 				E979D54F2C86901800070658 /* Guest.swift */,
-				E9067A512CA503A600C5342B /* CategorizedHost.swift */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -343,7 +340,6 @@
 				E95DC39B2C6021790035FBD6 /* StyleComponents.swift in Sources */,
 				E9F08D7F2B34C33500E3474A /* PartyPushMobileApp.swift in Sources */,
 				E979D5502C86901800070658 /* Guest.swift in Sources */,
-				E9067A522CA503A600C5342B /* CategorizedHost.swift in Sources */,
 				E95DC3972C5FF5A30035FBD6 /* GuestManagementPage.swift in Sources */,
 				E9B2D61C2DB85F240042EB19 /* ApiService.swift in Sources */,
 				E95DC39D2C602B6F0035FBD6 /* SessionManager.swift in Sources */,

@@ -99,7 +99,6 @@ struct UserManagementPage: View {
             viewModel.loadParties(authUser: authUser)
         }
         .onAppear {
-            print("AU username: " + authUser.username)
             sendNotification(authUser: authUser, title: "Party Push", body: "Hi, welcome back to party push!")
             viewModel.loadParties(authUser: authUser)
         }

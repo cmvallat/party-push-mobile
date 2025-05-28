@@ -28,19 +28,6 @@ class UserManagementViewModel: ObservableObject {
 //               }
 //           }
 //       }
-    
-        func fetchUsername(cognitoUsername: UUID, completion: @escaping (String?) -> Void) {
-            APIService.getUser(cognito_username: cognitoUsername) { user in
-                DispatchQueue.main.async {
-                    if let user = user {
-                        completion(user.username)
-                    } else {
-                        completion(nil)
-                    }
-                }
-            }
-        }
-
 
     func loadParties(authUser: AuthUser) {
        isLoading = true

@@ -38,10 +38,9 @@ func authorizeCall(authUser: AuthUser) -> AuthUser
 {
     let accessToken = try? decode(jwt: authUser.accessToken)
     let idToken = try? decode(jwt: authUser.idToken)
-    let cognito_username_from_accessToken = accessToken?["username"].string ?? "defaultAccessToken"
-    let cognito_username_from_idToken = idToken?["cognito:username"].string ?? "defaultIdToken"
+    let username_from_accessToken = accessToken?["username"].string ?? "defaultAccessToken"
     
-    if(cognito_username_from_accessToken != cognito_username_from_idToken)
+    if(username_from_accessToken != authUser.username)
     {
         // if the cognito username of the tokens don't match, then we have a problem and shouldn't be accessing the API with this cognito username
         // Todo: handle here
@@ -54,7 +53,7 @@ func authorizeCall(authUser: AuthUser) -> AuthUser
         
         // either cognito_username variable works here
         // since they would be the same in this check
-        authUser.cognito_username = UUID(uuidString: cognito_username_from_accessToken) ?? UUID()
+        authUser.username = username_from_accessToken
     }
     
     return authUser
