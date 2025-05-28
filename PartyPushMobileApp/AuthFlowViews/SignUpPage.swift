@@ -126,7 +126,6 @@ struct SignUpPage: View {
     }
 }
 
-//
-//#Preview {
-//    SignUpPage()
-//}
+#Preview {
+    SignUpPage()
+}

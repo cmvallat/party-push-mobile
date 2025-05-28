@@ -10,6 +10,9 @@ import SwiftUI
 struct LoginPage: View {
     @EnvironmentObject var sessionManager: SessionManager
     @StateObject private var viewModel = LoginPageViewModel()
+    @State private var showSheet = false
+    @State private var email: String = ""
+    @State private var showResetCodeMessage = false
     
     var body: some View {
         VStack {
@@ -39,11 +42,40 @@ struct LoginPage: View {
                     isPrimary: false,
                     color: .blue,
                     onClick: {
-                        let user = AuthUser()
-                        user.username = viewModel.username
-                        sessionManager.showPasswordReset(authUser: user)
+//                        let user = AuthUser()
+//                        user.username = viewModel.username
+//                        sessionManager.showPasswordReset(authUser: user)
+                        showSheet = true;
                     }
-                )
+                ).sheet(
+                    //"Please enter the verification code from your email:",
+                    isPresented: $showSheet
+                ) {
+                    Text("Enter email:").font(.largeTitle)
+                    AuthFlowTextField(
+                        label: "Email",
+                        value: $email,
+                        secure: false
+                    )
+                    AuthFlowButton(
+                        label: "Reset",
+                        isPrimary: true,
+                        color: .blue,
+                        onClick: {
+                            // Reset action here
+                            showResetCodeMessage = true
+                        }
+                    ).alert(
+                        "Success! A reset code has been sent to the email address",
+                        isPresented: $showResetCodeMessage
+                    ) {
+                        Button ("Ok") {
+                            showResetCodeMessage = false
+                            let user = AuthUser()
+                            sessionManager.showPasswordReset(authUser: user)
+                        }
+                    }
+                }
                 AuthFlowButton(
                     label: "Sign Up",
                     isPrimary: false,
@@ -71,6 +103,6 @@ struct LoginPage: View {
     }
 }
 
-//#Preview {
-//    LoginPage()
-//}
+#Preview {
+    LoginPage()
+}
