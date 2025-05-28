@@ -53,7 +53,7 @@ struct GuestManagementPage: View {
                             viewModel.deleteGuest(
                                 authUser: authUser,
                                 party_code: host.party_code,
-                                cognito_username: authUser.cognito_username
+                                username: authUser.username
                             )
                         }
                         Button("Cancel", role: .cancel) {}
@@ -118,13 +118,6 @@ struct GuestManagementPage: View {
                                 Label("Low", systemImage: "exclamationmark.triangle.fill")
                             }
                             .tint(.yellow)
-
-                            Button {
-                                viewModel.optimisticallyReportFoodStatus(authUser: authUser, host: host, itemName: row.item_name, newStatus: "full")
-                            } label: {
-                                Label("Refilled", systemImage: "arrow.trianglehead.2.counterclockwise")
-                            }
-                            .tint(.green)
                         }
                     Spacer()
                 }

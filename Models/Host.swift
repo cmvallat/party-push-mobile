@@ -13,15 +13,10 @@ struct Host: Hashable, Codable, Identifiable {
     var party_name: String
     var party_code: String
     var invite_only: Int
-    var cognito_username: UUID
     var isHostedParty: Bool? = true
     var description: String?
     
     var id: String{
         party_code
     }
-//    
-//    var image: Image {
-//        Image(systemName: "party.popper.fill")
-//    }
 }

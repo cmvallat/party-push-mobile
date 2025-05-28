@@ -10,16 +10,16 @@ import Foundation
 enum APIService {
     
     static func getPartiesHosting(authUser: AuthUser, completion: @escaping ([Host]) -> Void) {
-        let authorizedUser = authorizeCall(authUser: authUser)
         var urlComps = URLComponents(string: "https://wdyj4fn3z3.execute-api.us-east-1.amazonaws.com/Test")!
-        urlComps.queryItems = [URLQueryItem(name: "cognito_username", value: authorizedUser.cognito_username.uuidString)]
+        urlComps.queryItems = [URLQueryItem(name: "username", value: authUser.username)]
 
         var request = URLRequest(url: urlComps.url!)
         request.httpMethod = "GET"
-        request.setValue(authorizedUser.idToken, forHTTPHeaderField: "AccessToken")
+        request.setValue(authUser.idToken, forHTTPHeaderField: "AccessToken")
 
         URLSession.shared.dataTask(with: request) { data, _, error in
             if let data = data, let hosts = try? JSONDecoder().decode([Host].self, from: data) {
+                print("---> data: \n \((String(data: data, encoding: .utf8) ?? "nil") as String) \n")
                 completion(hosts)
             } else {
                 print("Error fetching parties hosting: \(error?.localizedDescription ?? "Unknown error")")
@@ -29,13 +29,12 @@ enum APIService {
     }
 
     static func getPartiesAttending(authUser: AuthUser, completion: @escaping ([Host]) -> Void) {
-        let authorizedUser = authorizeCall(authUser: authUser)
         var urlComps = URLComponents(string: "https://phmbstdnr3.execute-api.us-east-1.amazonaws.com/Test")!
-        urlComps.queryItems = [URLQueryItem(name: "cognito_username", value: authorizedUser.cognito_username.uuidString)]
+        urlComps.queryItems = [URLQueryItem(name: "username", value: authUser.username)]
 
         var request = URLRequest(url: urlComps.url!)
         request.httpMethod = "GET"
-        request.setValue(authorizedUser.idToken, forHTTPHeaderField: "AccessToken")
+        request.setValue(authUser.idToken, forHTTPHeaderField: "AccessToken")
 
         URLSession.shared.dataTask(with: request) { data, _, error in
             if let data = data, var guests = try? JSONDecoder().decode([Host].self, from: data) {
@@ -53,7 +52,7 @@ enum APIService {
     static func getFoodList(authUser: AuthUser, host: Host, completion: @escaping ([Food]) -> Void) {
         var urlComps = URLComponents(string: "https://92q2nhqvgb.execute-api.us-east-1.amazonaws.com/Prod")!
         urlComps.queryItems = [
-            URLQueryItem(name: "cognito_username", value: authUser.cognito_username.uuidString),
+            URLQueryItem(name: "username", value: authUser.username),
             URLQueryItem(name: "party_code", value: host.party_code)
         ]
         
@@ -89,6 +88,30 @@ enum APIService {
         }.resume()
     }
     
+    static func getUser(username: String, completion: @escaping (User?) -> Void) {
+        var urlComps = URLComponents(string: "https://9bn7w86we7.execute-api.us-east-1.amazonaws.com/Prod/hello")!
+        urlComps.queryItems = [URLQueryItem(name: "username", value: username)]
+        
+        var request = URLRequest(url: urlComps.url!)
+        request.httpMethod = "GET"
+        
+        URLSession.shared.dataTask(with: request) { data, response, error in
+                guard let data = data, error == nil else {
+                    print("Error: \(error?.localizedDescription ?? "Unknown error")")
+                    completion(nil)
+                    return
+                }
+
+                do {
+                    let decoded = try JSONDecoder().decode(APIResponse<User>.self, from: data)
+                    completion(decoded.data?.first) // might be nil if user is not found
+                } catch {
+                    print("Decoding error: \(error.localizedDescription)")
+                    completion(nil)
+                }
+            }.resume()
+    }
+    
     static func registerDeviceToken(username: String, deviceToken: String, completion: @escaping (String) -> Void) {
         var urlComps = URLComponents(string: "https://qyb4z6bik0.execute-api.us-east-1.amazonaws.com/Prod/hello")!
         urlComps.queryItems = [URLQueryItem(name: "username", value: username),
@@ -111,7 +134,7 @@ enum APIService {
     static func deleteFoodItem(authUser: AuthUser, host: Host, itemName: String) {
         var urlComps = URLComponents(string: "https://e8ro13vvl3.execute-api.us-east-1.amazonaws.com/Prod")!
         urlComps.queryItems = [
-            URLQueryItem(name: "cognito_username", value: authUser.cognito_username.uuidString),
+            URLQueryItem(name: "username", value: authUser.username),
             URLQueryItem(name: "party_code", value: host.party_code),
             URLQueryItem(name: "item_name", value: itemName)
         ]
@@ -123,10 +146,10 @@ enum APIService {
         URLSession.shared.dataTask(with: request).resume()
     }
 
-    static func deleteGuest(authUser: AuthUser, party_code: String, cognito_username: UUID) {
+    static func deleteGuest(authUser: AuthUser, party_code: String, username: String) {
         var urlComps = URLComponents(string: "https://sl83ejal53.execute-api.us-east-1.amazonaws.com/Prod")!
         urlComps.queryItems = [
-            URLQueryItem(name: "cognito_username", value: cognito_username.uuidString),
+            URLQueryItem(name: "username", value: username),
             URLQueryItem(name: "party_code", value: party_code),
         ]
         
@@ -149,8 +172,7 @@ enum APIService {
             item_name: itemName,
             party_code: partyCode,
             status: status,
-            username: authUser.username,
-            cognito_username: authUser.cognito_username
+            username: authUser.username
         )
         
         guard let encoded = try? JSONEncoder().encode(payload) else {
@@ -172,7 +194,7 @@ enum APIService {
 
     static func addFoodItem(authUser: AuthUser, itemName: String, partyCode: String, status: String, completion: @escaping (String) -> Void)
     {
-        let authorizedUser = authorizeCall(authUser: authUser)
+//        let authorizedUser = authorizeCall(authUser: authUser)
         
         // Todo: store url somewhere?
         let path = "https://nm1c3v9jc9.execute-api.us-east-1.amazonaws.com/Prod"
@@ -180,14 +202,13 @@ enum APIService {
         // Todo: don't use force unwrap
         var request = URLRequest(url: URL(string: path)!)
         request.httpMethod = "POST"
-        request.setValue(authorizedUser.idToken, forHTTPHeaderField: "AccessToken")
+        request.setValue(authUser.idToken, forHTTPHeaderField: "AccessToken")
         
         let foodToAdd = Food(
             item_name: itemName,
             party_code: partyCode,
             status: status,
-            username: "cmvallattest",
-            cognito_username: authorizedUser.cognito_username)
+            username: authUser.username)
         
         if let foodData = try? JSONEncoder().encode(foodToAdd){
             request.httpBody = foodData
@@ -230,11 +251,10 @@ enum APIService {
             request.setValue(authUser.idToken, forHTTPHeaderField: "AccessToken")
 
             let hostToAdd = Host(
-                username: "Cmvallattest",
+                username: authUser.username,
                 party_name: partyName,
                 party_code: partyCode,
-                invite_only: inviteOnly,
-                cognito_username: authUser.cognito_username,
+                invite_only: inviteOnly
                 description: description
             )
 
@@ -270,14 +290,8 @@ enum APIService {
     
     static func addGuest(authUser: AuthUser, guestName: String, partyCode: String, atParty: Int, completion: @escaping (Result<Void, APIError>) -> Void) {
             guard let url = URL(string: "https://xt1sdav9qk.execute-api.us-east-1.amazonaws.com/Prod/hello") else {
-                completion(.failure(.invalidURL))
-                return
-            }
-
-            var request = URLRequest(url: url)
-            request.httpMethod = "POST"
-            request.setValue(authUser.idToken, forHTTPHeaderField: "AccessToken")
-
+    static func addGuest(authUser: AuthUser, guestName: String, partyCode: String, atParty: Int, completion: @escaping (Result<Void, APIError>) -> Void) {
+            guard let url = URL(string: "https://xt1sdav9qk.execute-api.us-east-1.amazonaws.com/Prod/hello") else {
             let guestToAdd = Guest(
                 username: authUser.username,
                 guest_name: guestName,
@@ -286,16 +300,16 @@ enum APIService {
                 cognito_username: authUser.cognito_username
             )
 
-            do {
+            let guestToAdd = Guest(
                 request.httpBody = try JSONEncoder().encode(guestToAdd)
-            } catch {
-                completion(.failure(.encodingError))
-                return
-            }
+                guest_name: guestName,
+                party_code: partyCode,
+                at_party: atParty,
+                cognito_username: authUser.cognito_username
 
             URLSession.shared.dataTask(with: request) { data, response, error in
                 if let error = error {
-                    completion(.failure(.serverError(error.localizedDescription)))
+                request.httpBody = try JSONEncoder().encode(guestToAdd)
                     return
                 }
                 guard let data = data else {
