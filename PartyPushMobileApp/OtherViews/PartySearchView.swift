@@ -66,38 +66,38 @@ struct SuggestionRow: View {
     @State private var guestName = ""
 
     var body: some View {
-        Text(host.party_code)
-            .padding(.vertical, 5)
-            .contentShape(Rectangle())
-            .onTapGesture {
-                // Only show the alert — wait for confirmation before calling addGuest
-                promptForGuestName = true
-            }
-            .alert(
-                "Enter your name to join this party:",
-                isPresented: $promptForGuestName
-            ) {
-                TextField("Guest Name", text: $guestName)
+        Button(action: {
+            promptForGuestName = true
+        }) {
+            Text(host.party_code)
+                .padding(.vertical, 5)
+        }
+        .buttonStyle(PlainButtonStyle())
+        .alert(
+            "Enter your name to join this party:",
+            isPresented: $promptForGuestName
+        ) {
+            TextField("Guest Name", text: $guestName)
 
-                Button("Join") {
-                    // Now we call addGuest only after user has entered name and tapped Join
-                    viewModel.addGuest(
-                        authUser: authUser,
-                        guestName: guestName,
-                        partyCode: host.party_code,
-                        atParty: 1
-                    ) {
-                        showJoinPartyView.toggle()
-                        onPartyJoined()
-                        print("Joined party successfully.")
-                    }
-                }
-
-                Button("Cancel", role: .cancel) {
-                    // Just dismiss the alert
-                    guestName = ""
+            Button("Join") {
+                // Now we call addGuest only after user has entered name and tapped Join
+                viewModel.addGuest(
+                    authUser: authUser,
+                    guestName: guestName,
+                    partyCode: host.party_code,
+                    atParty: 1
+                ) {
+                    showJoinPartyView.toggle()
+                    onPartyJoined()
+                    print("Joined party successfully.")
                 }
             }
+
+            Button("Cancel", role: .cancel) {
+                // Just dismiss the alert
+                guestName = ""
+            }
+        }
     }
 }
 

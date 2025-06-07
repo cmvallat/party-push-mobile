@@ -14,6 +14,8 @@ struct UserManagementPage: View {
     @State private var showAddPartyView = false
     @State private var showJoinPartyView = false
     let authUser: AuthUser
+    @ObservedObject var appState: AppState
+
 
     var body: some View {
         VStack {
@@ -51,6 +53,10 @@ struct UserManagementPage: View {
             sendNotification(authUser: authUser, title: "Party Push", body: "Hi, welcome back to party push!")
             viewModel.loadParties(authUser: authUser)
         }
+        .onChange(of: appState.endedPartyCode) { _ in
+            viewModel.loadParties(authUser: authUser)
+            appState.endedPartyCode = nil
+        }
     }
 
 private var mainListView: some View {
@@ -58,7 +64,7 @@ private var mainListView: some View {
         Section {
             ForEach(viewModel.hosting) { host in
                 NavigationLink {
-                    HostManagementPage(host: host, authUser: authUser)
+                    HostManagementPage(host: host, authUser: authUser, appState: appState)
                 } label: {
                     HostRow(host: host)
                 }
@@ -72,7 +78,7 @@ private var mainListView: some View {
         Section {
             ForEach(viewModel.attending) { host in
                 NavigationLink {
-                    GuestManagementPage(host: host, authUser: authUser)
+                    GuestManagementPage(host: host, authUser: authUser, appState: appState)
                 } label: {
                     HostRow(host: host)
                 }

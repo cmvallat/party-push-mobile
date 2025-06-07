@@ -3,10 +3,13 @@ import SwiftUI
 struct HostManagementPage: View {
     var host: Host
     let authUser: AuthUser
+    @ObservedObject var appState: AppState
+    @Environment(\.dismiss) var dismiss
 
     @StateObject private var viewModel = HostManagementViewModel()
     @State private var showGuestPopover: Bool = false
     @State private var showAddFoodView = false
+    @State private var showEndedPartyAlert = false
 
     var body: some View {
         VStack {
@@ -38,6 +41,11 @@ struct HostManagementPage: View {
                         Spacer()
                         Button(action: {
                             // Your action
+                            viewModel.endParty(authUser: authUser, party_code: host.party_code) { res in
+                                if res == true {
+                                    appState.endedPartyCode = host.party_code
+                                }
+                            }
                         }) {
                             Text("End party")
                                 .foregroundColor(.white)
@@ -83,6 +91,16 @@ struct HostManagementPage: View {
         }
         .onAppear {
             viewModel.refresh(authUser: authUser, host: host)
+        }
+        .onChange(of: appState.endedPartyCode, initial: true) { _, endedCode in
+            if endedCode == host.party_code {
+                showEndedPartyAlert = true
+            }
+        }
+        .alert("You have successfully ended this party.", isPresented: $showEndedPartyAlert) {
+            Button("OK") {
+                dismiss()
+            }
         }
     }
 

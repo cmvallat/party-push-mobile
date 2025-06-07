@@ -146,8 +146,8 @@ enum APIService {
         URLSession.shared.dataTask(with: request).resume()
     }
 
-    static func deleteGuest(authUser: AuthUser, party_code: String, username: String) {
-        var urlComps = URLComponents(string: "https://sl83ejal53.execute-api.us-east-1.amazonaws.com/Prod")!
+    static func deleteGuest(authUser: AuthUser, party_code: String, username: String, completion: @escaping (String) -> Void) {
+        var urlComps = URLComponents(string: "https://sl83ejal53.execute-api.us-east-1.amazonaws.com/Prod/hello")!
         urlComps.queryItems = [
             URLQueryItem(name: "username", value: username),
             URLQueryItem(name: "party_code", value: party_code),
@@ -157,10 +157,66 @@ enum APIService {
         request.httpMethod = "DELETE"
         request.setValue(authUser.idToken, forHTTPHeaderField: "AccessToken")
         
-        URLSession.shared.dataTask(with: request).resume()
+        URLSession.shared.dataTask(with: request) { data, _, error in
+            if let data = data, let _ = try? JSONDecoder().decode(APIResponse<EmptyCodable>.self, from: data) {
+                print("guest deleted successfully")
+                completion("Guest deleted successfully")
+            } else {
+                print("Error leaving party:", error?.localizedDescription ?? "Unknown error")
+                completion("error")
+            }
+        }.resume()
+    }
+    
+    static func endParty(authUser: AuthUser, party_code: String, completion: @escaping (String) -> Void) {
+        var urlComps = URLComponents(string: "https://shkrn10bch.execute-api.us-east-1.amazonaws.com/Prod/hello")!
+        urlComps.queryItems = [
+            URLQueryItem(name: "party_code", value: party_code)
+        ]
+        
+        var request = URLRequest(url: urlComps.url!)
+        request.httpMethod = "GET"
+        request.setValue(authUser.idToken, forHTTPHeaderField: "AccessToken")
+        
+        URLSession.shared.dataTask(with: request) { data, _, error in
+            if let data = data, let _ = try? JSONDecoder().decode(APIResponse<EmptyCodable>.self, from: data) {
+                print("party ended successfully")
+                completion("Party ended successfully")
+            } else {
+                print("Error ending party:", error?.localizedDescription ?? "Unknown error")
+                completion("error")
+            }
+        }.resume()
+    }
+    
+    static func checkPartyStatus(party_code: String, authUser: AuthUser, completion: @escaping (Bool) -> Void) {
+        var urlComps = URLComponents(string: "https://z7fcgvpbnb.execute-api.us-east-1.amazonaws.com/Prod/hello")!
+        urlComps.queryItems = [URLQueryItem(name: "party_code", value: party_code)]
+
+        var request = URLRequest(url: urlComps.url!)
+        request.httpMethod = "GET"
+        request.setValue(authUser.idToken, forHTTPHeaderField: "AccessToken")
+
+        URLSession.shared.dataTask(with: request) { data, _, error in
+            guard let data = data else {
+                print("Error polling party status:", error?.localizedDescription ?? "Unknown error")
+                completion(true) // assume still active to avoid false negatives
+                return
+            }
+
+            if let decoded = try? JSONDecoder().decode(CheckPartyStatusResponse.self, from: data) {
+                let partyStillActive = decoded.data
+                print("Poll: " + String(partyStillActive))
+                completion(partyStillActive)
+            } else {
+                print("Failed to decode response")
+                completion(true)
+            }
+        }.resume()
     }
 
-    static func reportFood(authUser: AuthUser, itemName: String, partyCode: String, status: String, completion: @escaping (String) -> Void) {
+
+    static func reportFood(authUser: AuthUser, itemName: String, partyCode: String, status: String, isHost: Bool, completion: @escaping (String) -> Void) {
         let url = URL(string: "https://bj0fdfpzjb.execute-api.us-east-1.amazonaws.com/Prod")!
         
         var request = URLRequest(url: url)
@@ -168,18 +224,18 @@ enum APIService {
         request.setValue(authUser.idToken, forHTTPHeaderField: "AccessToken")
         request.setValue("application/json", forHTTPHeaderField: "Content-Type")
         
-        let payload = Food(
+        let foodItem = Food(
             item_name: itemName,
             party_code: partyCode,
             status: status,
             username: authUser.username
         )
-        
-        guard let encoded = try? JSONEncoder().encode(payload) else {
+        let body = FoodReportRequest(food: foodItem, isHost: isHost)
+
+        guard let encoded = try? JSONEncoder().encode(body) else {
             print("Failed to encode food report payload")
             return
         }
-        
         request.httpBody = encoded
         
         URLSession.shared.dataTask(with: request) { data, _, error in

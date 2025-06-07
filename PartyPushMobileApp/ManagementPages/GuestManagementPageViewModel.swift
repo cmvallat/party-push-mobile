@@ -12,6 +12,7 @@ class GuestManagementViewModel: ObservableObject {
     @Published var foods = [Food]()
     @Published var reportFoodResponse = ""
     @Published var isLoading: Bool = false
+    @Published var showLeftPartyAlert = false
 
     func refresh(authUser: AuthUser, host: Host) {
            isLoading = true
@@ -50,11 +51,22 @@ class GuestManagementViewModel: ObservableObject {
     
     func deleteGuest(authUser: AuthUser, party_code: String, username: String) {
         // TODO: add other handling in here; otherwise, just call APIService directly from View
-        APIService.deleteGuest(authUser: authUser, party_code: party_code, username: username)
+        APIService.deleteGuest(authUser: authUser, party_code: party_code, username: username){ response in
+            DispatchQueue.main.async{
+                if(response == "Guest deleted successfully")
+                {
+                    self.showLeftPartyAlert = true
+                }
+                else
+                {
+                    self.showLeftPartyAlert = false
+                }
+            }
+        }
     }
 
     func reportFood(authUser: AuthUser, itemName: String, partyCode: String, status: String, completion: @escaping (Bool) -> Void) {
-        APIService.reportFood(authUser: authUser, itemName: itemName, partyCode: partyCode, status: status) { [weak self] response in
+        APIService.reportFood(authUser: authUser, itemName: itemName, partyCode: partyCode, status: status, isHost: false) { [weak self] response in
             DispatchQueue.main.async {
                 self?.reportFoodResponse = response
                 // If the server reply was successful

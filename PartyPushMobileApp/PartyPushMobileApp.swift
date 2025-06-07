@@ -12,6 +12,7 @@ struct PartyPushMobileApp: App {
     
     @UIApplicationDelegateAdaptor private var appDelegate: AppDelegate
     @ObservedObject var sessionManager = SessionManager()
+    @StateObject var appState = AppState()
     
     var body: some Scene {
         WindowGroup {
@@ -29,7 +30,7 @@ struct PartyPushMobileApp: App {
                 PasswordResetPrompt(authUser: authUser)
                     .environmentObject(sessionManager)
             case .session(let authUser):
-                UserManagementPage(authUser: authUser)
+                UserManagementPage(authUser: authUser, appState: appState)
                     .environmentObject(sessionManager)
             }
         }

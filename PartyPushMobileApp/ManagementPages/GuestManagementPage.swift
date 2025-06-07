@@ -3,11 +3,16 @@ import SwiftUI
 struct GuestManagementPage: View {
     var host: Host
     let authUser: AuthUser
+    @ObservedObject var appState: AppState
+    @Environment(\.dismiss) var dismiss
 
     @StateObject private var viewModel = GuestManagementViewModel()
+    @State private var pollingTimer: Timer? = nil
     @State private var showGuestPopover: Bool = false
     @State private var showAddFoodView = false
     @State private var showLeavePartyConfirmation = false
+    @State private var x = false
+    @State private var showEndedPartyAlert = false
 
     var body: some View {
         VStack {
@@ -93,6 +98,26 @@ struct GuestManagementPage: View {
         }
         .onAppear {
             viewModel.refresh(authUser: authUser, host: host)
+            startPollingPartyStatus()
+        }
+        .onChange(of: appState.endedPartyCode, initial: true) { _, endedCode in
+            if endedCode == host.party_code {
+                showEndedPartyAlert = true
+            }
+        }
+        .onDisappear {
+            pollingTimer?.invalidate()
+            pollingTimer = nil
+        }
+        .alert("The Host has ended this party.", isPresented: $showEndedPartyAlert) {
+            Button("OK") {
+                dismiss()
+            }
+        }
+        .alert("You have successfully left this party.", isPresented: $viewModel.showLeftPartyAlert) {
+            Button("OK") {
+                dismiss()
+            }
         }
     }
 
@@ -126,5 +151,17 @@ struct GuestManagementPage: View {
             Text("Food/Drinks").font(.headline)
         }
         .headerProminence(.increased)
+    }
+    
+    private func startPollingPartyStatus() {
+        pollingTimer = Timer.scheduledTimer(withTimeInterval: 5.0, repeats: true) { _ in
+            APIService.checkPartyStatus(party_code: host.party_code, authUser: authUser) { stillActive in
+                if !stillActive {
+                    DispatchQueue.main.async {
+                        appState.endedPartyCode = host.party_code
+                    }
+                }
+            }
+        }
     }
 }
