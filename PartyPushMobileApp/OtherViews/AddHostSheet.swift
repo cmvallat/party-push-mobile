@@ -49,16 +49,46 @@ struct AddHostSheet: View {
 //            .toggleStyle(StyleHelpers.CheckboxToggleStyle())
 //            .padding()
 
-            Button {
-                viewModel.addHost(authUser: authUser) {
-                    showAddPartyView.toggle()
-                    onPartyAdded() // Reload the parties after successful creation
+//            Button {
+//                viewModel.addHost(authUser: authUser) {
+//                    showAddPartyView.toggle()
+//                    onPartyAdded() // Reload the parties after successful creation
+//                }
+//            } label: {
+//                Label("Submit", systemImage: "arrowshape.turn.up.forward.fill")
+//                    .tint(Color(red: 0, green: 0.65, blue: 0))
+//            }
+//            .disabled(viewModel.isLoading)
+            
+            
+            
+            // Styled Add Food button
+            HStack {
+                Spacer()
+                Button(action: {
+                    viewModel.addHost(authUser: authUser) {
+                        showAddPartyView.toggle()
+                        onPartyAdded() // Reload the parties after successful creation
+                    }
+                }) {
+                    Label("Submit", systemImage: "arrowshape.turn.up.forward.fill")
+                        .foregroundColor(.white)
+                        .padding(.horizontal, 16)
+                        .padding(.vertical, 10)
+                        .background(Color.green)
+                        .cornerRadius(12)
                 }
-            } label: {
-                Label("Submit", systemImage: "arrowshape.turn.up.forward.fill")
-                    .tint(Color(red: 0, green: 0.65, blue: 0))
+                Spacer()
             }
+            .padding(.vertical, 10)
+            .listRowBackground(Color.clear)
+            .listRowSeparator(.hidden)
             .disabled(viewModel.isLoading)
+
+            
+            
+            
+            
 
             Spacer()
         }

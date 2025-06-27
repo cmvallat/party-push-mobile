@@ -53,12 +53,17 @@ struct UserManagementPage: View {
             sendNotification(authUser: authUser, title: "Party Push", body: "Hi, welcome back to party push!")
             viewModel.loadParties(authUser: authUser)
         }
-        .onChange(of: appState.endedPartyCode) { _ in
-            viewModel.loadParties(authUser: authUser)
-            appState.endedPartyCode = nil
+        .onChange(of: appState.needToRefresh, initial: false) { _, refresh in
+            if(refresh)
+            {
+                viewModel.loadParties(authUser: authUser)
+                appState.endedPartyCode = nil
+                appState.kickedGuestUsername = nil
+                appState.needToRefresh = false
+            }
         }
     }
-
+    
 private var mainListView: some View {
     List {
         Section {

@@ -10,7 +10,14 @@ import Combine
 import SwiftUI
 
 class AppState: ObservableObject {
+    enum AtPartyStatus: String {
+        case active
+        case left
+        case removed
+    }
     @Published var endedPartyCode: String? = nil
-//    @Published var selectedHost: Host? = nil
-//    @Published var navigationPath = NavigationPath()
+    @Published var needToRefresh: Bool = false
+    @Published var kickedGuestUsername: String? = nil
+    // need to declare enum here
+    @Published var atPartyState: AtPartyStatus = .active
 }

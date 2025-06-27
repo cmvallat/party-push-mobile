@@ -1,11 +1,11 @@
 //
-//  CheckPartyStatusResponse.swift
+//  CheckStatusResponse.swift
 //  PartyPushMobileApp
 //
 //  Created by Christian Vallat on 6/3/25.
 //
 
-struct CheckPartyStatusResponse: Codable {
+struct CheckStatusResponse: Codable {
     var message: String
     var data: Bool
 }

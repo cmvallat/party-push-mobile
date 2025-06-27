@@ -13,6 +13,10 @@ struct GuestManagementPage: View {
     @State private var showLeavePartyConfirmation = false
     @State private var x = false
     @State private var showEndedPartyAlert = false
+    @State private var showKickedPartyAlert = false
+    @State private var showLeftPartyAlertScreen = false
+    @State private var showDeleteGuestFailureAlert = false
+
 
     var body: some View {
         VStack {
@@ -59,7 +63,9 @@ struct GuestManagementPage: View {
                                 authUser: authUser,
                                 party_code: host.party_code,
                                 username: authUser.username
-                            )
+                            ){
+                                showLeftPartyAlertScreen = true
+                            }
                         }
                         Button("Cancel", role: .cancel) {}
                     }
@@ -99,10 +105,30 @@ struct GuestManagementPage: View {
         .onAppear {
             viewModel.refresh(authUser: authUser, host: host)
             startPollingPartyStatus()
+            startPollingGuestStatus()
         }
         .onChange(of: appState.endedPartyCode, initial: true) { _, endedCode in
             if endedCode == host.party_code {
                 showEndedPartyAlert = true
+            }
+        }
+        .onChange(of: appState.atPartyState, initial: false) { oldState, newState in
+//            if kickedUsername == authUser.username {
+//                showKickedPartyAlert = true
+//            }
+            switch newState {
+                case .left:
+                    showLeftPartyAlertScreen = true
+                case .removed:
+                    showKickedPartyAlert = true
+                case .active:
+                    appState.atPartyState = .active
+            }
+        }
+        .onChange(of: viewModel.deleteGuestFailed) { failed in
+            if failed {
+                showDeleteGuestFailureAlert = true
+                viewModel.deleteGuestFailed = false
             }
         }
         .onDisappear {
@@ -111,40 +137,61 @@ struct GuestManagementPage: View {
         }
         .alert("The Host has ended this party.", isPresented: $showEndedPartyAlert) {
             Button("OK") {
+                appState.needToRefresh = true
                 dismiss()
             }
         }
-        .alert("You have successfully left this party.", isPresented: $viewModel.showLeftPartyAlert) {
+        .alert("You have successfully left this party.", isPresented: $showLeftPartyAlertScreen) {
             Button("OK") {
+                appState.needToRefresh = true
                 dismiss()
             }
         }
+        .alert("The host has removed you from this party.", isPresented: $showKickedPartyAlert) {
+            Button("OK") {
+                appState.needToRefresh = true
+                dismiss()
+            }
+        }
+        .alert("Could not leave the party. Please try again.", isPresented: $showDeleteGuestFailureAlert) {
+            Button("OK", role: .cancel) {}
+        }
+
     }
 
     private var foodSection: some View {
         Section {
-            ForEach(viewModel.foods) { row in
-                HStack {
-                    // display a helpful icon based on the food item's current status
-                    row.statusIcon.foregroundStyle(row.statusColor)
+            if viewModel.foods.isEmpty {
+                VStack {
+                    Text("No foods at the party right now. Check back later or swipe down to refresh.")
+                        .multilineTextAlignment(.center)
+                        .font(.subheadline)
+                        .padding(.vertical, 20)
+                        .frame(maxWidth: .infinity)
+                }
+                .listRowBackground(Color.clear)
+            } else {
+                ForEach(viewModel.foods) { row in
+                    HStack {
+                        row.statusIcon.foregroundStyle(row.statusColor)
+                        Text(row.item_name)
+                            .swipeActions(edge: .trailing) {
+                                Button {
+                                    viewModel.optimisticallyReportFoodStatus(authUser: authUser, host: host, itemName: row.item_name, newStatus: "out")
+                                } label: {
+                                    Label("Out", systemImage: "exclamationmark.shield.fill")
+                                }
+                                .tint(.red)
 
-                    Text(row.item_name)
-                        .swipeActions(edge: .trailing) {
-                            Button {
-                                viewModel.optimisticallyReportFoodStatus(authUser: authUser, host: host, itemName: row.item_name, newStatus: "out")
-                            } label: {
-                                Label("Out", systemImage: "exclamationmark.shield.fill")
+                                Button {
+                                    viewModel.optimisticallyReportFoodStatus(authUser: authUser, host: host, itemName: row.item_name, newStatus: "low")
+                                } label: {
+                                    Label("Low", systemImage: "exclamationmark.triangle.fill")
+                                }
+                                .tint(.yellow)
                             }
-                            .tint(.red)
-
-                            Button {
-                                viewModel.optimisticallyReportFoodStatus(authUser: authUser, host: host, itemName: row.item_name, newStatus: "low")
-                            } label: {
-                                Label("Low", systemImage: "exclamationmark.triangle.fill")
-                            }
-                            .tint(.yellow)
-                        }
-                    Spacer()
+                        Spacer()
+                    }
                 }
             }
         } header: {
@@ -152,9 +199,19 @@ struct GuestManagementPage: View {
         }
         .headerProminence(.increased)
     }
+
+    
+    private var emptyOverlay: some View {
+        Group {
+            if viewModel.foods.isEmpty{
+                Text("No foods at the party right now. Check back later or swipe down to refresh.")
+                    .padding()
+            }
+        }
+    }
     
     private func startPollingPartyStatus() {
-        pollingTimer = Timer.scheduledTimer(withTimeInterval: 5.0, repeats: true) { _ in
+        pollingTimer = Timer.scheduledTimer(withTimeInterval: 3.0, repeats: true) { _ in
             APIService.checkPartyStatus(party_code: host.party_code, authUser: authUser) { stillActive in
                 if !stillActive {
                     DispatchQueue.main.async {
@@ -164,4 +221,25 @@ struct GuestManagementPage: View {
             }
         }
     }
+    
+    private func startPollingGuestStatus() {
+        pollingTimer = Timer.scheduledTimer(withTimeInterval: 3.0, repeats: true) { _ in
+            APIService.checkGuestStatus(party_code: host.party_code, authUser: authUser) { guestStatus in
+                DispatchQueue.main.async {
+                    switch guestStatus {
+                    case "left":
+                        appState.atPartyState = .left
+                    case "DNE":
+                        appState.atPartyState = .removed
+                    case "active":
+                        appState.atPartyState = .active
+                    default:
+                        // TODO: throw an error or break or something (handle it)
+                        print("non-recognized guest status")
+                    }
+                }
+            }
+        }
+    }
+    
 }

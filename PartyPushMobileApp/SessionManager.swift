@@ -80,9 +80,6 @@ final class SessionManager : ObservableObject {
         authUser.username = username
         authUser.password = password
         
-        print("login: Username ( \(authUser.username) )")
-        print("login: Password ( \(authUser.password) )")
-        
         let parameters: [String: Any] = [
             "AuthFlow": "USER_PASSWORD_AUTH",
             "AuthParameters": [
@@ -101,10 +98,6 @@ final class SessionManager : ObservableObject {
             authUser.idToken = result.1.idToken
             authUser.refreshToken = result.1.refreshToken
             
-            print("success accessToken: " + authUser.accessToken)
-            print("success idToken: " + authUser.idToken)
-            print("success refreshToken: " + authUser.refreshToken)
-            
             completion(.success(authUser))
         }
         // if the user just signed up
@@ -113,10 +106,6 @@ final class SessionManager : ObservableObject {
             authUser.accessToken = result.1.accessToken
             authUser.idToken = result.1.idToken
             authUser.refreshToken = result.1.refreshToken
-            
-            print("not confirmed accessToken: " + authUser.accessToken)
-            print("not confirmed idToken: " + authUser.idToken)
-            print("not confirmed refreshToken: " + authUser.refreshToken)
             
             completion(.success(authUser))
         }
@@ -209,7 +198,6 @@ final class SessionManager : ObservableObject {
         {
             returnMessage = "Hmm, we could not re-send a verification code to the email address \(authUser.email). Maybe sign up again and check that your email is correct?"
         }
-        print(returnMessage)
         return returnMessage
     }
     
@@ -227,14 +215,12 @@ final class SessionManager : ObservableObject {
         // RUN REQUEST
         let task = URLSession.shared.dataTask(with: request) { data, response, error in
             guard let data = data, error == nil else {
-                print("ERROR")
                 retCode = error?.localizedDescription ?? "Failure"
                 sem.signal()
                 return
             }
             let dataJSON = try? JSONSerialization.jsonObject(with: data, options: [])
             if let dataJSON = dataJSON as? [String: Any] {
-                print(dataJSON)
                 if dataJSON["message"] != nil {
                     retCode = dataJSON["message"] as? String ?? "Failure"
                 }

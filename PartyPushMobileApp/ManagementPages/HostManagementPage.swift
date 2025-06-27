@@ -7,7 +7,6 @@ struct HostManagementPage: View {
     @Environment(\.dismiss) var dismiss
 
     @StateObject private var viewModel = HostManagementViewModel()
-    @State private var showGuestPopover: Bool = false
     @State private var showAddFoodView = false
     @State private var showEndedPartyAlert = false
 
@@ -57,11 +56,14 @@ struct HostManagementPage: View {
                     }
                     .listRowBackground(Color.clear)
                 }
+                .scrollContentBackground(.hidden) // hides the default List background
+                .background(Color.clear)          // ensures transparency
             }
             .padding()
 
             Spacer()
         }
+        .background(Gradient(colors: [.blue, .pink]).opacity(0.2))
         .overlay(
             Group {
                 if viewModel.isLoading {
@@ -99,58 +101,87 @@ struct HostManagementPage: View {
         }
         .alert("You have successfully ended this party.", isPresented: $showEndedPartyAlert) {
             Button("OK") {
+                appState.needToRefresh = true
                 dismiss()
             }
         }
     }
-
+    
     private var foodSection: some View {
         Section {
-            ForEach(viewModel.foods) { row in
-                HStack {
-                    // display a helpful icon based on the food item's current status
-                    row.statusIcon.foregroundStyle(row.statusColor)
-
-                    Text(row.item_name)
-                        .swipeActions(edge: .leading) {
-                            Button(role: .destructive) {
-                                viewModel.deleteFoodItem(authUser: authUser, host: host, itemName: row.item_name)
-                                viewModel.refresh(authUser: authUser, host: host)
-                            } label: {
-                                Label("Delete", systemImage: "trash")
+            if viewModel.foods.isEmpty {
+                VStack {
+                    Text("No food or drinks added yet.")
+                        .multilineTextAlignment(.center)
+                        .font(.headline)
+                        .padding(.vertical, 15)
+                        .frame(maxWidth: .infinity)
+                }
+                .listRowBackground(Color.clear)
+            } else {
+                ForEach(viewModel.foods) { row in
+                    HStack {
+                        // display a helpful icon based on the food item's current status
+                        row.statusIcon.foregroundStyle(row.statusColor)
+                        
+                        Text(row.item_name)
+                            .swipeActions(edge: .leading) {
+                                Button(role: .destructive) {
+                                    viewModel.deleteFoodItem(authUser: authUser, host: host, itemName: row.item_name) {
+                                        viewModel.refresh(authUser: authUser, host: host)
+                                    }
+                                } label: {
+                                    Label("Delete", systemImage: "trash")
+                                }
+                                .tint(.red)
                             }
-                            .tint(.red)
-                        }
-                        .swipeActions(edge: .trailing) {
-                            Button {
-                                viewModel.optimisticallyReportFoodStatus(authUser: authUser, host: host, itemName: row.item_name, newStatus: "out")
-                            } label: {
-                                Label("Out", systemImage: "exclamationmark.shield.fill")
+                            .swipeActions(edge: .trailing) {
+                                Button {
+                                    viewModel.optimisticallyReportFoodStatus(authUser: authUser, host: host, itemName: row.item_name, newStatus: "out")
+                                } label: {
+                                    Label("Out", systemImage: "exclamationmark.shield.fill")
+                                }
+                                .tint(.red)
+                                
+                                Button {
+                                    viewModel.optimisticallyReportFoodStatus(authUser: authUser, host: host, itemName: row.item_name, newStatus: "low")
+                                } label: {
+                                    Label("Low", systemImage: "exclamationmark.triangle.fill")
+                                }
+                                .tint(.yellow)
+                                
+                                Button {
+                                    viewModel.optimisticallyReportFoodStatus(authUser: authUser, host: host, itemName: row.item_name, newStatus: "full")
+                                } label: {
+                                    Label("Refilled", systemImage: "arrow.trianglehead.2.counterclockwise")
+                                }
+                                .tint(.green)
                             }
-                            .tint(.red)
-
-                            Button {
-                                viewModel.optimisticallyReportFoodStatus(authUser: authUser, host: host, itemName: row.item_name, newStatus: "low")
-                            } label: {
-                                Label("Low", systemImage: "exclamationmark.triangle.fill")
-                            }
-                            .tint(.yellow)
-
-                            Button {
-                                viewModel.optimisticallyReportFoodStatus(authUser: authUser, host: host, itemName: row.item_name, newStatus: "full")
-                            } label: {
-                                Label("Refilled", systemImage: "arrow.trianglehead.2.counterclockwise")
-                            }
-                            .tint(.green)
-                        }
-                    Spacer()
+                        Spacer()
+                    }
+//                    .listRowBackground(Color.clear)
                 }
             }
-            Button {
-                showAddFoodView.toggle()
-            } label: {
-                Label("Add", systemImage: "plus")
+            
+            // Styled Add Food button
+            HStack {
+                Spacer()
+                Button(action: {
+                    showAddFoodView.toggle()
+                }) {
+                    Label("Add Food", systemImage: "plus")
+                        .foregroundColor(.white)
+                        .padding(.horizontal, 16)
+                        .padding(.vertical, 10)
+                        .background(Color.blue)
+                        .cornerRadius(12)
+                }
+                Spacer()
             }
+            .padding(.vertical, 10)
+            .listRowBackground(Color.clear)
+            .listRowSeparator(.hidden)
+
         } header: {
             Text("Food/Drinks").font(.headline)
         }
@@ -159,9 +190,20 @@ struct HostManagementPage: View {
 
     private var guestSection: some View {
         Section {
-            ForEach(viewModel.guests) { row in
-                HStack {
-                    Text(row.guest_name)
+            if viewModel.guests.isEmpty {
+                VStack {
+                    Text("No guests have joined your party yet.")
+                        .multilineTextAlignment(.center)
+                        .font(.subheadline)
+                        .padding(.vertical, 20)
+                        .frame(maxWidth: .infinity)
+                }
+                .listRowBackground(Color.clear)
+            }
+            else {
+                ForEach(viewModel.guests) { row in
+                    HStack {
+                        Text(row.guest_name)
                         .swipeActions {
                             Button(role: .destructive) {
                                 viewModel.deleteGuest(authUser: authUser, host: host, guest: row)
@@ -169,19 +211,12 @@ struct HostManagementPage: View {
                                 Label("Delete", systemImage: "trash")
                             }
                         }
+                    }
                 }
             }
         } header: {
             HStack {
                 Text("Guests").font(.headline)
-                Button("", systemImage: "info.circle") {
-                    showGuestPopover.toggle()
-                }
-                .popover(isPresented: $showGuestPopover) {
-                    Text("Swipe to remove a guest from your party, and toggle to see current guests only vs all guests.")
-                        .font(.caption)
-                        .padding()
-                }
             }
         }
         .headerProminence(.increased)

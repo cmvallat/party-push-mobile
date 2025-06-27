@@ -19,7 +19,7 @@ enum APIService {
 
         URLSession.shared.dataTask(with: request) { data, _, error in
             if let data = data, let hosts = try? JSONDecoder().decode([Host].self, from: data) {
-                print("---> data: \n \((String(data: data, encoding: .utf8) ?? "nil") as String) \n")
+                print("parties successfully loaded")
                 completion(hosts)
             } else {
                 print("Error fetching parties hosting: \(error?.localizedDescription ?? "Unknown error")")
@@ -131,7 +131,7 @@ enum APIService {
         }.resume()
     }
 
-    static func deleteFoodItem(authUser: AuthUser, host: Host, itemName: String) {
+    static func deleteFoodItem(authUser: AuthUser, host: Host, itemName: String, completion: @escaping (String) -> Void) {
         var urlComps = URLComponents(string: "https://e8ro13vvl3.execute-api.us-east-1.amazonaws.com/Prod")!
         urlComps.queryItems = [
             URLQueryItem(name: "username", value: authUser.username),
@@ -143,14 +143,32 @@ enum APIService {
         request.httpMethod = "DELETE"
         request.setValue(authUser.idToken, forHTTPHeaderField: "AccessToken")
         
-        URLSession.shared.dataTask(with: request).resume()
+        URLSession.shared.dataTask(with: request) { data, _, error in
+            if let data = data, let returnedObj = try? JSONDecoder().decode(APIResponse<EmptyCodable>.self, from: data) {
+                let message = returnedObj.message
+                print(message)
+                // if successfully processed
+                if(message == "Success!")
+                {
+                    print("food item deleted successfully")
+                    completion("success")
+                }
+                else{
+                    completion("Could not remove food item from the party")
+                }
+            } else {
+                print("Error decoding food item deletion response:", error?.localizedDescription ?? "Unknown error")
+                completion("error")
+            }
+        }.resume()
     }
 
-    static func deleteGuest(authUser: AuthUser, party_code: String, username: String, completion: @escaping (String) -> Void) {
+    static func deleteGuest(authUser: AuthUser, party_code: String, username: String, isHost: String, completion: @escaping (String) -> Void) {
         var urlComps = URLComponents(string: "https://sl83ejal53.execute-api.us-east-1.amazonaws.com/Prod/hello")!
         urlComps.queryItems = [
             URLQueryItem(name: "username", value: username),
             URLQueryItem(name: "party_code", value: party_code),
+            URLQueryItem(name: "isHost", value: isHost),
         ]
         
         var request = URLRequest(url: urlComps.url!)
@@ -158,11 +176,21 @@ enum APIService {
         request.setValue(authUser.idToken, forHTTPHeaderField: "AccessToken")
         
         URLSession.shared.dataTask(with: request) { data, _, error in
-            if let data = data, let _ = try? JSONDecoder().decode(APIResponse<EmptyCodable>.self, from: data) {
-                print("guest deleted successfully")
-                completion("Guest deleted successfully")
+            if let data = data, let returnedObj = try? JSONDecoder().decode(APIResponse<EmptyCodable>.self, from: data) {
+                let message = returnedObj.message
+                print(message)
+                // if successfully processed
+                if((message == "Guest has successfully left the party" && isHost == "true") ||
+                   (message == "Guest was successfully removed from party" && isHost == "false"))
+                {
+                    print("guest deleted successfully")
+                    completion("Guest deleted successfully")
+                }
+                else{
+                    completion("Could not remove guest from the party")
+                }
             } else {
-                print("Error leaving party:", error?.localizedDescription ?? "Unknown error")
+                print("Error removing guest from party:", error?.localizedDescription ?? "Unknown error")
                 completion("error")
             }
         }.resume()
@@ -204,13 +232,40 @@ enum APIService {
                 return
             }
 
-            if let decoded = try? JSONDecoder().decode(CheckPartyStatusResponse.self, from: data) {
+            if let decoded = try? JSONDecoder().decode(CheckStatusResponse.self, from: data) {
                 let partyStillActive = decoded.data
-                print("Poll: " + String(partyStillActive))
+                print("Party status poll: " + String(partyStillActive))
                 completion(partyStillActive)
             } else {
                 print("Failed to decode response")
                 completion(true)
+            }
+        }.resume()
+    }
+    
+    static func checkGuestStatus(party_code: String, authUser: AuthUser, completion: @escaping (String) -> Void) {
+        var urlComps = URLComponents(string: "https://ddudc7ys4i.execute-api.us-east-1.amazonaws.com/Prod/hello")!
+        urlComps.queryItems = [URLQueryItem(name: "party_code", value: party_code),
+                               URLQueryItem(name: "username", value: authUser.username)]
+
+        var request = URLRequest(url: urlComps.url!)
+        request.httpMethod = "GET"
+        request.setValue(authUser.idToken, forHTTPHeaderField: "AccessToken")
+
+        URLSession.shared.dataTask(with: request) { data, _, error in
+            guard let data = data else {
+                print("Error polling guest status:", error?.localizedDescription ?? "Unknown error")
+                completion("Error polling guest status") // assume still active to avoid false negatives
+                return
+            }
+
+            if let decoded = try? JSONDecoder().decode(CheckStatusResponse.self, from: data) {
+                let guestStillAtParty = decoded.message
+                print("Guest status poll: " + guestStillAtParty)
+                completion(guestStillAtParty)
+            } else {
+                print("Failed to decode response")
+                completion("Failed to decode response")
             }
         }.resume()
     }
@@ -287,9 +342,9 @@ enum APIService {
                 return
             }
             do {
-                print("---> data: \n \((String(data: data, encoding: .utf8) ?? "nil") as String) \n")
                 let decodedResponse = try JSONDecoder().decode(APIResponse<EmptyCodable>.self, from: data)
                 if decodedResponse.message == "Success!" {
+                    print("user successfully added to database")
                     completion(.success(()))
                 } else {
                     completion(.failure(.serverError(decodedResponse.message)))
@@ -336,9 +391,6 @@ enum APIService {
                 } else {
                     completion("Uh oh! Something went wrong")
                 }
-                
-                // For debugging:
-//                    print("---> data: \n \((String(data: data, encoding: .utf8) ?? "nil") as String) \n")
             }
             else
             {
@@ -383,9 +435,9 @@ enum APIService {
                 return
             }
             do {
-                print("---> data: \n \((String(data: data, encoding: .utf8) ?? "nil") as String) \n")
                 let decodedResponse = try JSONDecoder().decode(APIResponse<EmptyCodable>.self, from: data)
                 if decodedResponse.message == "Success!" {
+                    print("host successfully added to database")
                     completion(.success(()))
                 } else {
                     completion(.failure(.serverError(decodedResponse.message)))
@@ -430,9 +482,9 @@ enum APIService {
                 return
             }
             do {
-                print("---> data: \n \((String(data: data, encoding: .utf8) ?? "nil") as String) \n")
                 let decodedResponse = try JSONDecoder().decode(APIResponse<EmptyCodable>.self, from: data)
                 if decodedResponse.message == "Success!" {
+                    print("guest successfully added to database")
                     completion(.success(()))
                 } else {
                     completion(.failure(.serverError(decodedResponse.message)))

@@ -15,8 +15,14 @@ class AddHostViewModel: ObservableObject {
 //    @Published var inviteOnly = false
     @Published var isLoading = false
     @Published var errorMessage: String?
-
+    
     func addHost(authUser: AuthUser, onSuccess: @escaping () -> Void) {
+        guard !partyName.isEmpty, !partyCode.isEmpty else {
+            errorMessage = "Please fill out all fields."
+            return
+        }
+        errorMessage = nil
+        
         isLoading = true
         APIService.addHost(
             authUser: authUser,

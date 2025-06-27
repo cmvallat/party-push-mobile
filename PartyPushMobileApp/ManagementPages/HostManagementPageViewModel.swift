@@ -38,30 +38,28 @@ class HostManagementViewModel: ObservableObject {
            }
        }
 
-// In case they are needed later:
-    
-//    func getFoodList(authUser: AuthUser, host: Host) {
-//        APIService.getFoodList(authUser: authUser, host: host) { [weak self] foods in
-//            DispatchQueue.main.async {
-//                self?.foods = foods
-//            }
-//        }
-//    }
-//
-//    func getGuestList(authUser: AuthUser, host: Host) {
-//        APIService.getGuestList(authUser: authUser, host: host) { [weak self] guests in
-//            DispatchQueue.main.async {
-//                self?.guests = guests
-//            }
-//        }
-//    }
-
-    func deleteFoodItem(authUser: AuthUser, host: Host, itemName: String) {
-        APIService.deleteFoodItem(authUser: authUser, host: host, itemName: itemName)
+    func deleteFoodItem(authUser: AuthUser, host: Host, itemName: String, completion: @escaping () -> Void) {
+        APIService.deleteFoodItem(authUser: authUser, host: host, itemName: itemName) { response in
+            DispatchQueue.main.async {
+                if response.lowercased().contains("success") {
+                    completion()
+                } else {
+                    // Handle error as needed
+                    print("Failed to delete food item")
+                }
+            }
+        }
     }
 
+
     func deleteGuest(authUser: AuthUser, host: Host, guest: Guest) {
-        APIService.deleteGuest(authUser: authUser, party_code: host.party_code, username: guest.username) 
+        APIService.deleteGuest(authUser: authUser, party_code: host.party_code, username: guest.username, isHost: "true"){response in
+            DispatchQueue.main.async{
+                if(response == "Guest deleted successfully"){
+                    print("removed guest successfully")
+                }
+            }
+        }
     }
     
     func endParty(authUser: AuthUser, party_code: String, completion: @escaping (Bool) -> Void) {
