@@ -52,6 +52,7 @@ class GuestManagementViewModel: ObservableObject {
         APIService.reportFood(authUser: authUser, itemName: itemName, partyCode: partyCode, status: status, isHost: false) { [weak self] response in
             DispatchQueue.main.async {
                 self?.reportFoodResponse = response
+                print("report food response: " + response)
                 // If the server reply was successful
                 completion(response.lowercased().contains("success"))
             }

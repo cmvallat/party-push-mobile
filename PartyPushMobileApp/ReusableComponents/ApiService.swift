@@ -271,13 +271,67 @@ enum APIService {
     }
 
 
+    static func test(authUser: AuthUser, guestName: String, partyCode: String, atParty: Int, completion: @escaping (Result<Void, APIError>) -> Void) {
+        guard let url = URL(string: "https://xt1sdav9qk.execute-api.us-east-1.amazonaws.com/Prod/hello") else {
+            completion(.failure(.invalidURL))
+            return
+        }
+
+        var request = URLRequest(url: url)
+        request.httpMethod = "POST"
+        request.setValue(authUser.idToken, forHTTPHeaderField: "AccessToken")
+
+        let guestToAdd = Guest(
+            username: authUser.username,
+            guest_name: guestName,
+            party_code: partyCode,
+            at_party: atParty
+        )
+
+        do {
+            request.httpBody = try JSONEncoder().encode(guestToAdd)
+        } catch {
+            completion(.failure(.encodingError))
+            return
+        }
+
+        URLSession.shared.dataTask(with: request) { data, response, error in
+            if let error = error {
+                completion(.failure(.serverError(error.localizedDescription)))
+                return
+            }
+            guard let data = data else {
+                completion(.failure(.noData))
+                return
+            }
+                        
+            do {
+                let decodedResponse = try JSONDecoder().decode(APIResponse<EmptyCodable>.self, from: data)
+                print("---> data: \n \((String(data: data, encoding: .utf8) ?? "nil") as String) \n")
+                if decodedResponse.message == "Success!" {
+                    print("guest successfully added to database")
+                    completion(.success(()))
+                } else {
+                    completion(.failure(.serverError(decodedResponse.message)))
+                }
+            } catch {
+                completion(.failure(.decodingError))
+            }
+        }.resume()
+    }
+    
+    
     static func reportFood(authUser: AuthUser, itemName: String, partyCode: String, status: String, isHost: Bool, completion: @escaping (String) -> Void) {
-        let url = URL(string: "https://bj0fdfpzjb.execute-api.us-east-1.amazonaws.com/Prod")!
+        
+        guard let url = URL(string: "https://bj0fdfpzjb.execute-api.us-east-1.amazonaws.com/Prod") else {
+            completion("wrong api endpoint")
+            return
+        }
         
         var request = URLRequest(url: url)
         request.httpMethod = "PUT"
         request.setValue(authUser.idToken, forHTTPHeaderField: "AccessToken")
-        request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+//        request.setValue("application/json", forHTTPHeaderField: "Content-Type")
         
         let foodItem = Food(
             item_name: itemName,
@@ -287,20 +341,57 @@ enum APIService {
         )
         let body = FoodReportRequest(food: foodItem, isHost: isHost)
 
-        guard let encoded = try? JSONEncoder().encode(body) else {
-            print("Failed to encode food report payload")
+        
+        do {
+            request.httpBody = try JSONEncoder().encode(body)
+        } catch {
+            completion("failed to encode json body in reportFood")
             return
         }
-        request.httpBody = encoded
         
-        URLSession.shared.dataTask(with: request) { data, _, error in
-            if let data = data, let response = try? JSONDecoder().decode(APIResponse<EmptyCodable>.self, from: data) {
-                completion(response.message)
-            } else {
-                print("Error reporting food or decoding response:", error?.localizedDescription ?? "Unknown error")
-                completion("Something went wrong in addUser call")
+        URLSession.shared.dataTask(with: request) { data, response, error in
+            if let error = error {
+                completion(error.localizedDescription)
+                return
+            }
+            guard let data = data else {
+                completion("no data was returned")
+                return
+            }
+                        
+            do {
+                let decodedResponse = try JSONDecoder().decode(APIResponse<EmptyCodable>.self, from: data)
+                print("---> data: \n \((String(data: data, encoding: .utf8) ?? "nil") as String) \n")
+                if decodedResponse.message == "Success!" {
+                    print("food status successfully updated")
+                    completion("success")
+                } else {
+                    print("---> server error data: \n \((String(data: data, encoding: .utf8) ?? "nil") as String) \n")
+                    completion("server error")
+                }
+            } catch {
+                print("---> decodingError data: \n \((String(data: data, encoding: .utf8) ?? "nil") as String) \n")
+                completion("success")
             }
         }.resume()
+        
+        
+//        guard let encoded = try? JSONEncoder().encode(body) else {
+//            print("Failed to encode food report payload")
+//            return
+//        }
+//        request.httpBody = encoded
+        
+//        URLSession.shared.dataTask(with: request) { data, _, error in
+//            if let data = data, let response = try? JSONDecoder().decode(APIResponse<EmptyCodable>.self, from: data) {
+//                print("---> success data: \n \((String(data: data, encoding: .utf8) ?? "nil") as String) \n")
+//                completion(response.message)
+//            } else {
+//                print("---> failure data: \n \((String(data: data!, encoding: .utf8) ?? "nil") as String) \n")
+//                print("Error reporting food or decoding response:", error?.localizedDescription ?? "Unknown error")
+//                completion("Something went wrong in addUser call")
+//            }
+//        }.resume()
     }
     
     static func addUser(authUser: AuthUser, completion: @escaping (Result<Void, APIError>) -> Void) {
@@ -481,8 +572,10 @@ enum APIService {
                 completion(.failure(.noData))
                 return
             }
+                        
             do {
                 let decodedResponse = try JSONDecoder().decode(APIResponse<EmptyCodable>.self, from: data)
+                print("---> data: \n \((String(data: data, encoding: .utf8) ?? "nil") as String) \n")
                 if decodedResponse.message == "Success!" {
                     print("guest successfully added to database")
                     completion(.success(()))
