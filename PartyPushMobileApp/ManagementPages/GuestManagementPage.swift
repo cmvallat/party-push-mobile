@@ -57,24 +57,27 @@ struct GuestManagementPage: View {
                         Spacer()
                     }
                     .listRowBackground(Color.clear)
-                    .alert("Are you sure you want to leave this party?", isPresented: $showLeavePartyConfirmation) {
-                        Button("Leave", role: .destructive) {
-                            viewModel.deleteGuest(
-                                authUser: authUser,
-                                party_code: host.party_code,
-                                username: authUser.username
-                            ){
-                                showLeftPartyAlertScreen = true
-                            }
+                }
+                .scrollContentBackground(.hidden)
+                .background(Color.clear)
+                .alert("Are you sure you want to leave this party?", isPresented: $showLeavePartyConfirmation) {
+                    Button("Leave", role: .destructive) {
+                        viewModel.deleteGuest(
+                            authUser: authUser,
+                            party_code: host.party_code,
+                            username: authUser.username
+                        ){
+                            showLeftPartyAlertScreen = true
                         }
-                        Button("Cancel", role: .cancel) {}
                     }
+                    Button("Cancel", role: .cancel) {}
                 }
             }
             .padding()
 
             Spacer()
         }
+        .background(AppBackground())
         .overlay(
             Group {
                 if viewModel.isLoading {
@@ -156,7 +159,6 @@ struct GuestManagementPage: View {
         .alert("Could not leave the party. Please try again.", isPresented: $showDeleteGuestFailureAlert) {
             Button("OK", role: .cancel) {}
         }
-
     }
 
     private var foodSection: some View {
@@ -165,16 +167,20 @@ struct GuestManagementPage: View {
                 VStack {
                     Text("No foods at the party right now. Check back later or swipe down to refresh.")
                         .multilineTextAlignment(.center)
-                        .font(.subheadline)
-                        .padding(.vertical, 20)
+                        .font(.headline)
+                        .padding(.vertical, 15)
                         .frame(maxWidth: .infinity)
                 }
                 .listRowBackground(Color.clear)
             } else {
                 ForEach(viewModel.foods) { row in
                     HStack {
+                        // display a helpful icon based on the food item's current status
                         row.statusIcon.foregroundStyle(row.statusColor)
+                        
                         Text(row.item_name)
+                            .font(.headline)
+                            .foregroundColor(.primary)
                             .swipeActions(edge: .trailing) {
                                 Button {
                                     viewModel.optimisticallyReportFoodStatus(authUser: authUser, host: host, itemName: row.item_name, newStatus: "out")
@@ -192,10 +198,16 @@ struct GuestManagementPage: View {
                             }
                         Spacer()
                     }
+                    .padding()
+                    .background(.ultraThinMaterial)
+                    .cornerRadius(16)
+                    .shadow(radius: 3)
+                    .listRowSeparator(.hidden)
+                    .listRowBackground(Color.clear)
                 }
             }
         } header: {
-            Text("Food/Drinks").font(.headline)
+            Text("Food and Drinks").font(.headline)
         }
         .headerProminence(.increased)
     }

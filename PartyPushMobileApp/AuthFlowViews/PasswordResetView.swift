@@ -61,7 +61,7 @@ struct PasswordResetView: View {
               alignment: .topLeading
             )
         .padding(.vertical)
-        .background(Color(uiColor: UIColor.systemGray6))
+        .background(AppBackground())
     }
 }
 

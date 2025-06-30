@@ -56,14 +56,14 @@ struct HostManagementPage: View {
                     }
                     .listRowBackground(Color.clear)
                 }
-                .scrollContentBackground(.hidden) // hides the default List background
-                .background(Color.clear)          // ensures transparency
+                .scrollContentBackground(.hidden)
+                .background(Color.clear)
             }
             .padding()
 
             Spacer()
         }
-        .background(Gradient(colors: [.blue, .pink]).opacity(0.2))
+        .background(AppBackground())
         .overlay(
             Group {
                 if viewModel.isLoading {
@@ -125,6 +125,8 @@ struct HostManagementPage: View {
                         row.statusIcon.foregroundStyle(row.statusColor)
                         
                         Text(row.item_name)
+                            .font(.headline)
+                            .foregroundColor(.primary)
                             .swipeActions(edge: .leading) {
                                 Button(role: .destructive) {
                                     viewModel.deleteFoodItem(authUser: authUser, host: host, itemName: row.item_name) {
@@ -159,7 +161,12 @@ struct HostManagementPage: View {
                             }
                         Spacer()
                     }
-//                    .listRowBackground(Color.clear)
+                    .padding()
+                    .background(.ultraThinMaterial)
+                    .cornerRadius(16)
+                    .shadow(radius: 3)
+                    .listRowSeparator(.hidden)
+                    .listRowBackground(Color.clear)
                 }
             }
             
@@ -183,7 +190,7 @@ struct HostManagementPage: View {
             .listRowSeparator(.hidden)
 
         } header: {
-            Text("Food/Drinks").font(.headline)
+            Text("Food and Drinks").font(.headline)
         }
         .headerProminence(.increased)
     }
@@ -194,8 +201,8 @@ struct HostManagementPage: View {
                 VStack {
                     Text("No guests have joined your party yet.")
                         .multilineTextAlignment(.center)
-                        .font(.subheadline)
-                        .padding(.vertical, 20)
+                        .font(.headline)
+                        .padding(.vertical, 15)
                         .frame(maxWidth: .infinity)
                 }
                 .listRowBackground(Color.clear)
@@ -203,8 +210,12 @@ struct HostManagementPage: View {
             else {
                 ForEach(viewModel.guests) { row in
                     HStack {
+                        Image(systemName: "person.fill")
                         Text(row.guest_name)
-                        .swipeActions {
+                            .font(.headline)
+                            .foregroundColor(.primary)
+                            .frame(maxWidth: .infinity)
+                        .swipeActions(edge: .leading) {
                             Button(role: .destructive) {
                                 viewModel.deleteGuest(authUser: authUser, host: host, guest: row)
                             } label: {
@@ -212,6 +223,13 @@ struct HostManagementPage: View {
                             }
                         }
                     }
+                    .padding()
+                    .frame(maxWidth: .infinity)
+                    .background(.ultraThinMaterial)
+                    .cornerRadius(16)
+                    .shadow(radius: 3)
+                    .listRowSeparator(.hidden)
+                    .listRowBackground(Color.clear)
                 }
             }
         } header: {

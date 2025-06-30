@@ -41,7 +41,7 @@ struct SignUpPage: View {
                     )
                     AuthFlowButton(
                         label: "Get Started",
-                        isPrimary: false,
+                        isPrimary: true,
                         color: .blue,
                         onClick: {
                             viewModel.signUp(sessionManager: sessionManager)
@@ -121,7 +121,7 @@ struct SignUpPage: View {
                 alignment: .topLeading
             )
             .padding(.vertical)
-            .background(Color(uiColor: UIColor.systemGray6))
+            .background(AppBackground())
         }
     }
 }

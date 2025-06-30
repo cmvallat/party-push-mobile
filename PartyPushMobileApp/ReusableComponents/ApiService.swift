@@ -294,8 +294,8 @@ enum APIService {
         request.httpBody = encoded
         
         URLSession.shared.dataTask(with: request) { data, _, error in
-            if let data = data, let response = try? JSONDecoder().decode(ApiResponseFormat.self, from: data) {
-                completion(response.body)
+            if let data = data, let response = try? JSONDecoder().decode(APIResponse<EmptyCodable>.self, from: data) {
+                completion(response.message)
             } else {
                 print("Error reporting food or decoding response:", error?.localizedDescription ?? "Unknown error")
                 completion("Something went wrong in addUser call")

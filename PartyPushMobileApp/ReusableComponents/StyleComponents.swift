@@ -8,51 +8,65 @@
 import Foundation
 import SwiftUI
 
-class StyleHelpers{
-    struct ActionButtonStyle: ButtonStyle {
-        func makeBody(configuration: Configuration) -> some View {
-            configuration.label
-                .padding()
-                .background(Color(red: 0, green: 0.5, blue: 0))
-                .foregroundStyle(.white)
-                .cornerRadius(10)
-        }
+struct ActionButtonStyle: ButtonStyle {
+    func makeBody(configuration: Configuration) -> some View {
+        configuration.label
+            .padding()
+            .background(Color(red: 0, green: 0.5, blue: 0))
+            .foregroundStyle(.white)
+            .cornerRadius(10)
     }
-    
-    struct GlassView: View {
-        let cornerRadius: CGFloat
-        let fill: Color
-        let opacity: CGFloat
-        let shadowRadius: CGFloat
+}
 
-        init(cornerRadius: CGFloat, fill: Color = .white, opacity: CGFloat = 0.25, shadowRadius: CGFloat = 10.0) {
-            self.cornerRadius = cornerRadius
-            self.fill = fill
-            self.opacity = opacity
-            self.shadowRadius = shadowRadius
-        }
+struct GlassView: View {
+    let cornerRadius: CGFloat
+    let fill: Color
+    let opacity: CGFloat
+    let shadowRadius: CGFloat
 
-        var body: some View {
-            RoundedRectangle(cornerRadius: cornerRadius)
-                .fill(fill)
-                .opacity(opacity)
-                .shadow(radius: shadowRadius)
-        }
+    init(cornerRadius: CGFloat, fill: Color = .white, opacity: CGFloat = 0.25, shadowRadius: CGFloat = 10.0) {
+        self.cornerRadius = cornerRadius
+        self.fill = fill
+        self.opacity = opacity
+        self.shadowRadius = shadowRadius
     }
 
-    struct GlassModifier: ViewModifier {
-        let cornerRadius: CGFloat
-        let fill: Color
-        let opacity: CGFloat
-        let shadowRadius: CGFloat
-
-        func body(content: Content) -> some View {
-            content
-                .background {
-                    GlassView(cornerRadius: cornerRadius, fill: fill, opacity: opacity, shadowRadius: shadowRadius)}
-        }
+    var body: some View {
+        RoundedRectangle(cornerRadius: cornerRadius)
+            .fill(fill)
+            .opacity(opacity)
+            .shadow(radius: shadowRadius)
     }
-    
+}
+
+struct GlassModifier: ViewModifier {
+    let cornerRadius: CGFloat
+    let fill: Color
+    let opacity: CGFloat
+    let shadowRadius: CGFloat
+
+    func body(content: Content) -> some View {
+        content
+            .background {
+                GlassView(cornerRadius: cornerRadius, fill: fill, opacity: opacity, shadowRadius: shadowRadius)}
+    }
+}
+
+struct AppBackground: View {
+    var body: some View {
+        LinearGradient(
+            gradient: Gradient(colors: [
+                Color(red: 0.98, green: 0.87, blue: 0.87),
+                Color(red: 0.87, green: 0.93, blue: 0.96),
+                Color(red: 0.91, green: 0.89, blue: 0.96)
+            ]),
+            startPoint: .topLeading,
+            endPoint: .bottomTrailing
+        )
+        .ignoresSafeArea()
+    }
+}
+
 //    Was used for invite_only checkbox which was removed as a feature
 //    Keeping this here for when it is re-added
 
@@ -68,4 +82,4 @@ class StyleHelpers{
 //        }
 //      }
 //    }
-}
+    

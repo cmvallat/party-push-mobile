@@ -7,23 +7,18 @@
 
 import SwiftUI
 
-struct HostRow: View {
-    var host: Host
+struct PartyRow: View {
+    var party_name: String
+    var isHost: Bool
     
     var body: some View {
         HStack{
-            Image(systemName: "party.popper.fill")
+            Image(systemName: isHost ? "party.popper.fill" : "person.fill")
                 .resizable()
                 .frame(width: 25, height: 25)
-            Text(host.party_name)
+            Text(party_name)
             Spacer()
         }
     }
 }
 
-#Preview() {
-    Group{
-        HostRow(host: hosts[0])
-        HostRow(host: hosts[1])
-    }
-}

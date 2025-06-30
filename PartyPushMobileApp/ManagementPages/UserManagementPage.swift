@@ -26,7 +26,7 @@ struct UserManagementPage: View {
                         toolbarButtons
                     }
             } detail: {
-                Text("Your parties")
+                Text("Your parties").font(.title)
             }
             .overlay(emptyOverlay)
             .overlay(loadingOverlay)
@@ -71,12 +71,18 @@ private var mainListView: some View {
                 NavigationLink {
                     HostManagementPage(host: host, authUser: authUser, appState: appState)
                 } label: {
-                    HostRow(host: host)
+                    PartyRow(party_name: host.party_name, isHost: true)
                 }
             }
-            .listRowBackground(Color.pink.opacity(0.1))
+            .padding()
+            .background(.ultraThinMaterial)
+            .cornerRadius(16)
+            .shadow(radius: 3)
+            .listRowSeparator(.hidden)
+            .listRowBackground(Color.clear)
+//            .listRowBackground(Color.pink.opacity(0.1))
         } header: {
-            Text("Hosting").font(.headline)
+            Text("Hosting").font(.title2)
         }
         .headerProminence(.increased)
 
@@ -85,16 +91,22 @@ private var mainListView: some View {
                 NavigationLink {
                     GuestManagementPage(host: host, authUser: authUser, appState: appState)
                 } label: {
-                    HostRow(host: host)
+                    PartyRow(party_name: host.party_name, isHost: false)
                 }
             }
-            .listRowBackground(Color.blue.opacity(0.1))
+            .padding()
+            .background(.ultraThinMaterial)
+            .cornerRadius(16)
+            .shadow(radius: 3)
+            .listRowSeparator(.hidden)
+            .listRowBackground(Color.clear)
+//            .listRowBackground(Color.blue.opacity(0.1))
         } header: {
-            Text("Attending").font(.headline)
+            Text("Attending").font(.title2)
         }
         .headerProminence(.increased)
     }
-    .background(Gradient(colors: [.blue, .pink]).opacity(0.2))
+    .background(AppBackground())
     .scrollContentBackground(.hidden)
 }
 

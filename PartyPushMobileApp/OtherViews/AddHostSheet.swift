@@ -61,7 +61,6 @@ struct AddHostSheet: View {
 //            .disabled(viewModel.isLoading)
             
             
-            
             // Styled Add Food button
             HStack {
                 Spacer()
@@ -84,15 +83,9 @@ struct AddHostSheet: View {
             .listRowBackground(Color.clear)
             .listRowSeparator(.hidden)
             .disabled(viewModel.isLoading)
-
-            
-            
-            
-            
-
             Spacer()
         }
-        .background(Gradient(colors: [.blue, .pink]).opacity(0.2))
+        .background(AppBackground())
         .overlay {
             if viewModel.isLoading {
                 ZStack {
@@ -105,6 +98,7 @@ struct AddHostSheet: View {
                 }
             }
         }
+         // alert for errors - replacement for text on screen
         .alert("Error", isPresented: Binding<Bool>(
             get: { viewModel.errorMessage != nil },
             set: { _ in viewModel.errorMessage = nil }

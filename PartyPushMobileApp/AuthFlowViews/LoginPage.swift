@@ -16,7 +16,7 @@ struct LoginPage: View {
     
     var body: some View {
         VStack {
-            Section(header: Text("Log In to My Account").font(.largeTitle)) {
+            Section(header: Text("Party Push Log In").font(.largeTitle)) {
                 Divider()
                     .padding(.vertical)
                 AuthFlowTextField(
@@ -84,12 +84,20 @@ struct LoginPage: View {
                         sessionManager.showSignUp()
                     }
                 )
-                if let error = viewModel.errorMessage {
-                    Text(error)
-                        .foregroundColor(.red)
-                        .frame(width: 300)
-                }
+//                if let error = viewModel.errorMessage {
+//                    Text(error)
+//                        .foregroundColor(.red)
+//                        .frame(width: 300)
+//                }
             }
+        }
+        .alert("Error", isPresented: Binding<Bool>(
+            get: { viewModel.errorMessage != nil },
+            set: { _ in viewModel.errorMessage = nil }
+        )) {
+            Button("OK", role: .cancel) {}
+        } message: {
+            Text(viewModel.errorMessage ?? "Unknown error")
         }
         .frame(
               minWidth: 0,
@@ -99,7 +107,7 @@ struct LoginPage: View {
               alignment: .topLeading
             )
         .padding(.vertical)
-        .background(Color(uiColor: UIColor.systemGray6))
+        .background(AppBackground())
     }
 }
 

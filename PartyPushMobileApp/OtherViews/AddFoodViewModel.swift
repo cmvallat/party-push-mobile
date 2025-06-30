@@ -7,6 +7,8 @@
 
 import Foundation
 
+@Published var errorMessage: String?
+
 class AddFoodViewModel: ObservableObject {
     // Code for if we want to add a "Adding Food Item..." loading view
 //    @Published var isLoading: Bool = false
@@ -44,6 +46,12 @@ class AddFoodViewModel: ObservableObject {
         status: String,
         completion: @escaping (String) -> Void
     ) {
+        guard !itemName.isEmpty, !partyCode.isEmpty else {
+            errorMessage = "Please fill out partyName and partyCode."
+            return
+        }
+        errorMessage = nil
+        
         APIService.addFoodItem(
             authUser: authUser,
             itemName: itemName,

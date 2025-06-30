@@ -10,12 +10,10 @@
 		8472BBC12DD7D5DD009352E8 /* AuthFlowButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8472BBC02DD7D5D5009352E8 /* AuthFlowButton.swift */; };
 		8472BBC32DD7E436009352E8 /* AuthFlowTextField.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8472BBC22DD7E42F009352E8 /* AuthFlowTextField.swift */; };
 		E9067A4C2CA129BA00C5342B /* CommonFunctions.swift in Sources */ = {isa = PBXBuildFile; fileRef = E9067A4B2CA129BA00C5342B /* CommonFunctions.swift */; };
-		E9067A4E2CA1381900C5342B /* SandboxView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E9067A4D2CA1381900C5342B /* SandboxView.swift */; };
 		E9067A542CA650AB00C5342B /* Food.swift in Sources */ = {isa = PBXBuildFile; fileRef = E9067A532CA650A900C5342B /* Food.swift */; };
 		E906D75C2C97905C00E35ED4 /* AddHostSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = E906D75B2C97905C00E35ED4 /* AddHostSheet.swift */; };
 		E9397C3F2DEFDC6600651A2D /* CheckStatusResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = E9397C3E2DEFDC6600651A2D /* CheckStatusResponse.swift */; };
 		E9397C412DF29E6F00651A2D /* FoodReportRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = E9397C402DF29E6600651A2D /* FoodReportRequest.swift */; };
-		E94B0C192CAA0E3500079199 /* DemoView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E94B0C182CAA0E3500079199 /* DemoView.swift */; };
 		E95DC38B2C5E93A70035FBD6 /* LoginPage.swift in Sources */ = {isa = PBXBuildFile; fileRef = E95DC38A2C5E93A70035FBD6 /* LoginPage.swift */; };
 		E95DC3942C5FF5890035FBD6 /* UserManagementPage.swift in Sources */ = {isa = PBXBuildFile; fileRef = E95DC3932C5FF5890035FBD6 /* UserManagementPage.swift */; };
 		E95DC3972C5FF5A30035FBD6 /* GuestManagementPage.swift in Sources */ = {isa = PBXBuildFile; fileRef = E95DC3962C5FF5A30035FBD6 /* GuestManagementPage.swift */; };
@@ -61,12 +59,10 @@
 		8472BBC02DD7D5D5009352E8 /* AuthFlowButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthFlowButton.swift; sourceTree = "<group>"; };
 		8472BBC22DD7E42F009352E8 /* AuthFlowTextField.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthFlowTextField.swift; sourceTree = "<group>"; };
 		E9067A4B2CA129BA00C5342B /* CommonFunctions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CommonFunctions.swift; sourceTree = "<group>"; };
-		E9067A4D2CA1381900C5342B /* SandboxView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SandboxView.swift; sourceTree = "<group>"; };
 		E9067A532CA650A900C5342B /* Food.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Food.swift; sourceTree = "<group>"; };
 		E906D75B2C97905C00E35ED4 /* AddHostSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddHostSheet.swift; sourceTree = "<group>"; };
 		E9397C3E2DEFDC6600651A2D /* CheckStatusResponse.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CheckStatusResponse.swift; sourceTree = "<group>"; };
 		E9397C402DF29E6600651A2D /* FoodReportRequest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FoodReportRequest.swift; sourceTree = "<group>"; };
-		E94B0C182CAA0E3500079199 /* DemoView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DemoView.swift; sourceTree = "<group>"; };
 		E95DC38A2C5E93A70035FBD6 /* LoginPage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginPage.swift; sourceTree = "<group>"; };
 		E95DC3932C5FF5890035FBD6 /* UserManagementPage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserManagementPage.swift; sourceTree = "<group>"; };
 		E95DC3962C5FF5A30035FBD6 /* GuestManagementPage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GuestManagementPage.swift; sourceTree = "<group>"; };
@@ -148,8 +144,6 @@
 				E9B2D6152DB84D100042EB19 /* AddFoodSheet.swift */,
 				E9B2D61F2DBC6E500042EB19 /* AddFoodViewModel.swift */,
 				E979D5652C8D606D00070658 /* PushNotificationTestView.swift */,
-				E9067A4D2CA1381900C5342B /* SandboxView.swift */,
-				E94B0C182CAA0E3500079199 /* DemoView.swift */,
 			);
 			path = OtherViews;
 			sourceTree = "<group>";
@@ -361,7 +355,6 @@
 				E95DC39D2C602B6F0035FBD6 /* SessionManager.swift in Sources */,
 				E9F305D52DD3DCBA00405C51 /* PartySearchView.swift in Sources */,
 				E979D55C2C869BEA00070658 /* GuestList.swift in Sources */,
-				E9067A4E2CA1381900C5342B /* SandboxView.swift in Sources */,
 				E9B2D6182DB85A6A0042EB19 /* HostManagementPageViewModel.swift in Sources */,
 				E9397C412DF29E6F00651A2D /* FoodReportRequest.swift in Sources */,
 				E9B2D6282DC18C5C0042EB19 /* Food+UI.swift in Sources */,
@@ -371,7 +364,6 @@
 				E9B2D6122DB2B8C50042EB19 /* APIResponse.swift in Sources */,
 				8472BBC12DD7D5DD009352E8 /* AuthFlowButton.swift in Sources */,
 				E979D5662C8D606D00070658 /* PushNotificationTestView.swift in Sources */,
-				E94B0C192CAA0E3500079199 /* DemoView.swift in Sources */,
 				E99AB3472DEBCD7A002E145F /* AppState.swift in Sources */,
 				E9B2D6142DB73B830042EB19 /* EmptyCodable.swift in Sources */,
 				E9B2D6162DB84D130042EB19 /* AddFoodSheet.swift in Sources */,
