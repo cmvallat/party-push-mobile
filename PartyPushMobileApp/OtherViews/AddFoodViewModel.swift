@@ -7,17 +7,16 @@
 
 import Foundation
 
-@Published var errorMessage: String?
-
 class AddFoodViewModel: ObservableObject {
-    // Code for if we want to add a "Adding Food Item..." loading view
+    @Published var errorMessage: String?
+    @Published var itemName = ""
+    
+//    Code for if we want to add a "Adding Food Item..." loading view
 //    @Published var isLoading: Bool = false
 
 //    func addFood(
 //            authUser: AuthUser,
-//            itemName: String,
 //            partyCode: String,
-//            status: String,
 //            completion: @escaping (String) -> Void
 //        ) {
 //        isLoading = true
@@ -28,7 +27,7 @@ class AddFoodViewModel: ObservableObject {
 //            authUser: authUser,
 //            itemName: itemName,
 //            partyCode: partyCode,
-//            status: status,
+//            status: "full",
 //            completion: completion)
 //            DispatchQueue.main.async {
 //                dispatchGroup.leave()
@@ -41,13 +40,11 @@ class AddFoodViewModel: ObservableObject {
     
     func addFood(
         authUser: AuthUser,
-        itemName: String,
         partyCode: String,
-        status: String,
         completion: @escaping (String) -> Void
     ) {
         guard !itemName.isEmpty, !partyCode.isEmpty else {
-            errorMessage = "Please fill out partyName and partyCode."
+            errorMessage = "Please fill out itemName."
             return
         }
         errorMessage = nil
@@ -56,7 +53,8 @@ class AddFoodViewModel: ObservableObject {
             authUser: authUser,
             itemName: itemName,
             partyCode: partyCode,
-            status: status,
+            // default to full
+            status: "full",
             completion: completion
         )
     }

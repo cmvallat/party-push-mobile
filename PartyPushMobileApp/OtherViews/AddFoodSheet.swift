@@ -11,11 +11,9 @@ struct AddFoodSheet: View
 {
     let host: Host
     let authUser: AuthUser
-    @State var itemName = ""
     @Binding var showAddFoodView: Bool
-    var onFoodAdded: (() -> Void)?
     @State var showAddFoodErrorAlert = false
-    @State private var alertMessage = ""
+    var onFoodAdded: (() -> Void)?
     @StateObject var viewModel = AddFoodViewModel()
     
     var body: some View
@@ -41,54 +39,52 @@ struct AddFoodSheet: View
                 .font(.title)
                 .padding([.leading,.trailing], 15)
             
-            TextField("Item name", text: $itemName)
+            TextField("Item name", text: $viewModel.itemName)
                 .textFieldStyle(.roundedBorder)
                 .padding([.leading,.trailing], 15)
             
-            Button("Submit"){
-                viewModel.addFood(authUser: authUser, itemName: itemName, partyCode: host.party_code, status: "full")
+            // Styled Add Host button
+            HStack {
+                Spacer()
+                Button(action: {
+                    viewModel.addFood(authUser: authUser, partyCode: host.party_code)
                     {
-                    (resp) in DispatchQueue.main.async
-                    {
-                        if resp == "Success!" {
-                            onFoodAdded?()
-                            showAddFoodView = false
-                            print("\(itemName) added")
-                        } else {
-                            alertMessage = resp
-                            showAddFoodErrorAlert = true
-                            print("Something went wrong adding \(itemName)")
+                        (resp) in DispatchQueue.main.async
+                        {
+                            if resp == "Success!" {
+                                onFoodAdded?()
+                                showAddFoodView = false
+                                print("\($viewModel.itemName) added")
+                            } else {
+                                showAddFoodErrorAlert = true
+                                print("Something went wrong adding \($viewModel.itemName)")
+                            }
                         }
                     }
+                }) {
+                    Label("Submit", systemImage: "arrowshape.turn.up.forward.fill")
+                        .foregroundColor(.white)
+                        .padding(.horizontal, 16)
+                        .padding(.vertical, 10)
+                        .background(Color.green)
+                        .cornerRadius(12)
                 }
+                Spacer()
             }
-            .alert(alertMessage, isPresented: $showAddFoodErrorAlert) {
-                Button("OK", role: .cancel) {}
-            } message: {
-                Text("Please try again.")
-            }
-            .buttonStyle(.borderedProminent)
-            .tint(.green)
-
+            .padding(.vertical, 10)
+            .listRowBackground(Color.clear)
+            .listRowSeparator(.hidden)
             Spacer()
         }
-// Code for if we want to add a "Adding Food Item..." loading view
-//        .overlay(
-//            Group {
-//                if viewModel.isLoading {
-//                    ZStack {
-//                        Color.black.opacity(0.3).ignoresSafeArea()
-//                        ProgressView("Adding food item...")
-//                            .padding()
-//                            .background(Color.white)
-//                            .cornerRadius(12)
-//                            .shadow(radius: 10)
-//                    }
-//                }
-//            }
-//        )
-        .background(Gradient(
-            colors: [.blue, .pink]).opacity(0.2))
+        .background(AppBackground())
+        .alert("Error", isPresented: Binding<Bool>(
+           get: { viewModel.errorMessage != nil },
+           set: { _ in viewModel.errorMessage = nil }
+        )) {
+           Button("OK", role: .cancel) {}
+        } message: {
+           Text(viewModel.errorMessage ?? "Unknown error")
+        }
     }
 }
 

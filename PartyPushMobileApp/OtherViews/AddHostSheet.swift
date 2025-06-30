@@ -61,7 +61,7 @@ struct AddHostSheet: View {
 //            .disabled(viewModel.isLoading)
             
             
-            // Styled Add Food button
+            // Styled Add Host button
             HStack {
                 Spacer()
                 Button(action: {
@@ -86,7 +86,19 @@ struct AddHostSheet: View {
             Spacer()
         }
         .background(AppBackground())
-        .overlay {
+        .overlay(loadingOverlay)
+        .alert("Error", isPresented: Binding<Bool>(
+            get: { viewModel.errorMessage != nil },
+            set: { _ in viewModel.errorMessage = nil }
+        )) {
+            Button("OK", role: .cancel) {}
+        } message: {
+            Text(viewModel.errorMessage ?? "Unknown error")
+        }
+    }
+    
+    private var loadingOverlay: some View {
+        Group {
             if viewModel.isLoading {
                 ZStack {
                     Color.black.opacity(0.3).ignoresSafeArea()
@@ -98,18 +110,8 @@ struct AddHostSheet: View {
                 }
             }
         }
-         // alert for errors - replacement for text on screen
-        .alert("Error", isPresented: Binding<Bool>(
-            get: { viewModel.errorMessage != nil },
-            set: { _ in viewModel.errorMessage = nil }
-        )) {
-            Button("OK", role: .cancel) {}
-        } message: {
-            Text(viewModel.errorMessage ?? "Unknown error")
-        }
     }
 }
-
 
 //#Preview {
 //    AddHostSheet(authUser: AuthUser(), showAddPartyView: .constant(true))
