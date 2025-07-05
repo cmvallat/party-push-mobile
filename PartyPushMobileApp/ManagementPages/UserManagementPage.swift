@@ -110,6 +110,10 @@ struct OnboardingTipPager: View {
     }
 }
 
+struct DeepLinkPartyCode: Identifiable, Equatable {
+    let code: String
+    var id: String { code }
+}
 
 struct UserManagementPage: View {
     @StateObject var viewModel = UserManagementViewModel()
@@ -121,7 +125,14 @@ struct UserManagementPage: View {
     @ObservedObject var appState: AppState
 
     @State private var showOnboardingTips = false
-
+    
+    @State var tipGroup = TipGroup(.ordered){
+        AddHostTip()
+        JoinPartyTip()
+        HelpTip()
+    }
+    
+    @State private var pendingDeepLinkPartyCode: DeepLinkPartyCode? = nil
 
     var body: some View {
         VStack {
@@ -129,7 +140,36 @@ struct UserManagementPage: View {
                 mainListView
                     .navigationTitle("Your parties")
                     .toolbar {
-                        toolbarButtons
+                        ToolbarItem {
+                            Button(action: {
+                                showOnboardingTips.toggle()
+                                (tipGroup.currentTip)?.invalidate(reason: .actionPerformed)
+                            }) {
+                                Label("Help", systemImage: "questionmark.circle.fill")
+                            }
+                            .tint(Color.green)
+                            .popoverTip(tipGroup.currentTip as? HelpTip)
+                        }
+                        ToolbarItem {
+                            Button(action: {
+                                showJoinPartyView.toggle()
+                                (tipGroup.currentTip)?.invalidate(reason: .actionPerformed)
+                            }) {
+                                Label("Join party", systemImage: "magnifyingglass.circle.fill")
+                            }
+                            .tint(Color.green)
+                            .popoverTip(tipGroup.currentTip as? JoinPartyTip)
+                        }
+                        ToolbarItem {
+                            Button(action: {
+                                showAddPartyView.toggle()
+                                (tipGroup.currentTip)?.invalidate(reason: .actionPerformed)
+                            }) {
+                                Label("New party", systemImage: "plus.circle.fill")
+                            }
+                            .tint(Color.green)
+                            .popoverTip(tipGroup.currentTip as? AddHostTip)
+                        }
                     }
             } detail: {
                 Text("Your parties").font(.title)
@@ -168,6 +208,15 @@ struct UserManagementPage: View {
                 appState.kickedGuestUsername = nil
                 appState.needToRefresh = false
             }
+        }
+        .onOpenURL { url in
+            print("SwiftUI onOpenURL called with: \(url)")
+            if let code = extractPartyCode(from: url) {
+                pendingDeepLinkPartyCode = DeepLinkPartyCode(code: code)
+            }
+        }
+        .sheet(item: $pendingDeepLinkPartyCode) { code in
+            JoinPartySheet(partyCode: code.code)
         }
     }
 
@@ -253,9 +302,18 @@ struct UserManagementPage: View {
             }
         }
     }
+    
+    func extractPartyCode(from url: URL) -> String? {
+        let components = url.pathComponents
+        if components.count >= 3 && components[1] == "join-party" {
+            return components[2]
+        }
+        return nil
+    }
 
 //    private var toolbarButtons: some View {
-//        HStack {
+//
+//        return HStack {
 //            Button(action: {
 //                showOnboardingTips.toggle()
 //            }) {
@@ -263,60 +321,40 @@ struct UserManagementPage: View {
 //            }
 //            .tint(Color.green)
 //            
+//            let tipGroup = TipGroup(.ordered) {
+//                AddHostTip()
+//                JoinPartyTip()
+//            }
+//            
 //            Button(action: {
 //                showJoinPartyView.toggle()
 //            }) {
 //                Label("Join party", systemImage: "magnifyingglass.circle.fill")
 //            }
 //            .tint(Color.green)
-//            .popoverTip(tipGroup.currentTip as? JoinPartyTip)
-//
+//            
 //            Button(action: {
 //                showAddPartyView.toggle()
 //            }) {
 //                Label("New party", systemImage: "plus.circle.fill")
 //            }
 //            .tint(Color.green)
-//            .popoverTip(tipGroup.currentTip as? AddHostTip() { _ in
-//                AddHostTip.alreadyDiscovered = true
-//            })
+//            .popoverTip(tipGroup)
 //        }
 //    }
-    private var toolbarButtons: some View {
-        var tipGroup = TipGroup(.ordered){
-            AddHostTip()
-            JoinPartyTip()
-        }
-        return HStack {
-            Button(action: {
-                showOnboardingTips.toggle()
-            }) {
-                Label("Help", systemImage: "questionmark.circle.fill")
-            }
-            .tint(Color.green)
-            
-            Button(action: {
-                showJoinPartyView.toggle()
-            }) {
-                Label("Join party", systemImage: "magnifyingglass.circle.fill")
-            }
-            .tint(Color.green)
-            .popoverTip(tipGroup.currentTip as? JoinPartyTip)
-            
-            Button(action: {
-                showAddPartyView.toggle()
-            }) {
-                Label("New party", systemImage: "plus.circle.fill")
-            }
-            .tint(Color.green)
-            .popoverTip(tipGroup.currentTip as? AddHostTip) { _ in
-                AddHostTip.alreadyDiscovered = true
-            }
-        }
-    }
 } // End of struct
 
-
+struct JoinPartySheet: View, Identifiable {
+    let partyCode: String
+    var id: String { partyCode }
+    var body: some View {
+        VStack {
+            Text("Join party with code: \(partyCode)")
+            // Add UI to prompt for guest name, etc.
+        }
+        .padding()
+    }
+}
 
 //#Preview {
 //    UserManagementPage(authUser: AuthUser())

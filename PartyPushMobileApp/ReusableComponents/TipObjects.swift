@@ -16,11 +16,11 @@ struct AddHostTip: Tip {
         Text("Add a New Host")
     }
     var message: Text? {
-        Text("Tap here to add a new host to your party.")
+        Text("Tap here to create a new party for you to host.")
     }
-    var rules: [Rule] {[
-        #Rule(Self.$alreadyDiscovered) { $0 == false }
-    ]}
+    var image: Image? {
+        Image(systemName: "plus.circle.fill")
+    }
 }
 
 struct JoinPartyTip: Tip {
@@ -28,7 +28,23 @@ struct JoinPartyTip: Tip {
         Text("Join a Party")
     }
     var message: Text? {
-        Text("Tap here to join an existing party using a code.")
+        Text("Tap here to join an existing party as a guest using the code your host provided.")
+    }
+    var image: Image? {
+        Image(systemName: "magnifyingglass.circle.fill")
+    }
+}
+
+struct HelpTip: Tip {
+    var title: Text {
+        Text("Help walkthrough")
+    }
+    var message: Text? {
+        Text("Tap here to bring up the help walkthrough at any time.")
+    }
+    var image: Image? {
+        Image(systemName: "questionmark.circle.fill")
+//            .foregroundStyle(.green)
     }
 }
 

@@ -1,4 +1,13 @@
 import SwiftUI
+import UIKit
+
+struct ShareSheet: UIViewControllerRepresentable {
+    let activityItems: [Any]
+    func makeUIViewController(context: Context) -> UIActivityViewController {
+        UIActivityViewController(activityItems: activityItems, applicationActivities: nil)
+    }
+    func updateUIViewController(_ uiViewController: UIActivityViewController, context: Context) {}
+}
 
 struct HostManagementPage: View {
     var host: Host
@@ -9,6 +18,10 @@ struct HostManagementPage: View {
     @StateObject private var viewModel = HostManagementViewModel()
     @State private var showAddFoodView = false
     @State private var showEndedPartyAlert = false
+    
+    // For Universal Linking - invite guest
+    @State private var showShareSheet = false
+    @State private var shareURL: URL?
 
     var body: some View {
         VStack {
@@ -36,6 +49,54 @@ struct HostManagementPage: View {
                 List {
                     foodSection
                     guestSection
+                    
+                    HStack {
+                        Spacer()
+                        Button(action: {
+                            // Construct the universal link with the current party code
+                            let universalLink = "https://livepartyhelper.com/join-party/\(host.party_code)"
+                            shareURL = URL(string: universalLink)
+                            showShareSheet = true
+                        }) {
+                            Label("Invite Guest", systemImage: "person.crop.circle.badge.plus")
+                                .foregroundColor(.white)
+                                .padding(.horizontal, 16)
+                                .padding(.vertical, 10)
+                                .background(Color.green)
+                                .cornerRadius(12)
+                        }
+                        .sheet(isPresented: $showShareSheet) {
+                            if let url = shareURL {
+                                ShareSheet(activityItems: [url])
+                            }
+                        }
+                        .padding(.vertical, 6)
+                        Spacer()
+                    }
+                    .padding(.vertical, 10)
+                    .listRowBackground(Color.clear)
+                    .listRowSeparator(.hidden)
+                    
+//                    Button(action: {
+//                        // Construct the universal link with the current party code
+//                        let universalLink = "https://yourdomain.com/joinparty?party_code=\(host.party_code)"
+//                        shareURL = URL(string: universalLink)
+//                        showShareSheet = true
+//                    }) {
+//                        Label("Invite Guest", systemImage: "person.crop.circle.badge.plus")
+//                            .foregroundColor(.white)
+//                            .padding(.horizontal, 16)
+//                            .padding(.vertical, 10)
+//                            .background(Color.green)
+//                            .cornerRadius(12)
+//                    }
+//                    .sheet(isPresented: $showShareSheet) {
+//                        if let url = shareURL {
+//                            ShareSheet(activityItems: [url])
+//                        }
+//                    }
+//                    .padding(.vertical, 6)
+                    
                     HStack {
                         Spacer()
                         Button(action: {
@@ -194,7 +255,7 @@ struct HostManagementPage: View {
         }
         .headerProminence(.increased)
     }
-
+    
     private var guestSection: some View {
         Section {
             if viewModel.guests.isEmpty {
