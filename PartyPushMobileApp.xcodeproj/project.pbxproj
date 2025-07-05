@@ -24,6 +24,9 @@
 		E95DC3A42C61DF930035FBD6 /* AuthUser.swift in Sources */ = {isa = PBXBuildFile; fileRef = E95DC3A32C61DF930035FBD6 /* AuthUser.swift */; };
 		E95DC3A82C7FFAAA0035FBD6 /* PasswordResetView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E95DC3A72C7FFAAA0035FBD6 /* PasswordResetView.swift */; };
 		E95DC3AA2C81740D0035FBD6 /* PasswordResetPrompt.swift in Sources */ = {isa = PBXBuildFile; fileRef = E95DC3A92C81740D0035FBD6 /* PasswordResetPrompt.swift */; };
+		E96AC4002E18AE79003240A6 /* TipObjects.swift in Sources */ = {isa = PBXBuildFile; fileRef = E96AC3FF2E18AE75003240A6 /* TipObjects.swift */; };
+		E96AC4022E18B011003240A6 /* AppEntryRootView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E96AC4012E18B011003240A6 /* AppEntryRootView.swift */; };
+		E96AC4042E18B01E003240A6 /* LaunchScreenView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E96AC4032E18B01E003240A6 /* LaunchScreenView.swift */; };
 		E979D5422C82994100070658 /* User.swift in Sources */ = {isa = PBXBuildFile; fileRef = E979D5412C82994100070658 /* User.swift */; };
 		E979D5442C829CAA00070658 /* ModelData.swift in Sources */ = {isa = PBXBuildFile; fileRef = E979D5432C829CAA00070658 /* ModelData.swift */; };
 		E979D5462C829D3900070658 /* HostRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = E979D5452C829D3900070658 /* HostRow.swift */; };
@@ -73,6 +76,9 @@
 		E95DC3A32C61DF930035FBD6 /* AuthUser.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthUser.swift; sourceTree = "<group>"; };
 		E95DC3A72C7FFAAA0035FBD6 /* PasswordResetView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PasswordResetView.swift; sourceTree = "<group>"; };
 		E95DC3A92C81740D0035FBD6 /* PasswordResetPrompt.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PasswordResetPrompt.swift; sourceTree = "<group>"; };
+		E96AC3FF2E18AE75003240A6 /* TipObjects.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TipObjects.swift; sourceTree = "<group>"; };
+		E96AC4012E18B011003240A6 /* AppEntryRootView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppEntryRootView.swift; sourceTree = "<group>"; };
+		E96AC4032E18B01E003240A6 /* LaunchScreenView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LaunchScreenView.swift; sourceTree = "<group>"; };
 		E979D5412C82994100070658 /* User.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = User.swift; sourceTree = "<group>"; };
 		E979D5432C829CAA00070658 /* ModelData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ModelData.swift; sourceTree = "<group>"; };
 		E979D5452C829D3900070658 /* HostRow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HostRow.swift; sourceTree = "<group>"; };
@@ -119,6 +125,7 @@
 /* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
+		E96AC4052E18B081003240A6 /* Resources */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = Resources; sourceTree = "<group>"; };
 		E9B2D6212DBDCC080042EB19 /* SampleData */ = {isa = PBXFileSystemSynchronizedRootGroup; exceptions = (E9B2D6222DBDCC0F0042EB19 /* PBXFileSystemSynchronizedBuildFileExceptionSet */, ); explicitFileTypes = {}; explicitFolders = (); path = SampleData; sourceTree = "<group>"; };
 /* End PBXFileSystemSynchronizedRootGroup section */
 
@@ -137,6 +144,8 @@
 		E906D75A2C978FFE00E35ED4 /* OtherViews */ = {
 			isa = PBXGroup;
 			children = (
+				E96AC4032E18B01E003240A6 /* LaunchScreenView.swift */,
+				E96AC4012E18B011003240A6 /* AppEntryRootView.swift */,
 				E9F305D42DD3DCB400405C51 /* PartySearchView.swift */,
 				E9F305D22DD3BD6200405C51 /* PartySearchViewModel.swift */,
 				E906D75B2C97905C00E35ED4 /* AddHostSheet.swift */,
@@ -164,6 +173,7 @@
 		E95DC3912C5FF5040035FBD6 /* ReusableComponents */ = {
 			isa = PBXGroup;
 			children = (
+				E96AC3FF2E18AE75003240A6 /* TipObjects.swift */,
 				E9B2D6272DC18C570042EB19 /* Food+UI.swift */,
 				8472BBC22DD7E42F009352E8 /* AuthFlowTextField.swift */,
 				8472BBC02DD7D5D5009352E8 /* AuthFlowButton.swift */,
@@ -212,6 +222,7 @@
 		E9F08D722B34C33500E3474A = {
 			isa = PBXGroup;
 			children = (
+				E96AC4052E18B081003240A6 /* Resources */,
 				E9B2D6212DBDCC080042EB19 /* SampleData */,
 				E95DC3A22C61DF830035FBD6 /* Models */,
 				E9F08D7D2B34C33500E3474A /* PartyPushMobileApp */,
@@ -334,11 +345,14 @@
 				E95DC3A82C7FFAAA0035FBD6 /* PasswordResetView.swift in Sources */,
 				E9B2D61E2DBC6E110042EB19 /* APIError.swift in Sources */,
 				E9B2D61A2DB85A930042EB19 /* UserManagementPageViewModel.swift in Sources */,
+				E96AC4002E18AE79003240A6 /* TipObjects.swift in Sources */,
+				E96AC4042E18B01E003240A6 /* LaunchScreenView.swift in Sources */,
 				8472BBC32DD7E436009352E8 /* AuthFlowTextField.swift in Sources */,
 				E979D5442C829CAA00070658 /* ModelData.swift in Sources */,
 				E95DC38B2C5E93A70035FBD6 /* LoginPage.swift in Sources */,
 				E9B2D6242DBDCC4D0042EB19 /* GuestManagementPageViewModel.swift in Sources */,
 				E9C1CD2C2DD7EBA1001FFBD5 /* LoginPageViewModel.swift in Sources */,
+				E96AC4022E18B011003240A6 /* AppEntryRootView.swift in Sources */,
 				E9B2D6202DBC6E5B0042EB19 /* AddFoodViewModel.swift in Sources */,
 				E95DC3942C5FF5890035FBD6 /* UserManagementPage.swift in Sources */,
 				E95DC39F2C6030480035FBD6 /* SignUpPage.swift in Sources */,
@@ -515,6 +529,7 @@
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				IPHONEOS_DEPLOYMENT_TARGET = 18.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -551,6 +566,7 @@
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				IPHONEOS_DEPLOYMENT_TARGET = 18.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",

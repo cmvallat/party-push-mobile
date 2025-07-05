@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import TipKit
 
 @main
 struct PartyPushMobileApp: App {
@@ -14,25 +15,15 @@ struct PartyPushMobileApp: App {
     @ObservedObject var sessionManager = SessionManager()
     @StateObject var appState = AppState()
     
+    init() {
+        try? Tips.resetDatastore()
+        try? Tips.configure()
+    }
+    
     var body: some Scene {
         WindowGroup {
-            switch sessionManager.authState {
-            case .unauthorized(let flow):
-                switch flow {
-                case .login:
-                    LoginPage()
-                        .environmentObject(sessionManager)
-                case .signUp:
-                    SignUpPage()
-                        .environmentObject(sessionManager)
-                }
-            case .resetPassword(let authUser):
-                PasswordResetPrompt(authUser: authUser)
-                    .environmentObject(sessionManager)
-            case .session(let authUser):
-                UserManagementPage(authUser: authUser, appState: appState)
-                    .environmentObject(sessionManager)
-            }
+            AppEntryRootView()
+                .environmentObject(sessionManager)
         }
     }
 }

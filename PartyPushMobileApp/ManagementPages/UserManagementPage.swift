@@ -6,6 +6,110 @@
 //
 
 import SwiftUI
+import TipKit
+import AVKit
+import WebKit
+
+struct GIFView: UIViewRepresentable {
+    let gifName: String
+    func makeUIView(context: Context) -> WKWebView {
+        let webView = WKWebView()
+        webView.scrollView.isScrollEnabled = false
+        webView.backgroundColor = .clear
+        webView.isOpaque = false
+        if let path = Bundle.main.path(forResource: gifName, ofType: "gif") {
+            let url = URL(fileURLWithPath: path)
+            let data = try? Data(contentsOf: url)
+            webView.load(data!, mimeType: "image/gif", characterEncodingName: "UTF-8", baseURL: url.deletingLastPathComponent())
+        }
+        return webView
+    }
+    func updateUIView(_ uiView: WKWebView, context: Context) {}
+}
+
+// Enum representing each step in the onboarding tip sequence
+enum TipStep: Int, CaseIterable {
+    case joinParty, addHost, swipeAction // Add more cases as needed
+}
+
+// View for displaying the onboarding tip content based on the current step
+struct OnboardingTipContent: View {
+    let tipStep: TipStep
+    let isLast: Bool
+    let onDismiss: () -> Void
+
+    var body: some View {
+        VStack(spacing: 20) {
+            switch tipStep {
+            case .joinParty:
+                VStack(spacing: 8) {
+                    Image(systemName: "magnifyingglass.circle.fill")
+                        .font(.largeTitle)
+                    Text("Join Party")
+                        .font(.title2).bold()
+                    Text("Tap the magnifying glass at the top right of the page to join a party using a code or search.")
+                        .font(.body)
+                }
+            case .addHost:
+                VStack(spacing: 8) {
+                    Image(systemName: "plus.circle.fill")
+                        .font(.largeTitle)
+                    Text("New Party")
+                        .font(.title2).bold()
+                    Text("Tap the plus button at the top right of the page to create and host a new party.")
+                        .font(.body)
+                }
+            case .swipeAction:
+                VStack(spacing: 8) {
+                    GIFView(gifName: "reportFoodTipEditedGif")
+                        .frame(height: 140)
+                        .cornerRadius(12)
+                    
+                    Text("Report Food")
+                        .font(.title2).bold()
+                    Text("Swipe left to report food as a new status, either as a Host or Guest.")
+                        .font(.body)
+                }
+            }
+
+            if isLast {
+                Button("Got it!") {
+                    onDismiss()
+                }
+                .padding(.top, 10)
+            }
+        }
+        .padding(30)
+        .frame(maxWidth: 350)
+        .background(.ultraThinMaterial)
+        .cornerRadius(18)
+        .shadow(radius: 10)
+    }
+}
+
+struct OnboardingTipPager: View {
+    @Binding var isPresented: Bool
+    @State private var selectedPage = 0
+    let steps = TipStep.allCases
+
+    var body: some View {
+        VStack(spacing: 0) {
+            TabView(selection: $selectedPage) {
+                ForEach(steps.indices, id: \.self) { idx in
+                    OnboardingTipContent(
+                        tipStep: steps[idx],
+                        isLast: idx == steps.count - 1,
+                        onDismiss: { isPresented = false }
+                    )
+                    .tag(idx)
+                }
+            }
+            .tabViewStyle(PageTabViewStyle(indexDisplayMode: .always))
+            .frame(maxWidth: 350, maxHeight: 350)
+        }
+    }
+}
+
 
 struct UserManagementPage: View {
     @StateObject var viewModel = UserManagementViewModel()
@@ -15,6 +119,8 @@ struct UserManagementPage: View {
     @State private var showJoinPartyView = false
     let authUser: AuthUser
     @ObservedObject var appState: AppState
+
+    @State private var showOnboardingTips = false
 
 
     var body: some View {
@@ -31,6 +137,8 @@ struct UserManagementPage: View {
             .overlay(emptyOverlay)
             .overlay(loadingOverlay)
         }
+        // Onboarding tips overlay to show paged guidance with swipe and dots
+        .overlay(walkthroughOverlay)
         .sheet(isPresented: $showAddPartyView) {
             AddHostSheet(authUser: authUser, showAddPartyView: $showAddPartyView) {
                 viewModel.loadParties(authUser: authUser)
@@ -50,7 +158,6 @@ struct UserManagementPage: View {
             viewModel.loadParties(authUser: authUser)
         }
         .onAppear {
-            sendNotification(authUser: authUser, title: "Party Push", body: "Hi, welcome back to party push!")
             viewModel.loadParties(authUser: authUser)
         }
         .onChange(of: appState.needToRefresh, initial: false) { _, refresh in
@@ -63,94 +170,150 @@ struct UserManagementPage: View {
             }
         }
     }
-    
-private var mainListView: some View {
-    List {
-        Section {
-            ForEach(viewModel.hosting) { host in
-                NavigationLink {
-                    HostManagementPage(host: host, authUser: authUser, appState: appState)
-                } label: {
-                    PartyRow(party_name: host.party_name, isHost: true)
-                }
-            }
-            .padding()
-            .background(.ultraThinMaterial)
-            .cornerRadius(16)
-            .shadow(radius: 3)
-            .listRowSeparator(.hidden)
-            .listRowBackground(Color.clear)
-//            .listRowBackground(Color.pink.opacity(0.1))
-        } header: {
-            Text("Hosting").font(.title2)
-        }
-        .headerProminence(.increased)
 
-        Section {
-            ForEach(viewModel.attending) { host in
-                NavigationLink {
-                    GuestManagementPage(host: host, authUser: authUser, appState: appState)
-                } label: {
-                    PartyRow(party_name: host.party_name, isHost: false)
+    private var mainListView: some View {
+        List {
+            Section {
+                ForEach(viewModel.hosting) { host in
+                    NavigationLink {
+                        HostManagementPage(host: host, authUser: authUser, appState: appState)
+                    } label: {
+                        PartyRow(party_name: host.party_name, isHost: true)
+                    }
                 }
-            }
-            .padding()
-            .background(.ultraThinMaterial)
-            .cornerRadius(16)
-            .shadow(radius: 3)
-            .listRowSeparator(.hidden)
-            .listRowBackground(Color.clear)
-//            .listRowBackground(Color.blue.opacity(0.1))
-        } header: {
-            Text("Attending").font(.title2)
-        }
-        .headerProminence(.increased)
-    }
-    .background(AppBackground())
-    .scrollContentBackground(.hidden)
-}
-
-private var emptyOverlay: some View {
-    Group {
-        if viewModel.hosting.isEmpty && viewModel.attending.isEmpty {
-            Text("You aren't hosting or attending any parties right now. Try adding or joining a party and swiping down to refresh.")
                 .padding()
-        }
-    }
-}
+                .background(.ultraThinMaterial)
+                .cornerRadius(16)
+                .shadow(radius: 3)
+                .listRowSeparator(.hidden)
+                .listRowBackground(Color.clear)
+//                .listRowBackground(Color.pink.opacity(0.1))
+            } header: {
+                Text("Hosting").font(.title2)
+            }
+            .headerProminence(.increased)
 
-private var loadingOverlay: some View {
-    Group {
-        if viewModel.isLoading {
-            ZStack {
-                Color.black.opacity(0.3).ignoresSafeArea()
-                ProgressView("Loading parties...")
+            Section {
+                ForEach(viewModel.attending) { host in
+                    NavigationLink {
+                        GuestManagementPage(host: host, authUser: authUser, appState: appState)
+                    } label: {
+                        PartyRow(party_name: host.party_name, isHost: false)
+                    }
+                }
+                .padding()
+                .background(.ultraThinMaterial)
+                .cornerRadius(16)
+                .shadow(radius: 3)
+                .listRowSeparator(.hidden)
+                .listRowBackground(Color.clear)
+//                .listRowBackground(Color.blue.opacity(0.1))
+            } header: {
+                Text("Attending").font(.title2)
+            }
+            .headerProminence(.increased)
+        }
+        .background(AppBackground())
+        .scrollContentBackground(.hidden)
+    }
+
+    private var emptyOverlay: some View {
+        Group {
+            if viewModel.hosting.isEmpty && viewModel.attending.isEmpty {
+                Text("You aren't hosting or attending any parties right now. Try adding or joining a party and swiping down to refresh.")
                     .padding()
-                    .background(Color.white)
-                    .cornerRadius(12)
-                    .shadow(radius: 10)
             }
         }
     }
-}
 
-private var toolbarButtons: some View {
-    HStack {
-        Button(action: {
-            showJoinPartyView.toggle()
-        }) {
-            Label("Join party", systemImage: "magnifyingglass.circle.fill")
+    private var loadingOverlay: some View {
+        Group {
+            if viewModel.isLoading {
+                ZStack {
+                    Color.black.opacity(0.3).ignoresSafeArea()
+                    ProgressView("Loading parties...")
+                        .padding()
+                        .background(Color.white)
+                        .cornerRadius(12)
+                        .shadow(radius: 10)
+                }
+            }
         }
-        .tint(Color.green)
-
-        Button(action: {
-            showAddPartyView.toggle()
-        }) {
-            Label("New party", systemImage: "plus.circle.fill")
-        }
-        .tint(Color.green)
     }
-}
+    
+    private var walkthroughOverlay: some View {
+        Group {
+            if showOnboardingTips {
+                Color.black.opacity(0.35).ignoresSafeArea()
+                VStack {
+                    Spacer(minLength: 100)
+                    OnboardingTipPager(isPresented: $showOnboardingTips)
+                    Spacer()
+                }
+            }
+        }
+    }
+
+//    private var toolbarButtons: some View {
+//        HStack {
+//            Button(action: {
+//                showOnboardingTips.toggle()
+//            }) {
+//                Label("Help", systemImage: "questionmark.circle.fill")
+//            }
+//            .tint(Color.green)
+//            
+//            Button(action: {
+//                showJoinPartyView.toggle()
+//            }) {
+//                Label("Join party", systemImage: "magnifyingglass.circle.fill")
+//            }
+//            .tint(Color.green)
+//            .popoverTip(tipGroup.currentTip as? JoinPartyTip)
+//
+//            Button(action: {
+//                showAddPartyView.toggle()
+//            }) {
+//                Label("New party", systemImage: "plus.circle.fill")
+//            }
+//            .tint(Color.green)
+//            .popoverTip(tipGroup.currentTip as? AddHostTip() { _ in
+//                AddHostTip.alreadyDiscovered = true
+//            })
+//        }
+//    }
+    private var toolbarButtons: some View {
+        var tipGroup = TipGroup(.ordered){
+            AddHostTip()
+            JoinPartyTip()
+        }
+        return HStack {
+            Button(action: {
+                showOnboardingTips.toggle()
+            }) {
+                Label("Help", systemImage: "questionmark.circle.fill")
+            }
+            .tint(Color.green)
+            
+            Button(action: {
+                showJoinPartyView.toggle()
+            }) {
+                Label("Join party", systemImage: "magnifyingglass.circle.fill")
+            }
+            .tint(Color.green)
+            .popoverTip(tipGroup.currentTip as? JoinPartyTip)
+            
+            Button(action: {
+                showAddPartyView.toggle()
+            }) {
+                Label("New party", systemImage: "plus.circle.fill")
+            }
+            .tint(Color.green)
+            .popoverTip(tipGroup.currentTip as? AddHostTip) { _ in
+                AddHostTip.alreadyDiscovered = true
+            }
+        }
+    }
 } // End of struct
 
 
@@ -158,3 +321,4 @@ private var toolbarButtons: some View {
 //#Preview {
 //    UserManagementPage(authUser: AuthUser())
 //}
+
