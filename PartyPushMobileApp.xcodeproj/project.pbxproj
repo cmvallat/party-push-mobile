@@ -9,7 +9,6 @@
 /* Begin PBXBuildFile section */
 		8472BBC12DD7D5DD009352E8 /* AuthFlowButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8472BBC02DD7D5D5009352E8 /* AuthFlowButton.swift */; };
 		8472BBC32DD7E436009352E8 /* AuthFlowTextField.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8472BBC22DD7E42F009352E8 /* AuthFlowTextField.swift */; };
-		E9067A4C2CA129BA00C5342B /* CommonFunctions.swift in Sources */ = {isa = PBXBuildFile; fileRef = E9067A4B2CA129BA00C5342B /* CommonFunctions.swift */; };
 		E9067A542CA650AB00C5342B /* Food.swift in Sources */ = {isa = PBXBuildFile; fileRef = E9067A532CA650A900C5342B /* Food.swift */; };
 		E906D75C2C97905C00E35ED4 /* AddHostSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = E906D75B2C97905C00E35ED4 /* AddHostSheet.swift */; };
 		E9397C3F2DEFDC6600651A2D /* CheckStatusResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = E9397C3E2DEFDC6600651A2D /* CheckStatusResponse.swift */; };
@@ -43,7 +42,6 @@
 		E9B2D6162DB84D130042EB19 /* AddFoodSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = E9B2D6152DB84D100042EB19 /* AddFoodSheet.swift */; };
 		E9B2D6182DB85A6A0042EB19 /* HostManagementPageViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = E9B2D6172DB85A630042EB19 /* HostManagementPageViewModel.swift */; };
 		E9B2D61A2DB85A930042EB19 /* UserManagementPageViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = E9B2D6192DB85A8E0042EB19 /* UserManagementPageViewModel.swift */; };
-		E9B2D61C2DB85F240042EB19 /* ApiService.swift in Sources */ = {isa = PBXBuildFile; fileRef = E9B2D61B2DB85F1B0042EB19 /* ApiService.swift */; };
 		E9B2D61E2DBC6E110042EB19 /* APIError.swift in Sources */ = {isa = PBXBuildFile; fileRef = E9B2D61D2DBC6E0F0042EB19 /* APIError.swift */; };
 		E9B2D6202DBC6E5B0042EB19 /* AddFoodViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = E9B2D61F2DBC6E500042EB19 /* AddFoodViewModel.swift */; };
 		E9B2D6242DBDCC4D0042EB19 /* GuestManagementPageViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = E9B2D6232DBDCC460042EB19 /* GuestManagementPageViewModel.swift */; };
@@ -61,7 +59,6 @@
 /* Begin PBXFileReference section */
 		8472BBC02DD7D5D5009352E8 /* AuthFlowButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthFlowButton.swift; sourceTree = "<group>"; };
 		8472BBC22DD7E42F009352E8 /* AuthFlowTextField.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthFlowTextField.swift; sourceTree = "<group>"; };
-		E9067A4B2CA129BA00C5342B /* CommonFunctions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CommonFunctions.swift; sourceTree = "<group>"; };
 		E9067A532CA650A900C5342B /* Food.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Food.swift; sourceTree = "<group>"; };
 		E906D75B2C97905C00E35ED4 /* AddHostSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddHostSheet.swift; sourceTree = "<group>"; };
 		E9397C3E2DEFDC6600651A2D /* CheckStatusResponse.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CheckStatusResponse.swift; sourceTree = "<group>"; };
@@ -95,7 +92,6 @@
 		E9B2D6152DB84D100042EB19 /* AddFoodSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddFoodSheet.swift; sourceTree = "<group>"; };
 		E9B2D6172DB85A630042EB19 /* HostManagementPageViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HostManagementPageViewModel.swift; sourceTree = "<group>"; };
 		E9B2D6192DB85A8E0042EB19 /* UserManagementPageViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserManagementPageViewModel.swift; sourceTree = "<group>"; };
-		E9B2D61B2DB85F1B0042EB19 /* ApiService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ApiService.swift; sourceTree = "<group>"; };
 		E9B2D61D2DBC6E0F0042EB19 /* APIError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = APIError.swift; sourceTree = "<group>"; };
 		E9B2D61F2DBC6E500042EB19 /* AddFoodViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddFoodViewModel.swift; sourceTree = "<group>"; };
 		E9B2D6232DBDCC460042EB19 /* GuestManagementPageViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GuestManagementPageViewModel.swift; sourceTree = "<group>"; };
@@ -126,6 +122,7 @@
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
 		E96AC4052E18B081003240A6 /* Resources */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = Resources; sourceTree = "<group>"; };
+		E986CB542E1AE80A00F748B7 /* BusinessLogic */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = BusinessLogic; sourceTree = "<group>"; };
 		E9B2D6212DBDCC080042EB19 /* SampleData */ = {isa = PBXFileSystemSynchronizedRootGroup; exceptions = (E9B2D6222DBDCC0F0042EB19 /* PBXFileSystemSynchronizedBuildFileExceptionSet */, ); explicitFileTypes = {}; explicitFolders = (); path = SampleData; sourceTree = "<group>"; };
 /* End PBXFileSystemSynchronizedRootGroup section */
 
@@ -177,13 +174,11 @@
 				E9B2D6272DC18C570042EB19 /* Food+UI.swift */,
 				8472BBC22DD7E42F009352E8 /* AuthFlowTextField.swift */,
 				8472BBC02DD7D5D5009352E8 /* AuthFlowButton.swift */,
-				E9B2D61B2DB85F1B0042EB19 /* ApiService.swift */,
 				E95DC39A2C6021790035FBD6 /* StyleComponents.swift */,
 				E979D5452C829D3900070658 /* HostRow.swift */,
 				E979D5492C82A32200070658 /* HostList.swift */,
 				E979D5592C8698A800070658 /* GuestRow.swift */,
 				E979D55B2C869BEA00070658 /* GuestList.swift */,
-				E9067A4B2CA129BA00C5342B /* CommonFunctions.swift */,
 			);
 			path = ReusableComponents;
 			sourceTree = "<group>";
@@ -251,6 +246,7 @@
 				E95DC3922C5FF5230035FBD6 /* ManagementPages */,
 				E95DC3912C5FF5040035FBD6 /* ReusableComponents */,
 				E95DC3902C5FF4D80035FBD6 /* AuthFlowViews */,
+				E986CB542E1AE80A00F748B7 /* BusinessLogic */,
 			);
 			path = PartyPushMobileApp;
 			sourceTree = "<group>";
@@ -277,6 +273,9 @@
 			buildRules = (
 			);
 			dependencies = (
+			);
+			fileSystemSynchronizedGroups = (
+				E986CB542E1AE80A00F748B7 /* BusinessLogic */,
 			);
 			name = PartyPushMobileApp;
 			packageProductDependencies = (
@@ -365,7 +364,6 @@
 				E9F08D7F2B34C33500E3474A /* PartyPushMobileApp.swift in Sources */,
 				E979D5502C86901800070658 /* Guest.swift in Sources */,
 				E95DC3972C5FF5A30035FBD6 /* GuestManagementPage.swift in Sources */,
-				E9B2D61C2DB85F240042EB19 /* ApiService.swift in Sources */,
 				E95DC39D2C602B6F0035FBD6 /* SessionManager.swift in Sources */,
 				E9F305D52DD3DCBA00405C51 /* PartySearchView.swift in Sources */,
 				E979D55C2C869BEA00070658 /* GuestList.swift in Sources */,
@@ -373,7 +371,6 @@
 				E9397C412DF29E6F00651A2D /* FoodReportRequest.swift in Sources */,
 				E9B2D6282DC18C5C0042EB19 /* Food+UI.swift in Sources */,
 				E95DC3A42C61DF930035FBD6 /* AuthUser.swift in Sources */,
-				E9067A4C2CA129BA00C5342B /* CommonFunctions.swift in Sources */,
 				E9B2D6262DBDDE470042EB19 /* AddHostViewModel.swift in Sources */,
 				E9B2D6122DB2B8C50042EB19 /* APIResponse.swift in Sources */,
 				8472BBC12DD7D5DD009352E8 /* AuthFlowButton.swift in Sources */,

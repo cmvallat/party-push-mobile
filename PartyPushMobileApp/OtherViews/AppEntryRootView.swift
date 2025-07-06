@@ -16,14 +16,18 @@ struct AppEntryRootView: View {
             if showLaunchScreen {
                 LaunchScreenView()
                     .onAppear {
-                        DispatchQueue.main.asyncAfter(deadline: .now() + 3) {
-                            withAnimation(.easeOut(duration: 1)) {
-                                showLaunchScreen = false
+                        // Skip the launch screen if already logged in (session exists)
+                        if case .session = sessionManager.authState {
+                            showLaunchScreen = false
+                        } else {
+                            DispatchQueue.main.asyncAfter(deadline: .now() + 3) {
+                                withAnimation(.easeOut(duration: 1)) {
+                                    showLaunchScreen = false
+                                }
                             }
                         }
                     }
             } else {
-                // This is your previous logic from PartyPushMobileApp
                 switch sessionManager.authState {
                 case .unauthorized(let flow):
                     switch flow {

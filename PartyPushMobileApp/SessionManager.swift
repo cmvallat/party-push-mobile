@@ -44,6 +44,15 @@ final class SessionManager : ObservableObject {
         authState = .resetPassword(authUser: authUser)
     }
     
+    func checkForExistingSession() {
+        let authUser = AuthUser()
+        if authUser.loadTokensAndValidate() {
+            showSession(authUser: authUser)
+        } else {
+            showLogin()
+        }
+    }
+    
     func signUp(email: String, password: String, username: String, completion: @escaping (Result<AuthUser, Error>) -> Void) {
         let authUser = AuthUser()
         authUser.username = username
@@ -97,6 +106,7 @@ final class SessionManager : ObservableObject {
             authUser.accessToken = result.1.accessToken
             authUser.idToken = result.1.idToken
             authUser.refreshToken = result.1.refreshToken
+            authUser.saveTokensToKeychain()
             
             completion(.success(authUser))
         }
@@ -239,5 +249,15 @@ final class SessionManager : ObservableObject {
         // RETURN
         // if authUser was changed, we will retain those changes
         return (retCode, authUser)
+    }
+    
+    func logout(authUser: AuthUser) {
+        authUser.deleteTokensFromKeychain()
+        authUser.accessToken = ""
+        authUser.idToken = ""
+        authUser.refreshToken = ""
+        DispatchQueue.main.async {
+            self.authState = .unauthorized(.login)
+        }
     }
 }

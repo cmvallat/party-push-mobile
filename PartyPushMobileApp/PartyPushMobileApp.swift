@@ -16,8 +16,10 @@ struct PartyPushMobileApp: App {
     @StateObject var appState = AppState()
     
     init() {
-        try? Tips.resetDatastore()
+        // For testing tips, uncomment to ensure they show up each time
+        // try? Tips.resetDatastore()
         try? Tips.configure()
+        sessionManager.checkForExistingSession()
     }
     
     var body: some Scene {

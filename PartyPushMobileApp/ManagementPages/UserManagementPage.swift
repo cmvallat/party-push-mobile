@@ -121,8 +121,10 @@ struct UserManagementPage: View {
 
     @State private var showAddPartyView = false
     @State private var showJoinPartyView = false
+    @State private var showLogoutConfirmation = false
     let authUser: AuthUser
     @ObservedObject var appState: AppState
+    @EnvironmentObject var sessionManager: SessionManager
 
     @State private var showOnboardingTips = false
     
@@ -170,6 +172,22 @@ struct UserManagementPage: View {
                             .tint(Color.green)
                             .popoverTip(tipGroup.currentTip as? AddHostTip)
                         }
+                        ToolbarItem(placement: .navigationBarLeading) {
+                            Button(action: {
+                                showLogoutConfirmation = true
+                            }) {
+                                Label("Log Out", systemImage: "rectangle.portrait.and.arrow.right.fill")
+                            }
+                            .tint(Color.red)
+                            .alert("Are you sure you want to log out?", isPresented: $showLogoutConfirmation) {
+                                Button("Log Out", role: .destructive) {
+                                    sessionManager.logout(authUser: authUser)
+                                    viewModel.hosting = []
+                                    viewModel.attending = []
+                                }
+                                Button("Cancel", role: .cancel) {}
+                            }
+                        }
                     }
             } detail: {
                 Text("Your parties").font(.title)
@@ -198,6 +216,7 @@ struct UserManagementPage: View {
             viewModel.loadParties(authUser: authUser)
         }
         .onAppear {
+            authUser.loadTokensFromKeychain()
             viewModel.loadParties(authUser: authUser)
         }
         .onChange(of: appState.needToRefresh, initial: false) { _, refresh in
@@ -359,4 +378,3 @@ struct JoinPartySheet: View, Identifiable {
 //#Preview {
 //    UserManagementPage(authUser: AuthUser())
 //}
-
