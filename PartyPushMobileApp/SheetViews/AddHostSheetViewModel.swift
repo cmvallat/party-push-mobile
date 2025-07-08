@@ -8,7 +8,7 @@
 import Foundation
 
 @MainActor
-class AddHostViewModel: ObservableObject {
+class AddHostSheetViewModel: ObservableObject {
     @Published var partyName = ""
     @Published var partyCode = ""
     @Published var desc = ""

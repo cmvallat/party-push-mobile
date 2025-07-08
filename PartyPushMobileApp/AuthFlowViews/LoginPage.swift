@@ -15,102 +15,114 @@ struct LoginPage: View {
     @State private var showResetCodeMessage = false
     
     var body: some View {
-        VStack {
-            Section(header: Text("Party Push Log In").font(.largeTitle)) {
-                Divider()
-                    .padding(.vertical)
-                AuthFlowTextField(
-                    label: "Username",
-                    value: $viewModel.username,
-                    secure: false
-                )
-                AuthFlowTextField(
-                    label: "Password",
-                    value: $viewModel.password,
-                    secure: true
-                )
-                AuthFlowButton(
-                    label: "Log In",
-                    isPrimary: true,
-                    color: .blue,
-                    onClick: {
-                        viewModel.login(sessionManager: sessionManager)
-                    }
-                )
-                AuthFlowButton(
-                    label: "Forgot Password?",
-                    isPrimary: false,
-                    color: .blue,
-                    onClick: {
-//                        let user = AuthUser()
-//                        user.username = viewModel.username
-//                        sessionManager.showPasswordReset(authUser: user)
-                        showSheet = true;
-                    }
-                ).sheet(
-                    //"Please enter the verification code from your email:",
-                    isPresented: $showSheet
-                ) {
-                    Text("Enter email:").font(.largeTitle)
-                    AuthFlowTextField(
-                        label: "Email",
-                        value: $email,
-                        secure: false
-                    )
-                    AuthFlowButton(
-                        label: "Reset",
-                        isPrimary: true,
-                        color: .blue,
-                        onClick: {
-                            // Reset action here
-                            showResetCodeMessage = true
-                        }
-                    ).alert(
-                        "Success! A reset code has been sent to the email address",
-                        isPresented: $showResetCodeMessage
-                    ) {
-                        Button ("Ok") {
-                            showResetCodeMessage = false
-                            let user = AuthUser()
-                            sessionManager.showPasswordReset(authUser: user)
-                        }
-                    }
+        ZStack {
+            LinearGradient(
+                colors: Palette.gradientColors,
+                startPoint: .topLeading,
+                endPoint: .bottomTrailing
+            )
+            .ignoresSafeArea()
+            
+            VStack {
+                Spacer()
+                
+                // Centered Title and Rectangle
+                VStack(spacing: 6) {
+                    Text("Login")
+                        .font(.system(size: 38, weight: .black, design: .rounded))
+                        .foregroundColor(Palette.deepTextColor)
+                    
+                    Rectangle()
+                        .frame(width: 80, height: 3)
+                        .foregroundColor(Palette.accentRed)
+                        .cornerRadius(1.5)
                 }
-                AuthFlowButton(
-                    label: "Sign Up",
-                    isPrimary: false,
-                    color: .blue,
-                    onClick: {
+                
+                // Input fields
+                VStack(spacing: 16) {
+                    Group{
+                        CustomTextField(
+                            text: $viewModel.username,
+                            placeholder: "Username"
+                        )
+                        CustomTextField(
+                            text: $viewModel.password,
+                            placeholder: "Password"
+                        )
+                    }
+                    .padding(.horizontal, 20)
+                    SubmitButton(
+                        title: "Log in",
+                        isLoading: false,
+                        action: {
+                            viewModel.login(sessionManager: sessionManager)
+                        }
+                    )
+                }
+                .padding(.top, 30)
+                .padding(.horizontal, 30)
+                
+                Spacer()
+                
+                // Forgot Password & Sign Up
+                VStack(spacing: 8) {
+                    Button("Forgot Password") {
+                        showSheet = true
+                    }
+                    .font(.body)
+                    .foregroundColor(.white.opacity(0.8))
+                    .sheet(isPresented: $showSheet) {
+                        VStack {
+                            Text("Enter email:")
+                                .font(.title2)
+                            AuthFlowTextField(
+                                label: "Email",
+                                value: $email,
+                                secure: false
+                            )
+                            AuthFlowButton(
+                                label: "Reset",
+                                isPrimary: true,
+                                color: .blue,
+                                onClick: {
+                                    showResetCodeMessage = true
+                                }
+                            )
+                            .alert(
+                                "Success! A reset code has been sent to the email address",
+                                isPresented: $showResetCodeMessage
+                            ) {
+                                Button("Ok") {
+                                    showResetCodeMessage = false
+                                    let user = AuthUser()
+                                    sessionManager.showPasswordReset(authUser: user)
+                                }
+                            }
+                        }
+                        .padding()
+                    }
+                    
+                    Button("Sign Up") {
                         sessionManager.showSignUp()
                     }
-                )
-//                if let error = viewModel.errorMessage {
-//                    Text(error)
-//                        .foregroundColor(.red)
-//                        .frame(width: 300)
-//                }
+                    .font(.body)
+                    .foregroundColor(.white.opacity(0.8))
+                }
+                .padding(.bottom, 30)
+            }
+            .alert("Error", isPresented: Binding<Bool>(
+                get: { viewModel.errorMessage != nil },
+                set: { _ in viewModel.errorMessage = nil }
+            )) {
+                Button("OK", role: .cancel) {}
+            } message: {
+                Text(viewModel.errorMessage ?? "Unknown error")
             }
         }
-        .alert("Error", isPresented: Binding<Bool>(
-            get: { viewModel.errorMessage != nil },
-            set: { _ in viewModel.errorMessage = nil }
-        )) {
-            Button("OK", role: .cancel) {}
-        } message: {
-            Text(viewModel.errorMessage ?? "Unknown error")
-        }
-        .frame(
-              minWidth: 0,
-              maxWidth: .infinity,
-              minHeight: 0,
-              maxHeight: .infinity,
-              alignment: .topLeading
-            )
-        .padding(.vertical)
-        .background(AppBackground())
     }
 }
 
-//#Preview {
-//    LoginPage()
-//}
+
+#Preview {
+    LoginPage()
+}

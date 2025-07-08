@@ -10,7 +10,9 @@ import Foundation
 enum AuthState {
     case unauthorized(LoginFlow)
     case resetPassword(authUser: AuthUser)
-    case session(authUser: AuthUser)
+    case home(authUser: AuthUser)
+    case guest(host: Host, authUser: AuthUser)
+    case host(host: Host, authUser: AuthUser)
 
     enum LoginFlow {
         case login
@@ -28,8 +30,16 @@ final class SessionManager : ObservableObject {
     
     let cognitoUrl: URL = URL(string: "https://cognito-idp.us-east-1.amazonaws.com/")!
     
-    func showSession(authUser: AuthUser) {
-        authState = .session(authUser: authUser)
+    func showHome(authUser: AuthUser) {
+        authState = .home(authUser: authUser)
+    }
+    
+    func showGuest(host: Host, authUser: AuthUser) {
+        authState = .guest(host: host, authUser: authUser)
+    }
+    
+    func showHost(host: Host, authUser: AuthUser) {
+        authState = .host(host: host, authUser: authUser)
     }
 
     func showLogin() {
@@ -47,7 +57,9 @@ final class SessionManager : ObservableObject {
     func checkForExistingSession() {
         let authUser = AuthUser()
         if authUser.loadTokensAndValidate() {
-            showSession(authUser: authUser)
+            // TODO: handle scenario if user was in a party already, show the Guest or Host page
+            // will need to check from database
+            showHome(authUser: authUser)
         } else {
             showLogin()
         }

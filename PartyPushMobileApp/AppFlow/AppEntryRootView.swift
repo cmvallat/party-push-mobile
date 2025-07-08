@@ -1,7 +1,7 @@
 //  AppEntryRootView.swift
 //  PartyPushMobileApp
 //
-//  Created by Assistant on 6/30/25.
+//  Created by Christian Vallat on 6/30/25.
 //
 
 import SwiftUI
@@ -17,7 +17,7 @@ struct AppEntryRootView: View {
                 LaunchScreenView()
                     .onAppear {
                         // Skip the launch screen if already logged in (session exists)
-                        if case .session = sessionManager.authState {
+                        if case .home = sessionManager.authState {
                             showLaunchScreen = false
                         } else {
                             DispatchQueue.main.asyncAfter(deadline: .now() + 3) {
@@ -41,8 +41,14 @@ struct AppEntryRootView: View {
                 case .resetPassword(let authUser):
                     PasswordResetPrompt(authUser: authUser)
                         .environmentObject(sessionManager)
-                case .session(let authUser):
-                    UserManagementPage(authUser: authUser, appState: appState)
+                case .home(let authUser):
+                    HomePage(authUser: authUser, appState: appState)
+                        .environmentObject(sessionManager)
+                case .guest(let host, let authUser):
+                    GuestManagementPage(host: host, authUser: authUser, appState: appState)
+                        .environmentObject(sessionManager)
+                case .host(let host, let authUser):
+                    HostManagementPage(host: host, authUser: authUser, appState: appState)
                         .environmentObject(sessionManager)
                 }
             }

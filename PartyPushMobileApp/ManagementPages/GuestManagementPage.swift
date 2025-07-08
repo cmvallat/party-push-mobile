@@ -17,7 +17,6 @@ struct GuestManagementPage: View {
     @State private var showLeftPartyAlertScreen = false
     @State private var showDeleteGuestFailureAlert = false
 
-
     var body: some View {
         VStack {
             VStack(alignment: .leading) {

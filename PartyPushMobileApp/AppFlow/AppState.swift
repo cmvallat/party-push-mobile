@@ -18,6 +18,5 @@ class AppState: ObservableObject {
     @Published var endedPartyCode: String? = nil
     @Published var needToRefresh: Bool = false
     @Published var kickedGuestUsername: String? = nil
-    // need to declare enum here
     @Published var atPartyState: AtPartyStatus = .active
 }

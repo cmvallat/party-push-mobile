@@ -234,9 +234,10 @@ struct UserManagementPage: View {
                 pendingDeepLinkPartyCode = DeepLinkPartyCode(code: code)
             }
         }
-        .sheet(item: $pendingDeepLinkPartyCode) { code in
-            JoinPartySheet(partyCode: code.code)
-        }
+        // TODO: UNCOMMENT FOR UNIVERSAL LINKING WITH NEW JOINPARTYSHEET
+//        .sheet(item: $pendingDeepLinkPartyCode) { code in
+//            JoinPartySheet(partyCode: code.code)
+//        }
     }
 
     private var mainListView: some View {
@@ -363,17 +364,18 @@ struct UserManagementPage: View {
 //    }
 } // End of struct
 
-struct JoinPartySheet: View, Identifiable {
-    let partyCode: String
-    var id: String { partyCode }
-    var body: some View {
-        VStack {
-            Text("Join party with code: \(partyCode)")
-            // Add UI to prompt for guest name, etc.
-        }
-        .padding()
-    }
-}
+// TODO: UNCOMMENT FOR UNIVERSAL LINK WITH NEW JOINPARTYSHEET
+//struct JoinPartySheet: View, Identifiable {
+//    let partyCode: String
+//    var id: String { partyCode }
+//    var body: some View {
+//        VStack {
+//            Text("Join party with code: \(partyCode)")
+//            // Add UI to prompt for guest name, etc.
+//        }
+//        .padding()
+//    }
+//}
 
 //#Preview {
 //    UserManagementPage(authUser: AuthUser())
