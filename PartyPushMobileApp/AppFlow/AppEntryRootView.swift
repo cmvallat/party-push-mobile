@@ -35,12 +35,9 @@ struct AppEntryRootView: View {
                         LoginPage()
                             .environmentObject(sessionManager)
                     case .signUp:
-                        SignUpPage()
+                        SignUpTest()
                             .environmentObject(sessionManager)
                     }
-                case .resetPassword(let authUser):
-                    PasswordResetPrompt(authUser: authUser)
-                        .environmentObject(sessionManager)
                 case .home(let authUser):
                     HomePage(authUser: authUser, appState: appState)
                         .environmentObject(sessionManager)

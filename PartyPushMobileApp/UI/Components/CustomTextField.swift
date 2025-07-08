@@ -9,6 +9,7 @@ import SwiftUI
 struct CustomTextField: View {
     @Binding var text: String
     let placeholder: String
+    var secure: Bool = false
 
     var body: some View {
         ZStack(alignment: .leading) {
@@ -18,10 +19,19 @@ struct CustomTextField: View {
                     .padding(.horizontal, 16)
                     .padding(.vertical, 12)
             }
-            TextField("", text: $text)
-                .foregroundColor(Palette.deepTextColor)
-                .padding(.horizontal, 16)
-                .padding(.vertical, 12)
+            
+            // determine whether we need to hide input (for passwords)
+            if(secure){
+                SecureField("", text: $text)
+                    .foregroundColor(Palette.deepTextColor)
+                    .padding(.horizontal, 16)
+                    .padding(.vertical, 12)
+            } else {
+                TextField("", text: $text)
+                    .foregroundColor(Palette.deepTextColor)
+                    .padding(.horizontal, 16)
+                    .padding(.vertical, 12)
+            }
         }
         .background(
             RoundedRectangle(cornerRadius: 14)

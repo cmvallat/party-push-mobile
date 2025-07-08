@@ -1,92 +1,73 @@
-//
-//  ForgotPasswordSheet.swift
-//  PartyPushMobileApp
-//
-//  Created by Christian Vallat on 7/8/25.
-//
-
 import SwiftUI
 
 struct ForgotPasswordSheet: View {
-    let authUser: AuthUser
-    @Binding var showAddPartyView: Bool
-    var onPartyAdded: () -> Void
-    @StateObject private var viewModel = AddHostSheetViewModel()
-    @EnvironmentObject var sessionManager: SessionManager
+    @Binding var email: String
+    @Binding var isPresented: Bool
+    @Binding var showResetCodeMessage: Bool
+
+    var sessionManager: SessionManager
+
+    @State private var resetStatus: String? = nil
+    @State private var showResetPasswordSheet = false
+    @State private var userForReset = AuthUser()
 
     var body: some View {
         ZStack {
             LinearGradient(
                 colors: Palette.gradientColors,
                 startPoint: .topLeading,
-                endPoint: .bottomTrailing)
+                endPoint: .bottomTrailing
+            )
             .ignoresSafeArea()
 
             VStack(spacing: 15) {
                 HStack {
                     Spacer()
-                    DismissSheetButton(onDismiss: {
-                        showAddPartyView.toggle()
-                    })
+                    DismissSheetButton {
+                        isPresented = false
+                    }
                 }
                 .padding(.top, 8)
                 .padding(.trailing, 8)
 
-                Text("Create New Party")
-                    .font(.system(size: 28, weight: .semibold, design: .rounded))
+                Text("Enter email")
+                    .font(.system(size: 30, weight: .regular, design: .rounded))
                     .foregroundColor(Palette.deepTextColor)
-                    .multilineTextAlignment(.center)
-                    .padding(.horizontal, 20)
 
-                Group {
-                    CustomTextField(text: $viewModel.partyName, placeholder: "Party Name")
-                    CustomTextField(text: $viewModel.partyCode, placeholder: "Party Code")
-                    CustomTextField(text: $viewModel.desc, placeholder: "Description (optional)")
-                }
+                Text("Enter the email address associated with your account. We will send you a reset code which you can use to choose a new password.")
+                    .font(.body)
+                    .foregroundColor(Palette.deepTextColor)
+                    .padding(.horizontal)
+
+                CustomTextField(
+                    text: $email,
+                    placeholder: "Email"
+                )
                 .padding(.horizontal, 20)
-                
-                SubmitButton(action: {
-                    viewModel.addHost(authUser: authUser) {
-                        // recreate the Host object that was created in the VM to call DB
-                        // or just create it here and pass it along, move @Published vars from VM to here
-                        let host = Host(username: authUser.username, party_name: viewModel.partyName, party_code: viewModel.partyCode, invite_only: 1)
-                        sessionManager.showHost(host: host, authUser: authUser)
-                        showAddPartyView.toggle()
-                        onPartyAdded() // Reload the parties after successful creation
-                    }})
+
+                SubmitButton(title: "Send reset code") {
+                    var user = AuthUser()
+                    user.email = email
+
+                    let result = sessionManager.sendPasswordResetCode(authUser: user)
+                    resetStatus = result
+
+                    if result == "Success" {
+                        userForReset = user // save user for next sheet
+                        showResetPasswordSheet = true
+                    } else {
+                        // Optional: error handling
+                        print("Reset code failed: \(result)")
+                    }
+                }
 
                 Spacer()
             }
-        }
-        .overlay(loadingOverlay)
-        .alert("Error", isPresented: Binding<Bool>(
-            get: { viewModel.errorMessage != nil },
-            set: { _ in viewModel.errorMessage = nil }
-        )) {
-            Button("OK", role: .cancel) {}
-        } message: {
-            Text(viewModel.errorMessage ?? "Unknown error")
-                .foregroundColor(Palette.deepTextColor)
-        }
-    }
-
-    private var loadingOverlay: some View {
-        Group {
-            if viewModel.isLoading {
-                ZStack {
-                    Color.black.opacity(0.7).ignoresSafeArea()
-                    ProgressView("Creating party...")
-                        .foregroundColor(.white)
-                        .padding()
-                        .background(Color.black.opacity(0.8))
-                        .cornerRadius(12)
-                        .shadow(radius: 10)
-                }
+            .padding()
+            .sheet(isPresented: $showResetPasswordSheet) {
+                PasswordResetSheet(authUser: userForReset, showPasswordResetView: $showResetPasswordSheet)
+                    .environmentObject(sessionManager)
             }
         }
     }
 }
-
-//#Preview {
-//    AddHostSheet(authUser: AuthUser(), showAddPartyView: .constant(true)) {}
-//}

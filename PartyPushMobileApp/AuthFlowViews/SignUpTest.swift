@@ -1,18 +1,20 @@
 //
-//  LoginPage.swift
-//  Song_Requester
+//  SignUpTest.swift
+//  PartyPushMobileApp
 //
-//  Created by Christian Vallat on 8/3/24.
+//  Created by Christian Vallat on 7/8/25.
 //
 
 import SwiftUI
 
-struct LoginPage: View {
+struct SignUpTest: View {
     @EnvironmentObject var sessionManager: SessionManager
-    @StateObject private var viewModel = LoginPageViewModel()
+    @State var authUser = AuthUser()
+    @State var code = ""
     @State private var showSheet = false
-    @State private var email: String = ""
-    @State private var showResetCodeMessage = false
+    @State private var showResendCodeMessage = false
+    @State private var resendCodeMessage: String = ""
+    @StateObject var viewModel = SignUpPageViewModel()
     
     var body: some View {
         ZStack {
@@ -26,9 +28,9 @@ struct LoginPage: View {
             VStack {
                 Spacer()
                 
-                // Centered Title and Rectangle
+                // Centered Title
                 VStack(spacing: 6) {
-                    Text("Login")
+                    Text("Create Account")
                         .font(.system(size: 38, weight: .black, design: .rounded))
                         .foregroundColor(Palette.deepTextColor)
                     
@@ -42,9 +44,12 @@ struct LoginPage: View {
                 VStack(spacing: 16) {
                     Group{
                         CustomTextField(
+                            text: $viewModel.email,
+                            placeholder: "Email",
+                        )
+                        CustomTextField(
                             text: $viewModel.username,
                             placeholder: "Username",
-//                            secure: false
                         )
                         CustomTextField(
                             text: $viewModel.password,
@@ -54,43 +59,53 @@ struct LoginPage: View {
                     }
                     .padding(.horizontal, 20)
                     SubmitButton(
-                        title: "Log in",
+                        title: "Get started",
                         isLoading: false,
                         action: {
-                            viewModel.login(sessionManager: sessionManager)
+                            viewModel.signUp(sessionManager: sessionManager)
+                            showSheet = true
                         }
                     )
+                    .sheet(isPresented: $showSheet){
+                        VerifyEmailSheet(code: $code, isPresented: $showSheet, showResendCodeMessage: $showResendCodeMessage, resendCodeMessage: $resendCodeMessage, authUser: authUser, sessionManager: sessionManager, viewModel: viewModel)
+                    }
                 }
                 .padding(.top, 30)
                 .padding(.horizontal, 30)
                 
                 Spacer()
                 
-                // Forgot Password & Sign Up
+                // redirect to login
                 VStack(spacing: 8) {
-                    Button("Forgot Password") {
-                        showSheet = true
-                    }
-                    .font(.body)
-                    .foregroundColor(.white.opacity(0.8))
-                    .sheet(isPresented: $showSheet) {
-                        ForgotPasswordSheet(
-                            email: $email,
-                            isPresented: $showSheet,
-                            showResetCodeMessage: $showResetCodeMessage,
-                            sessionManager: sessionManager
-                        )
-                        .presentationDetents([.medium, .large])
-                    }
-                    
-                    Button("Sign Up") {
-                        sessionManager.showSignUp()
+                    Button("Log in") {
+                        sessionManager.showLogin()
                     }
                     .font(.body)
                     .foregroundColor(.white.opacity(0.8))
                 }
                 .padding(.bottom, 30)
             }
+            .onChange(of: viewModel.verificationStatus, initial: false) { oldValue, newValue in
+                if newValue == "Success" {
+                    // TODO: change to operate in DispatchGroup?
+                    viewModel.addUser(authUser: viewModel.authUser)
+                    sessionManager.showHome(authUser: viewModel.authUser)
+                }
+            }
+            .onChange(of: viewModel.errorMessage, initial: false) { _, newMessage in
+                if let message = newMessage {
+                    // Handle or display error
+                    print("Error: \(message)")
+                }
+            }
+            .frame(
+                minWidth: 0,
+                maxWidth: .infinity,
+                minHeight: 0,
+                maxHeight: .infinity,
+                alignment: .topLeading
+            )
+            .padding(.vertical)
             .alert("Error", isPresented: Binding<Bool>(
                 get: { viewModel.errorMessage != nil },
                 set: { _ in viewModel.errorMessage = nil }
@@ -105,5 +120,5 @@ struct LoginPage: View {
 
 
 #Preview {
-    LoginPage()
+    SignUpTest()
 }

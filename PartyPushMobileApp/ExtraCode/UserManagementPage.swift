@@ -110,10 +110,10 @@ struct OnboardingTipPager: View {
     }
 }
 
-struct DeepLinkPartyCode: Identifiable, Equatable {
-    let code: String
-    var id: String { code }
-}
+//struct DeepLinkPartyCode: Identifiable, Equatable {
+//    let code: String
+//    var id: String { code }
+//}
 
 struct UserManagementPage: View {
     @StateObject var viewModel = UserManagementViewModel()
@@ -228,12 +228,12 @@ struct UserManagementPage: View {
                 appState.needToRefresh = false
             }
         }
-        .onOpenURL { url in
-            print("SwiftUI onOpenURL called with: \(url)")
-            if let code = extractPartyCode(from: url) {
-                pendingDeepLinkPartyCode = DeepLinkPartyCode(code: code)
-            }
-        }
+//        .onOpenURL { url in
+//            print("SwiftUI onOpenURL called with: \(url)")
+//            if let code = extractPartyCode(from: url) {
+//                pendingDeepLinkPartyCode = DeepLinkPartyCode(code: code)
+//            }
+//        }
         // TODO: UNCOMMENT FOR UNIVERSAL LINKING WITH NEW JOINPARTYSHEET
 //        .sheet(item: $pendingDeepLinkPartyCode) { code in
 //            JoinPartySheet(partyCode: code.code)
@@ -323,13 +323,13 @@ struct UserManagementPage: View {
         }
     }
     
-    func extractPartyCode(from url: URL) -> String? {
-        let components = url.pathComponents
-        if components.count >= 3 && components[1] == "join-party" {
-            return components[2]
-        }
-        return nil
-    }
+//    func extractPartyCode(from url: URL) -> String? {
+//        let components = url.pathComponents
+//        if components.count >= 3 && components[1] == "join-party" {
+//            return components[2]
+//        }
+//        return nil
+//    }
 
 //    private var toolbarButtons: some View {
 //

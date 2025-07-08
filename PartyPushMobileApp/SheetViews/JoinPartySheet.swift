@@ -10,7 +10,9 @@ import SwiftUI
 struct JoinPartySheet: View {
     let authUser: AuthUser
     @Binding var showJoinPartyView: Bool
+    @Binding var partyCode: String
     var onPartyJoined: () -> Void
+
     @StateObject private var viewModel = JoinPartySheetViewModel()
     
     var body: some View {
@@ -31,7 +33,7 @@ struct JoinPartySheet: View {
             
             VStack(spacing: 16) {
                 Group {
-                    CustomTextField(text: $viewModel.partyCode, placeholder: "Party Code")
+                    CustomTextField(text: $partyCode, placeholder: "Party Code")
                     CustomTextField(text: $viewModel.guestName, placeholder: "Your Name")
                 }
                 .padding(.horizontal, 20)

@@ -9,7 +9,6 @@ import Foundation
 
 enum AuthState {
     case unauthorized(LoginFlow)
-    case resetPassword(authUser: AuthUser)
     case home(authUser: AuthUser)
     case guest(host: Host, authUser: AuthUser)
     case host(host: Host, authUser: AuthUser)
@@ -48,10 +47,6 @@ final class SessionManager : ObservableObject {
 
     func showSignUp() {
         authState = .unauthorized(.signUp)
-    }
-    
-    func showPasswordReset(authUser: AuthUser){
-        authState = .resetPassword(authUser: authUser)
     }
     
     func checkForExistingSession() {

@@ -14,8 +14,13 @@ class JoinPartySheetViewModel: ObservableObject {
     @Published var errorMessage: String?
     
     func addGuest(authUser: AuthUser, onSuccess: @escaping () -> Void) {
+        guard !guestName.isEmpty, !partyCode.isEmpty else {
+                errorMessage = "Please fill out party name and code."
+                return
+            }
+        errorMessage = nil
+        
         isLoading = true
-        print("username" + authUser.username + "guestName: " + guestName + "partyCode: " + partyCode)
         APIService.addGuest(
             authUser: authUser,
             guestName: guestName,

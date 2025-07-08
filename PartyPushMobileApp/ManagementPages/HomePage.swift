@@ -1,5 +1,10 @@
 import SwiftUI
 
+struct DeepLinkPartyCode: Identifiable, Equatable {
+    let code: String
+    var id: String { code }
+}
+
 struct HomePage: View {
     @EnvironmentObject var sessionManager: SessionManager
     let authUser: AuthUser
@@ -8,6 +13,9 @@ struct HomePage: View {
     @State private var showHostSheet = false
     @State private var showJoinSheet = false
     @State private var showLogoutConfirmation = false
+    
+    @State private var pendingDeepLinkPartyCode: DeepLinkPartyCode? = nil
+
     
     // For Join Party sheet
     @State private var partyCode = ""
@@ -117,9 +125,9 @@ struct HomePage: View {
                 .presentationDetents([.medium, .large])
             }
             .sheet(isPresented: $showJoinSheet) {
-                JoinPartySheet(authUser: authUser, showJoinPartyView: $showJoinSheet){
+                JoinPartySheet(authUser: authUser, showJoinPartyView: $showJoinSheet, partyCode: $partyCode, onPartyJoined: {
                     
-                }
+                })
                     .presentationDetents([.medium, .large])
                     .background(
                         LinearGradient(
@@ -130,7 +138,23 @@ struct HomePage: View {
                         .ignoresSafeArea()
                     )
             }
+            .onOpenURL { url in
+                print("SwiftUI onOpenURL called with: \(url)")
+                if let code = extractPartyCode(from: url) {
+                    partyCode = code
+                    showJoinSheet = true
+//                    pendingDeepLinkPartyCode = DeepLinkPartyCode(code: code)
+                }
+            }
         }
+    }
+    
+    func extractPartyCode(from url: URL) -> String? {
+        let components = url.pathComponents
+        if components.count >= 3 && components[1] == "join-party" {
+            return components[2]
+        }
+        return nil
     }
 }
 
