@@ -459,7 +459,7 @@ enum APIService {
             do {
                 let decodedResponse = try JSONDecoder().decode(APIResponse<EmptyCodable>.self, from: data)
                 if decodedResponse.message == "Success!" {
-                    print("user successfully added to database")
+//                    print("user successfully added to database")
                     completion(.success(()))
                 } else {
                     completion(.failure(.serverError(decodedResponse.message)))

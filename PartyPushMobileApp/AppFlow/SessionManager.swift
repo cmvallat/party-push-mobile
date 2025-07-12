@@ -100,7 +100,7 @@ final class SessionManager : ObservableObject {
         authUser.password = password
         authUser.email = email
         
-        print("Attempting sign up for \(email)")
+//        print("Attempting sign up for \(email)")
         
         let parameters: [String: Any] = [
             "Username": authUser.username,
@@ -198,7 +198,7 @@ final class SessionManager : ObservableObject {
     }
     
     func verifyEmail(authUser: AuthUser, confirmationCode: String, completion: @escaping (Result<AuthUser, Error>) -> Void) {
-        print("verifyEmail: Username ( \(authUser.email) )")
+//        print("verifyEmail: Username ( \(authUser.email) )")
 
         let parameters: [String: Any] = [
             "ConfirmationCode": confirmationCode,

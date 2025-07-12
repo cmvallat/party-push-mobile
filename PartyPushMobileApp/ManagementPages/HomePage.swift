@@ -1,4 +1,5 @@
 import SwiftUI
+import UserNotifications
 
 //struct DeepLinkPartyCode: Identifiable, Equatable {
 //    let code: String
@@ -14,8 +15,9 @@ struct HomePage: View {
     @State private var showJoinSheet = false
     @State private var showLogoutConfirmation = false
     
-//    @State private var pendingDeepLinkPartyCode: DeepLinkPartyCode? = nil
-
+    @State private var isFirstTime: Bool = UserDefaults.standard.integer(forKey: "FirstTime") == 0
+    @State private var didCheckFirstTime = false
+    @State private var showNotificationExplanation = false
     
     // For Join Party sheet
     @State private var partyCode = ""
@@ -136,6 +138,18 @@ struct HomePage: View {
                         .ignoresSafeArea()
                     )
             }
+            .alert("Enable Notifications?", isPresented: $showNotificationExplanation) {
+                Button("Enable") {
+                    requestPushPermissions()
+                }
+                Button("Not Now", role: .cancel) {
+                    isFirstTime = false
+                    UserDefaults.standard.setValue(1, forKey: "FirstTime")
+                }
+            } message: {
+                Text("We use push notifications to keep guests and hosts updated on food changes, party updates, and other important events.")
+            }
+
             .onOpenURL { url in
                 print("SwiftUI onOpenURL called with: \(url)")
                 if let code = extractPartyCode(from: url) {
@@ -152,6 +166,9 @@ struct HomePage: View {
                 }
             }
         }
+        .onAppear {
+            handleFirstTimeAppear()
+        }
     }
     
     func extractPartyCode(from url: URL) -> String? {
@@ -161,6 +178,77 @@ struct HomePage: View {
         }
         return nil
     }
+    
+    private func handleFirstTimeAppear() {
+        if !didCheckFirstTime {
+            didCheckFirstTime = true
+            if isFirstTime {
+                showNotificationExplanation = true
+            }
+        }
+    }
+    
+//    private func handleFirstTimeAppear() {
+//        guard !didCheckFirstTime else { return }
+//        didCheckFirstTime = true
+//
+//        if isFirstTime {
+//            UNUserNotificationCenter.current().requestAuthorization(options: [.alert, .sound, .badge]) { granted, error in
+//                DispatchQueue.main.async {
+//                    self.isFirstTime = false
+//                    if granted {
+//                        UIApplication.shared.registerForRemoteNotifications()
+//                        
+//                        // Delay a moment to give the AppDelegate time to receive the token
+//                        DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) {
+//                            if let token = UserDefaults.standard.string(forKey: "deviceToken") {
+//                                APIService.registerDeviceToken(
+//                                    username: authUser.username,
+//                                    deviceToken: token
+//                                ) { result in
+//                                    print("Register device token result: \(result)")
+//                                }
+//                            } else {
+//                                print("Device token not available yet.")
+//                            }
+//                        }
+//                    }
+//                }
+//            }
+//        }
+//    }
+
+    
+    func requestPushPermissions() {
+        UNUserNotificationCenter.current().requestAuthorization(options: [.alert, .sound, .badge]) { granted, error in
+            DispatchQueue.main.async {
+                // update FirstTime since we requested upon initial launch of app
+                isFirstTime = false
+                UserDefaults.standard.setValue(1, forKey: "FirstTime")
+                
+                // if they granted auth, get the device code and register it with backend
+                // to create an SNS endpoint and store on the User object
+                if granted {
+                    UIApplication.shared.registerForRemoteNotifications()
+                    
+                    // Delay so AppDelegate has time to store the token
+                    DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) {
+                        if let token = UserDefaults.standard.string(forKey: "deviceToken") {
+                            APIService.registerDeviceToken(
+                                username: authUser.username,
+                                deviceToken: token
+                            ) { result in
+                                print("Register device token result: \(result)")
+                            }
+                        } else {
+                            print("Device token not available yet.")
+                        }
+                    }
+                }
+            }
+        }
+    }
+
 }
 
 //#Preview {

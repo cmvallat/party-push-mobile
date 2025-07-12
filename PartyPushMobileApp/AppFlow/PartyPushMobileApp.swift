@@ -21,7 +21,7 @@ struct PartyPushMobileApp: App {
 //            UserDefaults.standard.removePersistentDomain(forName: bundle)
 //            UserDefaults.standard.synchronize()
 //        }
-        // For testing tips, uncomment to ensure they show up each time
+        // For development only:, uncomment to ensure they show up each time
         // try? Tips.resetDatastore()
         try? Tips.configure()
         sessionManager.checkForExistingSession()
@@ -40,17 +40,6 @@ class AppDelegate: NSObject, UIApplicationDelegate, UNUserNotificationCenterDele
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey : Any]? = nil) -> Bool {
         UNUserNotificationCenter.current().delegate = self
 
-        UNUserNotificationCenter.current().requestAuthorization(options: [.alert, .sound, .badge]) { granted, error in
-            guard granted else {
-                print("User denied notification permissions")
-                return
-            }
-
-            DispatchQueue.main.async {
-                UIApplication.shared.registerForRemoteNotifications()
-            }
-        }
-
         return true
     }
     
@@ -66,11 +55,9 @@ class AppDelegate: NSObject, UIApplicationDelegate, UNUserNotificationCenterDele
     func application(_ application: UIApplication, didRegisterForRemoteNotificationsWithDeviceToken deviceToken: Data) {
         let tokenParts = deviceToken.map { data in String(format: "%02.2hhx", data) }
         let token = tokenParts.joined()
+//        print("Device Token: \(token)")
         
-        print("Device Token: \(token)")
-        
-        // register their device so we can use it in our SNS list for push notifications
-//        registerDeviceTokenWithBackend(token: token)
+        UserDefaults.standard.set(token, forKey: "deviceToken")
     };
 
     func application(_ application: UIApplication, didFailToRegisterForRemoteNotificationsWithError error: Error) {
@@ -180,3 +167,4 @@ class AppDelegate: NSObject, UIApplicationDelegate, UNUserNotificationCenterDele
 
 
 }
+

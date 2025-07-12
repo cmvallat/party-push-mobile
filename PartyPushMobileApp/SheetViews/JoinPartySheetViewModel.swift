@@ -12,7 +12,6 @@ class JoinPartySheetViewModel: ObservableObject {
     @Published var partyCode = ""
     @Published var isLoading = false
     @Published var errorMessage: String?
-//    @Published var host: Host?
 
 // In case they are needed later:
     func getHost(completion: @escaping (Host?) -> Void) {
