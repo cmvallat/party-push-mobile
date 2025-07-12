@@ -7,11 +7,14 @@
 
 import Foundation
 
+private let PARTY_ROLE_KEY = "lastPartyRole"
+private let PARTY_HOST_KEY = "lastPartyHost"
+
 enum AuthState {
     case unauthorized(LoginFlow)
-    case home(authUser: AuthUser)
-    case guest(host: Host, authUser: AuthUser)
-    case host(host: Host, authUser: AuthUser)
+    case home(authUser: AuthUser, appState: AppState)
+    case guest(host: Host, authUser: AuthUser, appState: AppState)
+    case host(host: Host, authUser: AuthUser, appState: AppState)
 
     enum LoginFlow {
         case login
@@ -29,16 +32,38 @@ final class SessionManager : ObservableObject {
     
     let cognitoUrl: URL = URL(string: "https://cognito-idp.us-east-1.amazonaws.com/")!
     
-    func showHome(authUser: AuthUser) {
-        authState = .home(authUser: authUser)
+    private func saveLastParty(role: String, host: Host) {
+        if let hostData = try? JSONEncoder().encode(host) {
+            UserDefaults.standard.set(role, forKey: PARTY_ROLE_KEY)
+            UserDefaults.standard.set(hostData, forKey: PARTY_HOST_KEY)
+        }
+    }
+    private func clearLastParty() {
+        UserDefaults.standard.removeObject(forKey: PARTY_ROLE_KEY)
+        UserDefaults.standard.removeObject(forKey: PARTY_HOST_KEY)
+    }
+    private func loadLastParty() -> (role: String, host: Host)? {
+        guard let role = UserDefaults.standard.string(forKey: PARTY_ROLE_KEY),
+              let data = UserDefaults.standard.data(forKey: PARTY_HOST_KEY),
+              let host = try? JSONDecoder().decode(Host.self, from: data)
+        else { return nil }
+        return (role, host)
+    }
+
+    func showHome(authUser: AuthUser, appState: AppState) {
+        print("show Home called")
+        clearLastParty()
+        authState = .home(authUser: authUser, appState: appState)
     }
     
-    func showGuest(host: Host, authUser: AuthUser) {
-        authState = .guest(host: host, authUser: authUser)
+    func showGuest(host: Host, authUser: AuthUser, appState: AppState) {
+        saveLastParty(role: "guest", host: host)
+        authState = .guest(host: host, authUser: authUser, appState: appState)
     }
     
-    func showHost(host: Host, authUser: AuthUser) {
-        authState = .host(host: host, authUser: authUser)
+    func showHost(host: Host, authUser: AuthUser, appState: AppState) {
+        saveLastParty(role: "host", host: host)
+        authState = .host(host: host, authUser: authUser, appState: appState)
     }
 
     func showLogin() {
@@ -51,10 +76,19 @@ final class SessionManager : ObservableObject {
     
     func checkForExistingSession() {
         let authUser = AuthUser()
+        let appState = AppState()
         if authUser.loadTokensAndValidate() {
-            // TODO: handle scenario if user was in a party already, show the Guest or Host page
-            // will need to check from database
-            showHome(authUser: authUser)
+            if let (role, host) = loadLastParty() {
+                if role == "host" {
+                    showHost(host: host, authUser: authUser, appState: appState)
+                } else if role == "guest" {
+                    showGuest(host: host, authUser: authUser, appState: appState)
+                } else {
+                    showHome(authUser: authUser, appState: appState)
+                }
+            } else {
+                showHome(authUser: authUser, appState: appState)
+            }
         } else {
             showLogin()
         }
@@ -259,6 +293,7 @@ final class SessionManager : ObservableObject {
     }
     
     func logout(authUser: AuthUser) {
+        clearLastParty()
         authUser.deleteTokensFromKeychain()
         authUser.accessToken = ""
         authUser.idToken = ""

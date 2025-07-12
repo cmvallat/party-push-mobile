@@ -89,7 +89,7 @@ struct SignUpTest: View {
                 if newValue == "Success" {
                     // TODO: change to operate in DispatchGroup?
                     viewModel.addUser(authUser: viewModel.authUser)
-                    sessionManager.showHome(authUser: viewModel.authUser)
+                    sessionManager.showHome(authUser: viewModel.authUser, appState: AppState())
                 }
             }
             .onChange(of: viewModel.errorMessage, initial: false) { _, newMessage in

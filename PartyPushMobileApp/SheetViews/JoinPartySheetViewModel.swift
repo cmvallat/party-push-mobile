@@ -12,6 +12,21 @@ class JoinPartySheetViewModel: ObservableObject {
     @Published var partyCode = ""
     @Published var isLoading = false
     @Published var errorMessage: String?
+//    @Published var host: Host?
+
+// In case they are needed later:
+    func getHost(completion: @escaping (Host?) -> Void) {
+        APIService.getHost(party_code: self.partyCode) { [weak self] returnedHost in
+               DispatchQueue.main.async {
+                   if let host = returnedHost {
+                       completion(host)
+                   } else {
+                       self?.errorMessage = "Party not found. Please check your party code."
+                       completion(nil)
+                   }
+               }
+           }
+       }
     
     func addGuest(authUser: AuthUser, onSuccess: @escaping () -> Void) {
         guard !guestName.isEmpty, !partyCode.isEmpty else {
@@ -28,10 +43,15 @@ class JoinPartySheetViewModel: ObservableObject {
             atParty: 1
         ) { [weak self] result in
             DispatchQueue.main.async {
-                self?.isLoading = false
                 switch result {
                 case .success:
-                    onSuccess()
+                    Task { [weak self] in
+                        try? await Task.sleep(nanoseconds: 3_000_000_000)
+                        await MainActor.run {
+                            self?.isLoading = false
+                            onSuccess()
+                        }
+                    }
                 case .failure(let error):
                     self?.errorMessage = error.localizedDescription
                 }

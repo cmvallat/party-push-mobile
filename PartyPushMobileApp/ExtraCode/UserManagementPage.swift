@@ -134,7 +134,7 @@ struct UserManagementPage: View {
         HelpTip()
     }
     
-    @State private var pendingDeepLinkPartyCode: DeepLinkPartyCode? = nil
+//    @State private var pendingDeepLinkPartyCode: DeepLinkPartyCode? = nil
 
     var body: some View {
         VStack {
@@ -198,7 +198,7 @@ struct UserManagementPage: View {
         // Onboarding tips overlay to show paged guidance with swipe and dots
         .overlay(walkthroughOverlay)
         .sheet(isPresented: $showAddPartyView) {
-            AddHostSheet(authUser: authUser, showAddPartyView: $showAddPartyView) {
+            AddHostSheet(authUser: authUser, showAddPartyView: $showAddPartyView, appState: appState) {
                 viewModel.loadParties(authUser: authUser)
             }
         }

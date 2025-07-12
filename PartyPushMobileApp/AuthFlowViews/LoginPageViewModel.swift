@@ -22,7 +22,7 @@ final class LoginPageViewModel: ObservableObject {
         sessionManager.login(username: username, password: password) { result in
             switch result {
             case .success(let authUser):
-                sessionManager.showHome(authUser: authUser)
+                sessionManager.showHome(authUser: authUser, appState: AppState())
             case .failure(let error):
                 DispatchQueue.main.async {
                     self.errorMessage = error.localizedDescription

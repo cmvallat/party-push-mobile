@@ -1,9 +1,9 @@
 import SwiftUI
 
-struct DeepLinkPartyCode: Identifiable, Equatable {
-    let code: String
-    var id: String { code }
-}
+//struct DeepLinkPartyCode: Identifiable, Equatable {
+//    let code: String
+//    var id: String { code }
+//}
 
 struct HomePage: View {
     @EnvironmentObject var sessionManager: SessionManager
@@ -14,7 +14,7 @@ struct HomePage: View {
     @State private var showJoinSheet = false
     @State private var showLogoutConfirmation = false
     
-    @State private var pendingDeepLinkPartyCode: DeepLinkPartyCode? = nil
+//    @State private var pendingDeepLinkPartyCode: DeepLinkPartyCode? = nil
 
     
     // For Join Party sheet
@@ -111,8 +111,7 @@ struct HomePage: View {
             }
             // sheets
             .sheet(isPresented: $showHostSheet) {
-                AddHostSheet(authUser: authUser, showAddPartyView: $showHostSheet) {
-                    // You can trigger refresh logic here if needed.
+                AddHostSheet(authUser: authUser, showAddPartyView: $showHostSheet, appState: appState) {
                 }
                 .background(
                     LinearGradient(
@@ -122,13 +121,12 @@ struct HomePage: View {
                     )
                     .ignoresSafeArea()
                 )
-                .presentationDetents([.medium, .large])
+                .presentationDetents([.large])
             }
             .sheet(isPresented: $showJoinSheet) {
-                JoinPartySheet(authUser: authUser, showJoinPartyView: $showJoinSheet, partyCode: $partyCode, onPartyJoined: {
-                    
+                JoinPartySheet(authUser: authUser, showJoinPartyView: $showJoinSheet, appState: appState, onPartyJoined: {
                 })
-                    .presentationDetents([.medium, .large])
+                    .presentationDetents([.large])
                     .background(
                         LinearGradient(
                             colors: Palette.gradientColors,
@@ -143,7 +141,14 @@ struct HomePage: View {
                 if let code = extractPartyCode(from: url) {
                     partyCode = code
                     showJoinSheet = true
-//                    pendingDeepLinkPartyCode = DeepLinkPartyCode(code: code)
+                }
+            }
+            .onChange(of: appState.needToRefresh, initial: false) { _, refresh in
+                if(refresh)
+                {
+                    appState.endedPartyCode = nil
+                    appState.kickedGuestUsername = nil
+                    appState.needToRefresh = false
                 }
             }
         }

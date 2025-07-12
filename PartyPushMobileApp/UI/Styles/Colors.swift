@@ -35,4 +35,8 @@ struct Palette {
     static let deepTextColor = Color(red: 0.97, green: 0.97, blue: 1.00)
     static let placeholderColor = Color(red: 0.87, green: 0.89, blue: 0.98)
     static let mutedAccent = Color(red: 0.81, green: 0.71, blue: 0.88)
+    static let backgroundPurple = Color(red: 0.33, green: 0.22, blue: 0.54)
+    static let backgroundRed = Color(red: 0.69, green: 0.26, blue: 0.38)
+    static let backgroundNavy = Color(red: 0.18, green: 0.22, blue: 0.45)
+
 }

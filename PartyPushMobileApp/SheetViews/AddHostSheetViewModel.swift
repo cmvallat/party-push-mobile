@@ -31,11 +31,17 @@ class AddHostSheetViewModel: ObservableObject {
             description: desc
         ) { [weak self] result in
             DispatchQueue.main.async {
-                self?.isLoading = false
                 switch result {
                 case .success:
-                    onSuccess()
+                    Task { [weak self] in
+                        try? await Task.sleep(nanoseconds: 3_000_000_000)
+                        await MainActor.run {
+                            self?.isLoading = false
+                            onSuccess()
+                        }
+                    }
                 case .failure(let error):
+                    self?.isLoading = false
                     self?.errorMessage = error.localizedDescription
                 }
             }

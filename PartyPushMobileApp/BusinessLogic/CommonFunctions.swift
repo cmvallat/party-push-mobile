@@ -10,6 +10,10 @@ import SwiftUI
 import AuthenticationServices
 import JWTDecode
 
+func dismissKeyboard() {
+    UIApplication.shared.sendAction(#selector(UIResponder.resignFirstResponder), to: nil, from: nil, for: nil)
+}
+
 func sendNotification(authUser: AuthUser, title: String, body: String)
 {
     let content = UNMutableNotificationContent()

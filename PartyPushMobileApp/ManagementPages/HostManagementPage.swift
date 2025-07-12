@@ -13,7 +13,6 @@ struct HostManagementPage: View {
     var host: Host
     let authUser: AuthUser
     @ObservedObject var appState: AppState
-    @Environment(\.dismiss) var dismiss
 
     @StateObject private var viewModel = HostManagementViewModel()
     @State private var showAddFoodView = false
@@ -22,6 +21,8 @@ struct HostManagementPage: View {
     // For Universal Linking - invite guest
     @State private var showShareSheet = false
     @State private var shareURL: URL?
+    
+    @EnvironmentObject var sessionManager: SessionManager
 
     var body: some View {
         VStack {
@@ -128,14 +129,15 @@ struct HostManagementPage: View {
         .overlay(
             Group {
                 if viewModel.isLoading {
-                    ZStack {
-                        Color.black.opacity(0.3).ignoresSafeArea()
-                        ProgressView("Loading party details...")
-                            .padding()
-                            .background(Color.white)
-                            .cornerRadius(12)
-                            .shadow(radius: 10)
-                    }
+//                    ZStack {
+//                        Color.black.opacity(0.3).ignoresSafeArea()
+//                        ProgressView("Loading party details...")
+//                            .padding()
+//                            .background(Color.white)
+//                            .cornerRadius(12)
+//                            .shadow(radius: 10)
+//                    }
+                    ProgressOverlay(message: "Loading party details...")
                 }
             }
         )
@@ -162,8 +164,9 @@ struct HostManagementPage: View {
         }
         .alert("You have successfully ended this party.", isPresented: $showEndedPartyAlert) {
             Button("OK") {
+                print("ALERT BUTTON PRESSED")
                 appState.needToRefresh = true
-                dismiss()
+                sessionManager.showHome(authUser: authUser, appState: appState)
             }
         }
     }

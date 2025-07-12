@@ -36,6 +36,7 @@ class GuestManagementViewModel: ObservableObject {
     func deleteGuest(authUser: AuthUser, party_code: String, username: String, onSuccess: @escaping () -> Void) {
         APIService.deleteGuest(authUser: authUser, party_code: party_code, username: username, isHost: "false"){ response in
             DispatchQueue.main.async{
+                print("delete guest resp: " + response)
                 if(response == "Guest deleted successfully")
                 {
                     onSuccess()

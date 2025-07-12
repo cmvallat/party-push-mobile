@@ -4,18 +4,18 @@ struct GuestManagementPage: View {
     var host: Host
     let authUser: AuthUser
     @ObservedObject var appState: AppState
-    @Environment(\.dismiss) var dismiss
 
     @StateObject private var viewModel = GuestManagementViewModel()
     @State private var pollingTimer: Timer? = nil
     @State private var showGuestPopover: Bool = false
     @State private var showAddFoodView = false
     @State private var showLeavePartyConfirmation = false
-    @State private var x = false
     @State private var showEndedPartyAlert = false
     @State private var showKickedPartyAlert = false
     @State private var showLeftPartyAlertScreen = false
     @State private var showDeleteGuestFailureAlert = false
+    
+    @EnvironmentObject var sessionManager: SessionManager
 
     var body: some View {
         VStack {
@@ -80,14 +80,16 @@ struct GuestManagementPage: View {
         .overlay(
             Group {
                 if viewModel.isLoading {
-                    ZStack {
-                        Color.black.opacity(0.3).ignoresSafeArea()
-                        ProgressView("Loading party details...")
-                            .padding()
-                            .background(Color.white)
-                            .cornerRadius(12)
-                            .shadow(radius: 10)
-                    }
+//                    ZStack {
+//                        Color.black.opacity(0.3).ignoresSafeArea()
+//                        ProgressView("Loading party details...")
+//                            .padding()
+//                            .background(Color.white)
+//                            .cornerRadius(12)
+//                            .shadow(radius: 10)
+//                    }
+                    ProgressOverlay(message: "Loading party details...")
+
                 }
             }
         )
@@ -140,19 +142,25 @@ struct GuestManagementPage: View {
         .alert("The Host has ended this party.", isPresented: $showEndedPartyAlert) {
             Button("OK") {
                 appState.needToRefresh = true
-                dismiss()
+                pollingTimer?.invalidate()
+                pollingTimer = nil
+                sessionManager.showHome(authUser: authUser, appState: appState)
             }
         }
         .alert("You have successfully left this party.", isPresented: $showLeftPartyAlertScreen) {
             Button("OK") {
                 appState.needToRefresh = true
-                dismiss()
+                pollingTimer?.invalidate()
+                pollingTimer = nil
+                sessionManager.showHome(authUser: authUser, appState: appState)
             }
         }
         .alert("The host has removed you from this party.", isPresented: $showKickedPartyAlert) {
             Button("OK") {
                 appState.needToRefresh = true
-                dismiss()
+                pollingTimer?.invalidate()
+                pollingTimer = nil
+                sessionManager.showHome(authUser: authUser, appState: appState)
             }
         }
         .alert("Could not leave the party. Please try again.", isPresented: $showDeleteGuestFailureAlert) {

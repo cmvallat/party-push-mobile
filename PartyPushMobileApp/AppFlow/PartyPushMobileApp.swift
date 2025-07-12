@@ -16,6 +16,11 @@ struct PartyPushMobileApp: App {
     @StateObject var appState = AppState()
     
     init() {
+        // For development only: clear all UserDefaults
+//        if let bundle = Bundle.main.bundleIdentifier {
+//            UserDefaults.standard.removePersistentDomain(forName: bundle)
+//            UserDefaults.standard.synchronize()
+//        }
         // For testing tips, uncomment to ensure they show up each time
         // try? Tips.resetDatastore()
         try? Tips.configure()

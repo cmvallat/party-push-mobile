@@ -10,6 +10,7 @@ import SwiftUI
 struct AddHostSheet: View {
     let authUser: AuthUser
     @Binding var showAddPartyView: Bool
+    @ObservedObject var appState: AppState
     var onPartyAdded: () -> Void
     @StateObject private var viewModel = AddHostSheetViewModel()
     @EnvironmentObject var sessionManager: SessionManager
@@ -46,11 +47,18 @@ struct AddHostSheet: View {
                 .padding(.horizontal, 20)
                 
                 SubmitButton(action: {
+                    dismissKeyboard()
                     viewModel.addHost(authUser: authUser) {
                         // recreate the Host object that was created in the VM to call DB
-                        // or just create it here and pass it along, move @Published vars from VM to here
                         let host = Host(username: authUser.username, party_name: viewModel.partyName, party_code: viewModel.partyCode, invite_only: 1)
-                        sessionManager.showHost(host: host, authUser: authUser)
+                        
+                        // clear values to we start the new view with a clean appState
+                        appState.endedPartyCode = nil
+                        appState.kickedGuestUsername = nil
+                        appState.needToRefresh = false
+                        
+                        // show the new view and dismiss the sheet
+                        sessionManager.showHost(host: host, authUser: authUser, appState: appState)
                         showAddPartyView.toggle()
                         onPartyAdded() // Reload the parties after successful creation
                     }})
@@ -73,15 +81,7 @@ struct AddHostSheet: View {
     private var loadingOverlay: some View {
         Group {
             if viewModel.isLoading {
-                ZStack {
-                    Color.black.opacity(0.7).ignoresSafeArea()
-                    ProgressView("Creating party...")
-                        .foregroundColor(.white)
-                        .padding()
-                        .background(Color.black.opacity(0.8))
-                        .cornerRadius(12)
-                        .shadow(radius: 10)
-                }
+                ProgressOverlay(message: "Creating party...")
             }
         }
     }

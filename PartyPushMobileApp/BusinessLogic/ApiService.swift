@@ -112,6 +112,31 @@ enum APIService {
             }.resume()
     }
     
+    static func getHost(party_code: String, completion: @escaping (Host?) -> Void) {
+        var urlComps = URLComponents(string: "https://pai6t3w5x0.execute-api.us-east-1.amazonaws.com/Prod/hello")!
+        urlComps.queryItems = [URLQueryItem(name: "party_code", value: party_code)]
+        
+        var request = URLRequest(url: urlComps.url!)
+        request.httpMethod = "GET"
+        
+        URLSession.shared.dataTask(with: request) { data, response, error in
+                guard let data = data, error == nil else {
+                    print("Error: \(error?.localizedDescription ?? "Unknown error")")
+                    completion(nil)
+                    return
+                }
+
+                do {
+                    let decoded = try JSONDecoder().decode(APIResponse<Host>.self, from: data)
+                    completion(decoded.data?.first) // might be nil if host is not found
+                } catch {
+                    print("---> data: \n \((String(data: data, encoding: .utf8) ?? "nil") as String) \n")
+                    print("Decoding error: \(error.localizedDescription)")
+                    completion(nil)
+                }
+            }.resume()
+    }
+    
     static func registerDeviceToken(username: String, deviceToken: String, completion: @escaping (String) -> Void) {
         var urlComps = URLComponents(string: "https://qyb4z6bik0.execute-api.us-east-1.amazonaws.com/Prod/hello")!
         urlComps.queryItems = [URLQueryItem(name: "username", value: username),
@@ -178,12 +203,11 @@ enum APIService {
         URLSession.shared.dataTask(with: request) { data, _, error in
             if let data = data, let returnedObj = try? JSONDecoder().decode(APIResponse<EmptyCodable>.self, from: data) {
                 let message = returnedObj.message
-                print(message)
+                print("Delete Guest API response: " + message)
                 // if successfully processed
-                if((message == "Guest has successfully left the party" && isHost == "true") ||
-                   (message == "Guest was successfully removed from party" && isHost == "false"))
+                if((message == "Guest has successfully left the party" && isHost == "false") ||
+                   (message == "Guest was successfully removed from party" && isHost == "true"))
                 {
-                    print("guest deleted successfully")
                     completion("Guest deleted successfully")
                 }
                 else{

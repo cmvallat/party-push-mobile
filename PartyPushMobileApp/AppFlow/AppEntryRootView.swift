@@ -9,7 +9,7 @@ import SwiftUI
 struct AppEntryRootView: View {
     @State private var showLaunchScreen = true
     @EnvironmentObject var sessionManager: SessionManager
-    @StateObject var appState = AppState()
+//    @StateObject var appState = AppState()
     
     var body: some View {
         Group {
@@ -38,14 +38,14 @@ struct AppEntryRootView: View {
                         SignUpTest()
                             .environmentObject(sessionManager)
                     }
-                case .home(let authUser):
+                case .home(let authUser, let appState):
                     HomePage(authUser: authUser, appState: appState)
                         .environmentObject(sessionManager)
-                case .guest(let host, let authUser):
+                case .guest(let host, let authUser, let appState):
                     GuestManagementPage(host: host, authUser: authUser, appState: appState)
                         .environmentObject(sessionManager)
-                case .host(let host, let authUser):
-                    HostManagementPage(host: host, authUser: authUser, appState: appState)
+                case .host(let host, let authUser, let appState):
+                    HostFoodManagementPage(host: host, authUser: authUser, appState: appState)
                         .environmentObject(sessionManager)
                 }
             }

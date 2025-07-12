@@ -43,7 +43,6 @@ struct AddFoodSheet: View
                 .textFieldStyle(.roundedBorder)
                 .padding([.leading,.trailing], 15)
             
-            // Styled Add Host button
             HStack {
                 Spacer()
                 Button(action: {
