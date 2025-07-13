@@ -9,6 +9,7 @@ import SwiftUI
 struct SubmitButton: View {
     var title: String = "Submit"
     var isLoading: Bool = false
+    var color: Color = Palette.accentBlue
     var action: () -> Void
     var body: some View {
         Button(action: action) {
@@ -24,9 +25,9 @@ struct SubmitButton: View {
                     .padding(.vertical, 14)
             }
         }
-        .background(Palette.accentBlue)
+        .background(color)
         .cornerRadius(14)
-        .shadow(color: Palette.accentBlue.opacity(0.6), radius: 8, x: 0, y: 4)
+        .shadow(color: color.opacity(0.6), radius: 8, x: 0, y: 4)
         .disabled(isLoading)
         .padding(.horizontal, 20)
     }

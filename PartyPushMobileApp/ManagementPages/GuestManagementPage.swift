@@ -16,209 +16,193 @@ struct GuestManagementPage: View {
     @State private var showDeleteGuestFailureAlert = false
     
     @EnvironmentObject var sessionManager: SessionManager
-
+    
     var body: some View {
-        VStack {
-            VStack(alignment: .leading) {
-                Text(host.party_name)
-                    .font(.title)
+        ZStack {
+            LinearGradient(colors: Palette.gradientColors, startPoint: .topLeading, endPoint: .bottomTrailing)
+                .ignoresSafeArea()
+            
+            //ScrollView {
+                VStack(alignment: .leading, spacing: 20) {
+                    VStack(alignment: .leading, spacing: 0) {
+                        Text(host.party_name)
+                            .font(.largeTitle.bold())
+                            .foregroundColor(Palette.deepTextColor)
+                        Text("Party Code: \(host.party_code)")
+                            .font(.headline)
+                            .foregroundColor(Palette.deepTextColor.opacity(0.7))
+                    }
+                    .padding(.top, 32)
+                    .padding(.horizontal)
 
-                HStack {
-                    Text("party code: \(host.party_code)")
-                }
-                .font(.subheadline)
-                .foregroundStyle(.secondary)
+                    VStack(alignment: .leading, spacing: 6) {
+                        Text("About the Party")
+                            .font(.title3.bold())
+                            .foregroundColor(Palette.deepTextColor)
+                        Text(host.description ?? "No description.")
+                            .font(.subheadline)
+                            .foregroundColor(Palette.deepTextColor.opacity(0.85))
+                    }
+                    .padding(.bottom, 32)
+                    .padding(.horizontal)
 
-                Divider()
-
-                Text("About the Party")
-                    .font(.title2)
-                    .padding(.bottom, 10)
-
-                Text((host.description ?? "No description currently"))
-                    .font(.subheadline)
-
-                Divider()
-
-                List {
                     foodSection
-                    HStack {
-                        Spacer()
-                        Button(action: {
-                            showLeavePartyConfirmation = true
-                        }) {
-                            Text("Leave party")
-                                .foregroundColor(.white)
-                                .padding()
-                                .background(Color.red)
-                                .cornerRadius(10)
+                    
+                    // Leave party button
+                    SubmitButton(title: "Leave party", color: .red, action: {
+                        showLeavePartyConfirmation = true
+                    })
+                    .alert("Are you sure you want to leave this party?", isPresented: $showLeavePartyConfirmation) {
+                        Button("Leave", role: .destructive) {
+                            viewModel.deleteGuest(
+                                authUser: authUser,
+                                party_code: host.party_code,
+                                username: authUser.username
+                            ){
+                                showLeftPartyAlertScreen = true
+                            }
                         }
-                        Spacer()
+                        Button("Cancel", role: .cancel) {}
                     }
-                    .listRowBackground(Color.clear)
                 }
-                .scrollContentBackground(.hidden)
-                .background(Color.clear)
-                .alert("Are you sure you want to leave this party?", isPresented: $showLeavePartyConfirmation) {
-                    Button("Leave", role: .destructive) {
-                        viewModel.deleteGuest(
-                            authUser: authUser,
-                            party_code: host.party_code,
-                            username: authUser.username
-                        ){
-                            showLeftPartyAlertScreen = true
-                        }
+                .padding()
+
+                Spacer()
+            //} // End of ScrollView
+            .overlay(
+                Group {
+                    if viewModel.isLoading {
+                        ProgressOverlay(message: "Loading party details...")
+
                     }
-                    Button("Cancel", role: .cancel) {}
-                }
-            }
-            .padding()
-
-            Spacer()
-        }
-        .background(AppBackground())
-        .overlay(
-            Group {
-                if viewModel.isLoading {
-//                    ZStack {
-//                        Color.black.opacity(0.3).ignoresSafeArea()
-//                        ProgressView("Loading party details...")
-//                            .padding()
-//                            .background(Color.white)
-//                            .cornerRadius(12)
-//                            .shadow(radius: 10)
-//                    }
-                    ProgressOverlay(message: "Loading party details...")
-
-                }
-            }
-        )
-        .sheet(isPresented: $showAddFoodView) {
-            AddFoodSheet(
-                host: host,
-                authUser: authUser,
-                showAddFoodView: $showAddFoodView,
-                onFoodAdded: {
-                    viewModel.refresh(authUser: authUser, host: host)
                 }
             )
-        }
-        .refreshable {
-            viewModel.refresh(authUser: authUser, host: host)
-        }
-        .onAppear {
-            viewModel.refresh(authUser: authUser, host: host)
-            startPollingPartyStatus()
-            startPollingGuestStatus()
-        }
-        .onChange(of: appState.endedPartyCode, initial: true) { _, endedCode in
-            if endedCode == host.party_code {
-                showEndedPartyAlert = true
-            }
-        }
-        .onChange(of: appState.atPartyState, initial: false) { oldState, newState in
-//            if kickedUsername == authUser.username {
-//                showKickedPartyAlert = true
-//            }
-            switch newState {
-                case .left:
-                    showLeftPartyAlertScreen = true
-                case .removed:
-                    showKickedPartyAlert = true
-                case .active:
-                    appState.atPartyState = .active
-            }
-        }
-        .onChange(of: viewModel.deleteGuestFailed) { failed in
-            if failed {
-                showDeleteGuestFailureAlert = true
-                viewModel.deleteGuestFailed = false
-            }
-        }
-        .onDisappear {
-            pollingTimer?.invalidate()
-            pollingTimer = nil
-        }
-        .alert("The Host has ended this party.", isPresented: $showEndedPartyAlert) {
-            Button("OK") {
-                appState.needToRefresh = true
-                pollingTimer?.invalidate()
-                pollingTimer = nil
-                sessionManager.showHome(authUser: authUser, appState: appState)
-            }
-        }
-        .alert("You have successfully left this party.", isPresented: $showLeftPartyAlertScreen) {
-            Button("OK") {
-                appState.needToRefresh = true
-                pollingTimer?.invalidate()
-                pollingTimer = nil
-                sessionManager.showHome(authUser: authUser, appState: appState)
-            }
-        }
-        .alert("The host has removed you from this party.", isPresented: $showKickedPartyAlert) {
-            Button("OK") {
-                appState.needToRefresh = true
-                pollingTimer?.invalidate()
-                pollingTimer = nil
-                sessionManager.showHome(authUser: authUser, appState: appState)
-            }
-        }
-        .alert("Could not leave the party. Please try again.", isPresented: $showDeleteGuestFailureAlert) {
-            Button("OK", role: .cancel) {}
-        }
-    }
-
-    private var foodSection: some View {
-        Section {
-            if viewModel.foods.isEmpty {
-                VStack {
-                    Text("No foods at the party right now. Check back later or swipe down to refresh.")
-                        .multilineTextAlignment(.center)
-                        .font(.headline)
-                        .padding(.vertical, 15)
-                        .frame(maxWidth: .infinity)
-                }
-                .listRowBackground(Color.clear)
-            } else {
-                ForEach(viewModel.foods) { row in
-                    HStack {
-                        // display a helpful icon based on the food item's current status
-                        row.statusIcon.foregroundStyle(row.statusColor)
-                        
-                        Text(row.item_name)
-                            .font(.headline)
-                            .foregroundColor(.primary)
-                            .swipeActions(edge: .trailing) {
-                                Button {
-                                    viewModel.optimisticallyReportFoodStatus(authUser: authUser, host: host, itemName: row.item_name, newStatus: "out")
-                                } label: {
-                                    Label("Out", systemImage: "exclamationmark.shield.fill")
-                                }
-                                .tint(.red)
-
-                                Button {
-                                    viewModel.optimisticallyReportFoodStatus(authUser: authUser, host: host, itemName: row.item_name, newStatus: "low")
-                                } label: {
-                                    Label("Low", systemImage: "exclamationmark.triangle.fill")
-                                }
-                                .tint(.yellow)
-                            }
-                        Spacer()
+            .sheet(isPresented: $showAddFoodView) {
+                AddFoodSheet(
+                    host: host,
+                    authUser: authUser,
+                    showAddFoodView: $showAddFoodView,
+                    onFoodAdded: {
+                        viewModel.refresh(authUser: authUser, host: host)
                     }
-                    .padding()
-                    .background(.ultraThinMaterial)
-                    .cornerRadius(16)
-                    .shadow(radius: 3)
-                    .listRowSeparator(.hidden)
-                    .listRowBackground(Color.clear)
+                )
+            }
+            .refreshable {
+                viewModel.refresh(authUser: authUser, host: host)
+            }
+            .onAppear {
+                viewModel.refresh(authUser: authUser, host: host)
+                startPollingPartyStatus()
+                startPollingGuestStatus()
+            }
+            .onChange(of: appState.endedPartyCode, initial: true) { _, endedCode in
+                if endedCode == host.party_code {
+                    showEndedPartyAlert = true
                 }
             }
-        } header: {
-            Text("Food and Drinks").font(.headline)
+            .onChange(of: appState.atPartyState, initial: false) { oldState, newState in
+    //            if kickedUsername == authUser.username {
+    //                showKickedPartyAlert = true
+    //            }
+                switch newState {
+                    case .left:
+                        showLeftPartyAlertScreen = true
+                    case .removed:
+                        showKickedPartyAlert = true
+                    case .active:
+                        appState.atPartyState = .active
+                }
+            }
+            .onChange(of: viewModel.deleteGuestFailed) { failed in
+                if failed {
+                    showDeleteGuestFailureAlert = true
+                    viewModel.deleteGuestFailed = false
+                }
+            }
+            .onDisappear {
+                pollingTimer?.invalidate()
+                pollingTimer = nil
+            }
+            .alert("The Host has ended this party.", isPresented: $showEndedPartyAlert) {
+                Button("OK") {
+                    appState.needToRefresh = true
+                    pollingTimer?.invalidate()
+                    pollingTimer = nil
+                    sessionManager.showHome(authUser: authUser, appState: appState)
+                }
+            }
+            .alert("You have successfully left this party.", isPresented: $showLeftPartyAlertScreen) {
+                Button("OK") {
+                    appState.needToRefresh = true
+                    pollingTimer?.invalidate()
+                    pollingTimer = nil
+                    sessionManager.showHome(authUser: authUser, appState: appState)
+                }
+            }
+            .alert("The host has removed you from this party.", isPresented: $showKickedPartyAlert) {
+                Button("OK") {
+                    appState.needToRefresh = true
+                    pollingTimer?.invalidate()
+                    pollingTimer = nil
+                    sessionManager.showHome(authUser: authUser, appState: appState)
+                }
+            }
+            .alert("Could not leave the party. Please try again.", isPresented: $showDeleteGuestFailureAlert) {
+                Button("OK", role: .cancel) {}
+            }
         }
-        .headerProminence(.increased)
     }
-
+    
+    private var foodSection: some View {
+        VStack(alignment: .leading, spacing: 10) {
+            Text("Food and Drinks")
+                .font(.headline)
+                .foregroundColor(Palette.deepTextColor)
+                .padding(.horizontal)
+            
+            List {
+                ForEach(viewModel.foods) { food in
+                    VStack {
+                        HStack {
+                            food.statusIcon.foregroundStyle(food.statusColor)
+                            Text(food.item_name)
+                                .font(.body.weight(.medium))
+                                .foregroundColor(Palette.deepTextColor)
+                            Spacer()
+                        }
+                        .padding()
+                        .background(
+                            RoundedRectangle(cornerRadius: 14)
+                                .fill(Color.white.opacity(0.3))
+                        )
+                        .padding(.horizontal) // matches guestSection spacing
+                        .padding(.bottom, 10) // spacing between rows
+                    }
+                    .listRowInsets(EdgeInsets()) // remove List's default padding
+                    .listRowBackground(Color.clear)
+                    .swipeActions(edge: .trailing) {
+                        Button {
+                            viewModel.optimisticallyReportFoodStatus(authUser: authUser, host: host, itemName: food.item_name, newStatus: "out")
+                        } label: {
+                            Label("Out", systemImage: "exclamationmark.shield.fill")
+                        }
+                        .tint(.red)
+                        
+                        Button {
+                            viewModel.optimisticallyReportFoodStatus(authUser: authUser, host: host, itemName: food.item_name, newStatus: "low")
+                        } label: {
+                            Label("Low", systemImage: "exclamationmark.triangle.fill")
+                        }
+                        .tint(.yellow)
+                    }
+                }
+            }
+            .listStyle(.plain)
+            .scrollDisabled(false)
+            .frame(minHeight: 200)
+            .background(Color.clear)
+        }
+    }
     
     private var emptyOverlay: some View {
         Group {
@@ -260,5 +244,4 @@ struct GuestManagementPage: View {
             }
         }
     }
-    
 }

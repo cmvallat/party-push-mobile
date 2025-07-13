@@ -1,13 +1,13 @@
 //
-//  SignUpTest.swift
-//  PartyPushMobileApp
+//  SignUpPage.swift
+//  Song_Requester
 //
-//  Created by Christian Vallat on 7/8/25.
+//  Created by Christian Vallat on 8/3/24.
 //
 
 import SwiftUI
 
-struct SignUpTest: View {
+struct SignUpPage: View {
     @EnvironmentObject var sessionManager: SessionManager
     @State var authUser = AuthUser()
     @State var code = ""
@@ -116,9 +116,4 @@ struct SignUpTest: View {
             }
         }
     }
-}
-
-
-#Preview {
-    SignUpTest()
 }
