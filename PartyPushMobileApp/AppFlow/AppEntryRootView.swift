@@ -35,7 +35,7 @@ struct AppEntryRootView: View {
                         LoginPage()
                             .environmentObject(sessionManager)
                     case .signUp:
-                        SignUpTest()
+                        SignUpPage()
                             .environmentObject(sessionManager)
                     }
                 case .home(let authUser, let appState):
