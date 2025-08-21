@@ -8,7 +8,6 @@
 import SwiftUI
 
 struct SignUpPage: View {
-    
     @EnvironmentObject var sessionManager: SessionManager
     @State var authUser = AuthUser()
     @State var code = ""
@@ -19,92 +18,78 @@ struct SignUpPage: View {
     
     var body: some View {
         ZStack {
+            LinearGradient(
+                colors: Palette.gradientColors,
+                startPoint: .topLeading,
+                endPoint: .bottomTrailing
+            )
+            .ignoresSafeArea()
+            
             VStack {
-                Section(header: Text("Party Push Sign Up").font(.largeTitle)) {
-                    Divider()
-                        .padding(.vertical)
+                Spacer()
+                
+                // Centered Title
+                VStack(spacing: 6) {
+                    Text("Create Account")
+                        .font(.system(size: 38, weight: .black, design: .rounded))
+                        .foregroundColor(Palette.deepTextColor)
                     
-                    AuthFlowTextField(
-                        label: "Email Address",
-                        value: $viewModel.email,
-                        secure: false
-                    )
-                    AuthFlowTextField(
-                        label: "Username",
-                        value: $viewModel.username,
-                        secure: false
-                    )
-                    AuthFlowTextField(
-                        label: "Password",
-                        value: $viewModel.password,
-                        secure: true
-                    )
-                    AuthFlowButton(
-                        label: "Get Started",
-                        isPrimary: false,
-                        color: .blue,
-                        onClick: {
+                    Rectangle()
+                        .frame(width: 80, height: 3)
+                        .foregroundColor(Palette.accentRed)
+                        .cornerRadius(1.5)
+                }
+                
+                // Input fields
+                VStack(spacing: 16) {
+                    Group{
+                        CustomTextField(
+                            text: $viewModel.email,
+                            placeholder: "Email",
+                        )
+                        CustomTextField(
+                            text: $viewModel.username,
+                            placeholder: "Username",
+                        )
+                        CustomTextField(
+                            text: $viewModel.password,
+                            placeholder: "Password",
+                            secure: true
+                        )
+                    }
+                    .padding(.horizontal, 20)
+                    SubmitButton(
+                        title: "Get started",
+                        isLoading: false,
+                        action: {
                             viewModel.signUp(sessionManager: sessionManager)
                             showSheet = true
                         }
                     )
-                    .sheet(
-                        //"Please enter the verification code from your email:",
-                        isPresented: $showSheet
-                    ) {
-                        AuthFlowTextField(
-                            label: "Code",
-                            value: $code,
-                            secure: false
-                        )
-                        AuthFlowButton(
-                            label: "Verify",
-                            isPrimary: true,
-                            color: .blue,
-                            onClick: {
-                                viewModel.verifyEmail(sessionManager: sessionManager, authUser: viewModel.authUser, confirmationCode: code)
-                            }
-                        )
-                        Button("Resend Code") {
-                            // get message returned from the endpoint
-                            resendCodeMessage = sessionManager.resendCode(authUser: viewModel.authUser)
-                            // if we are already displaying a resend code message, reset the display flag and show the animation again
-                            if(showResendCodeMessage)
-                            {
-                                showResendCodeMessage = false
-                            }
-                            withAnimation(.easeInOut(duration: 5)) {
-                                showResendCodeMessage.toggle()
-                            }
-                        }.alert(
-                            "Success! A new verification code has been sent to the email address",
-                            isPresented: $showResendCodeMessage
-                        ) {
-                            Button ("Ok") {
-                                showResendCodeMessage = false
-                            }
-                        }
-                    }
-                    AuthFlowButton(
-                        label: "Already have an account? Log in",
-                        isPrimary: false,
-                        color: .blue,
-                        onClick: {
-                            sessionManager.showLogin()
-                        }
-                    )
-                    if let error = viewModel.errorMessage {
-                        Text(error)
-                            .foregroundColor(.red)
-                            .frame(width: 300)
+                    .sheet(isPresented: $showSheet){
+                        VerifyEmailSheet(code: $code, isPresented: $showSheet, showResendCodeMessage: $showResendCodeMessage, resendCodeMessage: $resendCodeMessage, authUser: authUser, sessionManager: sessionManager, viewModel: viewModel)
                     }
                 }
+                .padding(.top, 30)
+                .padding(.horizontal, 30)
+                
+                Spacer()
+                
+                // redirect to login
+                VStack(spacing: 8) {
+                    Button("Log in") {
+                        sessionManager.showLogin()
+                    }
+                    .font(.body)
+                    .foregroundColor(.white.opacity(0.8))
+                }
+                .padding(.bottom, 30)
             }
             .onChange(of: viewModel.verificationStatus, initial: false) { oldValue, newValue in
                 if newValue == "Success" {
                     // TODO: change to operate in DispatchGroup?
                     viewModel.addUser(authUser: viewModel.authUser)
-                    sessionManager.showSession(authUser: viewModel.authUser)
+                    sessionManager.showHome(authUser: viewModel.authUser, appState: AppState())
                 }
             }
             .onChange(of: viewModel.errorMessage, initial: false) { _, newMessage in
@@ -121,11 +106,14 @@ struct SignUpPage: View {
                 alignment: .topLeading
             )
             .padding(.vertical)
-            .background(Color(uiColor: UIColor.systemGray6))
+            .alert("Error", isPresented: Binding<Bool>(
+                get: { viewModel.errorMessage != nil },
+                set: { _ in viewModel.errorMessage = nil }
+            )) {
+                Button("OK", role: .cancel) {}
+            } message: {
+                Text(viewModel.errorMessage ?? "Unknown error")
+            }
         }
     }
-}
-
-#Preview {
-    SignUpPage()
 }
