@@ -22,7 +22,7 @@ struct GuestManagementPage: View {
             LinearGradient(colors: Palette.gradientColors, startPoint: .topLeading, endPoint: .bottomTrailing)
                 .ignoresSafeArea()
             
-            //ScrollView {
+            ScrollView {
                 VStack(alignment: .leading, spacing: 20) {
                     VStack(alignment: .leading, spacing: 0) {
                         Text(host.party_name)
@@ -47,9 +47,10 @@ struct GuestManagementPage: View {
                     .padding(.horizontal)
 
                     foodSection
+                    guestSection
                     
                     // Leave party button
-                    SubmitButton(title: "Leave party", color: .red, action: {
+                    SubmitButton(title: "Leave party", systemImageName: "door.right.hand.open", color: .red, action: {
                         showLeavePartyConfirmation = true
                     })
                     .alert("Are you sure you want to leave this party?", isPresented: $showLeavePartyConfirmation) {
@@ -66,9 +67,11 @@ struct GuestManagementPage: View {
                     }
                 }
                 .padding()
-
                 Spacer()
-            //} // End of ScrollView
+            } // End of ScrollView
+            .refreshable {
+                viewModel.refresh(authUser: authUser, host: host)
+            }
             .overlay(
                 Group {
                     if viewModel.isLoading {
@@ -87,9 +90,9 @@ struct GuestManagementPage: View {
                     }
                 )
             }
-            .refreshable {
-                viewModel.refresh(authUser: authUser, host: host)
-            }
+//            .refreshable {
+//                viewModel.refresh(authUser: authUser, host: host)
+//            }
             .onAppear {
                 viewModel.refresh(authUser: authUser, host: host)
                 startPollingPartyStatus()
@@ -201,6 +204,34 @@ struct GuestManagementPage: View {
             .scrollDisabled(false)
             .frame(minHeight: 200)
             .background(Color.clear)
+        }
+    }
+    
+    private var guestSection: some View {
+        Section {
+            VStack(spacing: 10) {
+                HStack {
+                    Text("Other Guests")
+                        .font(.headline)
+                        .foregroundColor(Palette.deepTextColor)
+                    Spacer()
+                }
+
+                ForEach(viewModel.guests) { guest in
+                    HStack {
+                        Image(systemName: "person.fill")
+                            .foregroundColor(Palette.backgroundPurple)
+                        Text(guest.guest_name)
+                            .font(.body.weight(.medium))
+                            .foregroundColor(Palette.deepTextColor)
+                        Spacer()
+                    }
+                    .padding()
+                    .background(Color.white.opacity(0.3))
+                    .cornerRadius(14)
+                }
+            }
+            .padding(.horizontal)
         }
     }
     

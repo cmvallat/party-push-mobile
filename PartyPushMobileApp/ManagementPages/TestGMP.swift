@@ -34,7 +34,9 @@ struct TestGMP: View {
     let guests = [
         MockGuest(guest_name: "Alice"),
         MockGuest(guest_name: "Bob"),
-        MockGuest(guest_name: "Charlie")
+        MockGuest(guest_name: "Charlie"),
+        MockGuest(guest_name: "Dennis"),
+        MockGuest(guest_name: "Eric")
     ]
     
     var body: some View {
@@ -137,7 +139,6 @@ struct TestGMP: View {
                     .swipeActions(edge: .trailing) {
                         Button("Out") { /* action */ }.tint(.red)
                         Button("Low") { /* action */ }.tint(.yellow)
-                        Button("Refilled") { /* action */ }.tint(.green)
                     }
                     .swipeActions(edge: .leading) {
                         Button("Delete") { /* action */ }.tint(.red)

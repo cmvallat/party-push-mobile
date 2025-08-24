@@ -45,7 +45,8 @@ struct AppEntryRootView: View {
                     GuestManagementPage(host: host, authUser: authUser, appState: appState)
                         .environmentObject(sessionManager)
                 case .host(let host, let authUser, let appState):
-                    HostFoodManagementPage(host: host, authUser: authUser, appState: appState)
+//                    HostFoodManagementPage(host: host, authUser: authUser, appState: appState)
+                    CombinedHMP(host: host, authUser: authUser, appState: appState)
                         .environmentObject(sessionManager)
                 }
             }
