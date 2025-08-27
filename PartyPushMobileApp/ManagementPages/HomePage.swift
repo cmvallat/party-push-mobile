@@ -1,10 +1,10 @@
 import SwiftUI
 import UserNotifications
 
-//struct DeepLinkPartyCode: Identifiable, Equatable {
-//    let code: String
-//    var id: String { code }
-//}
+struct DeepLinkPartyCode: Identifiable, Equatable {
+    let code: String
+    var id: String { code }
+}
 
 struct HomePage: View {
     @EnvironmentObject var sessionManager: SessionManager
@@ -22,6 +22,9 @@ struct HomePage: View {
     // For Join Party sheet
     @State private var partyCode = ""
     @State private var guestName = ""
+    
+    @State private var pendingDeepLinkPartyCode: DeepLinkPartyCode? = nil
+//    @State private var initialPartyCode: String? = nil
     
     var body: some View {
         ZStack {
@@ -127,7 +130,7 @@ struct HomePage: View {
             }
             .sheet(isPresented: $showJoinSheet) {
                 JoinPartySheet(authUser: authUser, showJoinPartyView: $showJoinSheet, appState: appState, onPartyJoined: {
-                })
+                }, initialPartyCode: nil)
                     .presentationDetents([.large])
                     .background(
                         LinearGradient(
@@ -149,13 +152,16 @@ struct HomePage: View {
             } message: {
                 Text("We use push notifications to keep guests and hosts updated on food changes, party updates, and other important events.")
             }
-
+            // For opening universal links (texting invites)
             .onOpenURL { url in
                 print("SwiftUI onOpenURL called with: \(url)")
                 if let code = extractPartyCode(from: url) {
-                    partyCode = code
-                    showJoinSheet = true
+                    pendingDeepLinkPartyCode = DeepLinkPartyCode(code: code)
                 }
+            }
+            // show JoinPartySheet with pre-populated party code
+            .sheet(item: $pendingDeepLinkPartyCode) { code in
+                JoinPartySheet(authUser: authUser, showJoinPartyView: $showJoinSheet, appState: appState, onPartyJoined: {}, initialPartyCode: code.code)
             }
             .onChange(of: appState.needToRefresh, initial: false) { _, refresh in
                 if(refresh)

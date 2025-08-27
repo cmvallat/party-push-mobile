@@ -18,6 +18,8 @@ struct CombinedHMP: View {
     @StateObject private var viewModel = HostManagementViewModel()
     @StateObject private var addFoodViewModel = AddFoodViewModel()
     @State private var showEndedPartyAlert = false
+    @State private var showRemovedGuestSuccessAlert = false
+
     
     // For Universal Linking - invite guest
     @State private var showShareSheet = false
@@ -25,35 +27,9 @@ struct CombinedHMP: View {
     
     @EnvironmentObject var sessionManager: SessionManager
     
-    
-//    let host = MockHost(party_name: "Test Party", party_code: "1234ABCD", description: "A fun test party for previewing UI!")
-    
-//    @State private var foods = [
-//        MockFood(item_name: "Chips and salsa", status: "full"),
-//        MockFood(item_name: "Guac", status: "low"),
-//        MockFood(item_name: "Soda", status: "out"),
-//        MockFood(item_name: "Coke", status: "full"),
-//        MockFood(item_name: "Water", status: "low"),
-//        MockFood(item_name: "Moonshine", status: "out")
-//    ]
-//    // For testing empty array, comment out foods above and replace with:
-////    @State private var foods: [MockFood] = []
-//    
-//    let guests = [
-//        MockGuest(guest_name: "Alice"),
-//        MockGuest(guest_name: "Bob"),
-//        MockGuest(guest_name: "Charlie"),
-//        MockGuest(guest_name: "Dennis"),
-//        MockGuest(guest_name: "Eric"),
-//        MockGuest(guest_name: "Frank"),
-//        MockGuest(guest_name: "Greg"),
-//        MockGuest(guest_name: "Harris"),
-//        MockGuest(guest_name: "Ian")
-//    ]
-    
 //    @State private var currentFoodItem: String = ""
     @State private var showingAddFoodErrorAlert = false
-    
+        
     private func tryAddFood() {
 //        let trimmed = addFoodViewModel.itemName.trimmingCharacters(in: .whitespaces)
 //        if !trimmed.isEmpty {
@@ -125,8 +101,13 @@ struct CombinedHMP: View {
                         SubmitButton(title: "Invite Guest", systemImageName: "person.crop.circle.badge.plus", color: Color.green, action: {
                             // Invite Guest logic
                             let universalLink = "https://livepartyhelper.com/join-party/\(host.party_code)"
+//                            let universalLink = "https://livepartyhelper.com/joinparty?party_code=\(host.party_code)"
+
+                            print("Universal Link to share: \(universalLink)")
                             shareURL = URL(string: universalLink)
-                            showShareSheet = true
+                            DispatchQueue.main.async {
+                                showShareSheet = true
+                            }
                         })
                         .sheet(isPresented: $showShareSheet) {
                             if let url = shareURL {
@@ -154,7 +135,7 @@ struct CombinedHMP: View {
                 .padding(.bottom, 32)
             } // End of Scroll View
             .refreshable {
-                //action
+                viewModel.refresh(authUser: authUser, host: host)
             }
         } // End of ZStack
         .overlay(
@@ -165,9 +146,11 @@ struct CombinedHMP: View {
             }
         )
         .refreshable {
+//            print("host: " + host.party_code + " " + host.party_name + " " + host.description)
             viewModel.refresh(authUser: authUser, host: host)
         }
         .onAppear {
+//            print("host: " + host.party_code + " " + host.party_name + " " + host.description)
             viewModel.refresh(authUser: authUser, host: host)
         }
         .onChange(of: appState.endedPartyCode, initial: true) { _, endedCode in
@@ -180,6 +163,20 @@ struct CombinedHMP: View {
                 print("ALERT BUTTON PRESSED")
                 appState.needToRefresh = true
                 sessionManager.showHome(authUser: authUser, appState: appState)
+            }
+        }
+        .alert("You have successfully removed this guest.", isPresented: $showRemovedGuestSuccessAlert) {
+            Button("OK") {
+                viewModel.refresh(authUser: authUser, host: host)
+            }
+        }
+        .onChange(of: appState.needToRefresh, initial: false) { _, refresh in
+            if(refresh)
+            {
+                viewModel.refresh(authUser: authUser, host: host)
+                appState.endedPartyCode = nil
+                appState.kickedGuestUsername = nil
+                appState.needToRefresh = false
             }
         }
     } // End of View
@@ -224,7 +221,11 @@ struct CombinedHMP: View {
                         .listRowBackground(Color.clear)
                         .swipeActions(edge: .leading) {
                             Button(role: .destructive) {
-                                viewModel.deleteGuest(authUser: authUser, host: host, guest: guest)
+                                viewModel.deleteGuest(authUser: authUser, host: host, guest: guest){ res in
+                                    if res == true {
+                                        showRemovedGuestSuccessAlert = true
+                                    }
+                                }
                             } label: {
                                 Label("Delete", systemImage: "trash")
                             }

@@ -245,7 +245,7 @@ struct HostFoodManagementPage: View {
                             .frame(maxWidth: .infinity)
                             .swipeActions(edge: .leading) {
                                 Button(role: .destructive) {
-                                    viewModel.deleteGuest(authUser: authUser, host: host, guest: row)
+//                                    viewModel.deleteGuest(authUser: authUser, host: host, guest: row)
                                 } label: {
                                     Label("Delete", systemImage: "trash")
                                 }
