@@ -156,7 +156,7 @@ struct HostFoodManagementPage: View {
                     }
                     .sheet(isPresented: $showShareSheet) {
                         if let url = shareURL {
-                            ShareSheet(activityItems: [url])
+//                            ShareSheet(activityItems: [url])
                         }
                     }
                     .padding(.vertical, 6)

@@ -7,6 +7,37 @@
 
 import SwiftUI
 
+class ShareSheetManager: ObservableObject {
+    @Published var showShareSheet = false
+    @Published var shareMessage: String? = nil
+}
+
+struct ShareSheet: UIViewControllerRepresentable {
+    let activityItems: [Any]
+    @Binding var isPresented: Bool
+
+    class Coordinator: NSObject {
+        @Binding var isPresented: Bool
+        init(isPresented: Binding<Bool>) {
+            _isPresented = isPresented
+        }
+    }
+
+    func makeCoordinator() -> Coordinator {
+        Coordinator(isPresented: $isPresented)
+    }
+
+    func makeUIViewController(context: Context) -> UIActivityViewController {
+        let controller = UIActivityViewController(activityItems: activityItems, applicationActivities: nil)
+        controller.completionWithItemsHandler = { _, _, _, _ in
+            context.coordinator.isPresented = false
+        }
+        return controller
+    }
+
+    func updateUIViewController(_ uiViewController: UIActivityViewController, context: Context) {}
+}
+
 struct CombinedHMP: View {
     
     var host: Host
@@ -20,10 +51,7 @@ struct CombinedHMP: View {
     @State private var showEndedPartyAlert = false
     @State private var showRemovedGuestSuccessAlert = false
 
-    
-    // For Universal Linking - invite guest
-    @State private var showShareSheet = false
-    @State private var shareURL: URL?
+    @StateObject private var sheetManager = ShareSheetManager()
     
     @EnvironmentObject var sessionManager: SessionManager
     
@@ -101,17 +129,17 @@ struct CombinedHMP: View {
                         SubmitButton(title: "Invite Guest", systemImageName: "person.crop.circle.badge.plus", color: Color.green, action: {
                             // Invite Guest logic
                             let universalLink = "https://livepartyhelper.com/join-party/\(host.party_code)"
-//                            let universalLink = "https://livepartyhelper.com/joinparty?party_code=\(host.party_code)"
+                            let inviteText = "Hi, please join my party through the party push app! " + universalLink
 
-                            print("Universal Link to share: \(universalLink)")
-                            shareURL = URL(string: universalLink)
+                            print("Universal Link to share: \(inviteText)")
+                            sheetManager.shareMessage = inviteText
                             DispatchQueue.main.async {
-                                showShareSheet = true
+                                sheetManager.showShareSheet = true
                             }
                         })
-                        .sheet(isPresented: $showShareSheet) {
-                            if let url = shareURL {
-                                ShareSheet(activityItems: [url])
+                        .sheet(isPresented: $sheetManager.showShareSheet) {
+                            if let message = sheetManager.shareMessage {
+                                ShareSheet(activityItems: [message], isPresented: $sheetManager.showShareSheet)
                             }
                         }
                         .frame(maxWidth: .infinity)
@@ -376,3 +404,4 @@ struct CombinedHMP: View {
 //#Preview {
 //    CombinedHMP()
 //}
+

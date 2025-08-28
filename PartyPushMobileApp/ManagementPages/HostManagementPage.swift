@@ -1,14 +1,6 @@
 import SwiftUI
 import UIKit
 
-struct ShareSheet: UIViewControllerRepresentable {
-    let activityItems: [Any]
-    func makeUIViewController(context: Context) -> UIActivityViewController {
-        UIActivityViewController(activityItems: activityItems, applicationActivities: nil)
-    }
-    func updateUIViewController(_ uiViewController: UIActivityViewController, context: Context) {}
-}
-
 struct HostManagementPage: View {
     var host: Host
     let authUser: AuthUser
@@ -68,7 +60,8 @@ struct HostManagementPage: View {
                         }
                         .sheet(isPresented: $showShareSheet) {
                             if let url = shareURL {
-                                ShareSheet(activityItems: [url])
+                                let inviteText = "Hi friend, please join my party in the Party Push app! \(url.absoluteString)"
+//                                ShareSheet(activityItems: [inviteText])
                             }
                         }
                         .padding(.vertical, 6)
@@ -281,6 +274,7 @@ struct HostManagementPage: View {
                             .frame(maxWidth: .infinity)
                             .swipeActions(edge: .leading) {
                                 Button(role: .destructive) {
+
 //                                    viewModel.deleteGuest(authUser: authUser, host: host, guest: guest){ res in
 //                                        if res == true {
 //                                            showRemovedGuestSuccessAlert = true
@@ -308,3 +302,4 @@ struct HostManagementPage: View {
         .headerProminence(.increased)
     }
 }
+
