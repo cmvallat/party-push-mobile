@@ -22,7 +22,7 @@ struct GuestManagementPage: View {
             LinearGradient(colors: Palette.gradientColors, startPoint: .topLeading, endPoint: .bottomTrailing)
                 .ignoresSafeArea()
             
-            //ScrollView {
+            ScrollView {
                 VStack(alignment: .leading, spacing: 20) {
                     VStack(alignment: .leading, spacing: 0) {
                         Text(host.party_name)
@@ -47,9 +47,10 @@ struct GuestManagementPage: View {
                     .padding(.horizontal)
 
                     foodSection
+                    guestSection
                     
                     // Leave party button
-                    SubmitButton(title: "Leave party", color: .red, action: {
+                    SubmitButton(title: "Leave party", systemImageName: "door.right.hand.open", color: .red, action: {
                         showLeavePartyConfirmation = true
                     })
                     .alert("Are you sure you want to leave this party?", isPresented: $showLeavePartyConfirmation) {
@@ -66,9 +67,11 @@ struct GuestManagementPage: View {
                     }
                 }
                 .padding()
-
                 Spacer()
-            //} // End of ScrollView
+            } // End of ScrollView
+            .refreshable {
+                viewModel.refresh(authUser: authUser, host: host)
+            }
             .overlay(
                 Group {
                     if viewModel.isLoading {
@@ -87,9 +90,9 @@ struct GuestManagementPage: View {
                     }
                 )
             }
-            .refreshable {
-                viewModel.refresh(authUser: authUser, host: host)
-            }
+//            .refreshable {
+//                viewModel.refresh(authUser: authUser, host: host)
+//            }
             .onAppear {
                 viewModel.refresh(authUser: authUser, host: host)
                 startPollingPartyStatus()
@@ -160,47 +163,89 @@ struct GuestManagementPage: View {
                 .foregroundColor(Palette.deepTextColor)
                 .padding(.horizontal)
             
-            List {
-                ForEach(viewModel.foods) { food in
-                    VStack {
-                        HStack {
-                            food.statusIcon.foregroundStyle(food.statusColor)
-                            Text(food.item_name)
-                                .font(.body.weight(.medium))
-                                .foregroundColor(Palette.deepTextColor)
-                            Spacer()
+            if viewModel.foods.isEmpty {
+                VStack {
+                    Text("No current food items.")
+                        .multilineTextAlignment(.center)
+                        .font(.headline)
+                        .padding(.vertical, 15)
+                        .frame(maxWidth: .infinity)
+                        .foregroundColor(Color.white)
+                }
+                .listRowBackground(Color.clear)
+            }
+            else {
+                List {
+                    ForEach(viewModel.foods) { food in
+                        VStack {
+                            HStack {
+                                food.statusIcon.foregroundStyle(food.statusColor)
+                                Text(food.item_name)
+                                    .font(.body.weight(.medium))
+                                    .foregroundColor(Palette.deepTextColor)
+                                Spacer()
+                            }
+                            .padding()
+                            .background(
+                                RoundedRectangle(cornerRadius: 14)
+                                    .fill(Color.white.opacity(0.3))
+                            )
+                            .padding(.horizontal) // matches guestSection spacing
+                            .padding(.bottom, 10) // spacing between rows
                         }
-                        .padding()
-                        .background(
-                            RoundedRectangle(cornerRadius: 14)
-                                .fill(Color.white.opacity(0.3))
-                        )
-                        .padding(.horizontal) // matches guestSection spacing
-                        .padding(.bottom, 10) // spacing between rows
-                    }
-                    .listRowInsets(EdgeInsets()) // remove List's default padding
-                    .listRowBackground(Color.clear)
-                    .swipeActions(edge: .trailing) {
-                        Button {
-                            viewModel.optimisticallyReportFoodStatus(authUser: authUser, host: host, itemName: food.item_name, newStatus: "out")
-                        } label: {
-                            Label("Out", systemImage: "exclamationmark.shield.fill")
+                        .listRowInsets(EdgeInsets()) // remove List's default padding
+                        .listRowBackground(Color.clear)
+                        .swipeActions(edge: .trailing) {
+                            Button {
+                                viewModel.optimisticallyReportFoodStatus(authUser: authUser, host: host, itemName: food.item_name, newStatus: "out")
+                            } label: {
+                                Label("Out", systemImage: "exclamationmark.shield.fill")
+                            }
+                            .tint(.red)
+                            
+                            Button {
+                                viewModel.optimisticallyReportFoodStatus(authUser: authUser, host: host, itemName: food.item_name, newStatus: "low")
+                            } label: {
+                                Label("Low", systemImage: "exclamationmark.triangle.fill")
+                            }
+                            .tint(.yellow)
                         }
-                        .tint(.red)
-                        
-                        Button {
-                            viewModel.optimisticallyReportFoodStatus(authUser: authUser, host: host, itemName: food.item_name, newStatus: "low")
-                        } label: {
-                            Label("Low", systemImage: "exclamationmark.triangle.fill")
-                        }
-                        .tint(.yellow)
                     }
                 }
+                .listStyle(.plain)
+                .scrollDisabled(false)
+                .frame(minHeight: 200)
+                .background(Color.clear)
             }
-            .listStyle(.plain)
-            .scrollDisabled(false)
-            .frame(minHeight: 200)
-            .background(Color.clear)
+        }
+    }
+    
+    private var guestSection: some View {
+        Section {
+            VStack(spacing: 10) {
+                HStack {
+                    Text("Current Guests")
+                        .font(.headline)
+                        .foregroundColor(Palette.deepTextColor)
+                    Spacer()
+                }
+
+                ForEach(viewModel.guests) { guest in
+                    HStack {
+                        Image(systemName: "person.fill")
+                            .foregroundColor(Palette.backgroundPurple)
+                        // display "(you)" after curren user's name in guest list
+                        Text(guest.guest_name + (guest.username == authUser.username ? " (you)" : ""))
+                            .font(.body.weight(.medium))
+                            .foregroundColor(Palette.deepTextColor)
+                        Spacer()
+                    }
+                    .padding()
+                    .background(Color.white.opacity(0.3))
+                    .cornerRadius(14)
+                }
+            }
+            .padding(.horizontal)
         }
     }
     
@@ -245,3 +290,4 @@ struct GuestManagementPage: View {
         }
     }
 }
+

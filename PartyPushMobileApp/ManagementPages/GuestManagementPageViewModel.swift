@@ -10,6 +10,7 @@ import Foundation
 
 class GuestManagementViewModel: ObservableObject {
     @Published var foods = [Food]()
+    @Published var guests = [Guest]()
     @Published var reportFoodResponse = ""
     @Published var isLoading: Bool = false
     @Published var showLeftPartyAlert = false
@@ -24,6 +25,14 @@ class GuestManagementViewModel: ObservableObject {
            APIService.getFoodList(authUser: authUser, host: host) { [weak self] foods in
                DispatchQueue.main.async {
                    self?.foods = foods
+                   group.leave()
+               }
+           }
+        
+           group.enter()
+           APIService.getGuestList(authUser: authUser, host: host) { [weak self] guests in
+               DispatchQueue.main.async {
+                   self?.guests = guests
                    group.leave()
                }
            }

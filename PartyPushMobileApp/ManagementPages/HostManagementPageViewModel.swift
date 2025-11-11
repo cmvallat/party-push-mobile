@@ -52,15 +52,13 @@ class HostManagementViewModel: ObservableObject {
     }
 
 
-    func deleteGuest(authUser: AuthUser, host: Host, guest: Guest) {
+    func deleteGuest(authUser: AuthUser, host: Host, guest: Guest, completion: @escaping (Bool) -> Void) {
         APIService.deleteGuest(authUser: authUser, party_code: host.party_code, username: guest.username, isHost: "true"){response in
             DispatchQueue.main.async{
-                if(response == "Guest deleted successfully"){
-                    print("removed guest successfully")
+                completion(response == "Guest deleted successfully")
                 }
             }
         }
-    }
     
     func endParty(authUser: AuthUser, party_code: String, completion: @escaping (Bool) -> Void) {
         APIService.endParty(authUser: authUser, party_code: party_code) { response in

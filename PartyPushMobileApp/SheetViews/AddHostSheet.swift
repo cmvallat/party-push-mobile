@@ -50,7 +50,7 @@ struct AddHostSheet: View {
                     dismissKeyboard()
                     viewModel.addHost(authUser: authUser) {
                         // recreate the Host object that was created in the VM to call DB
-                        let host = Host(username: authUser.username, party_name: viewModel.partyName, party_code: viewModel.partyCode, invite_only: 1)
+                        let host = Host(username: authUser.username, party_name: viewModel.partyName, party_code: viewModel.partyCode, invite_only: 1, description: viewModel.desc)
                         
                         // clear values to we start the new view with a clean appState
                         appState.endedPartyCode = nil

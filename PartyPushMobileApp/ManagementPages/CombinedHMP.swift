@@ -1,0 +1,407 @@
+//
+//  CombinedHMP.swift
+//  PartyPushMobileApp
+//
+//  Created by Christian Vallat on 8/24/25.
+//
+
+import SwiftUI
+
+class ShareSheetManager: ObservableObject {
+    @Published var showShareSheet = false
+    @Published var shareMessage: String? = nil
+}
+
+struct ShareSheet: UIViewControllerRepresentable {
+    let activityItems: [Any]
+    @Binding var isPresented: Bool
+
+    class Coordinator: NSObject {
+        @Binding var isPresented: Bool
+        init(isPresented: Binding<Bool>) {
+            _isPresented = isPresented
+        }
+    }
+
+    func makeCoordinator() -> Coordinator {
+        Coordinator(isPresented: $isPresented)
+    }
+
+    func makeUIViewController(context: Context) -> UIActivityViewController {
+        let controller = UIActivityViewController(activityItems: activityItems, applicationActivities: nil)
+        controller.completionWithItemsHandler = { _, _, _, _ in
+            context.coordinator.isPresented = false
+        }
+        return controller
+    }
+
+    func updateUIViewController(_ uiViewController: UIActivityViewController, context: Context) {}
+}
+
+struct CombinedHMP: View {
+    
+    var host: Host
+    let authUser: AuthUser
+    @ObservedObject var appState: AppState
+    
+    @Environment(\.dismiss) var dismiss
+
+    @StateObject private var viewModel = HostManagementViewModel()
+    @StateObject private var addFoodViewModel = AddFoodViewModel()
+    @State private var showEndedPartyAlert = false
+    @State private var showRemovedGuestSuccessAlert = false
+
+    @StateObject private var sheetManager = ShareSheetManager()
+    
+    @EnvironmentObject var sessionManager: SessionManager
+    
+//    @State private var currentFoodItem: String = ""
+    @State private var showingAddFoodErrorAlert = false
+        
+    private func tryAddFood() {
+//        let trimmed = addFoodViewModel.itemName.trimmingCharacters(in: .whitespaces)
+//        if !trimmed.isEmpty {
+//            addFoodViewModel.addFood(authUser: authUser, partyCode: host.party_code) { response in
+//                print("add food response" + response)
+//                if response == "Success!" {
+//                    DispatchQueue.main.async {
+//                        viewModel.refresh(authUser: authUser, host: host)
+//                        addFoodViewModel.itemName = ""
+//                    }
+//                }
+//                // error messaging handled by alert
+//            }
+//        }
+        let trimmed = addFoodViewModel.itemName.trimmingCharacters(in: .whitespacesAndNewlines)
+        guard !trimmed.isEmpty else {
+            showingAddFoodErrorAlert = true
+            return
+        }
+        if trimmed.lowercased() == "nil" {
+            showingAddFoodErrorAlert = true
+            return
+        }
+        addFoodViewModel.addFood(authUser: authUser, partyCode: host.party_code) { response in
+            print("add food response" + response)
+            if response == "Success!" {
+                DispatchQueue.main.async {
+                    viewModel.refresh(authUser: authUser, host: host)
+                    addFoodViewModel.itemName = ""
+                }
+            }
+            // error messaging handled by alert
+        }
+    }
+    
+    var body: some View {
+        ZStack {
+            LinearGradient(colors: Palette.gradientColors, startPoint: .topLeading, endPoint: .bottomTrailing)
+                .ignoresSafeArea()
+            
+            ScrollView {
+                VStack(alignment: .leading, spacing: 20) {
+                    VStack(alignment: .leading, spacing: 0) {
+                        Text(host.party_name)
+                            .font(.largeTitle.bold())
+                            .foregroundColor(Palette.deepTextColor)
+                        Text("Party Code: \(host.party_code)")
+                            .font(.headline)
+                            .foregroundColor(Palette.deepTextColor.opacity(0.7))
+                    }
+                    .padding(.top, 32)
+                    .padding(.horizontal)
+
+                    VStack(alignment: .leading, spacing: 0) {
+                        Text("About the Party")
+                            .font(.title3.bold())
+                            .foregroundColor(Palette.deepTextColor)
+                        Text(host.description ?? "No description.")
+                            .font(.subheadline)
+                            .foregroundColor(Palette.deepTextColor.opacity(0.85))
+                    }
+                    .padding(.bottom, 32)
+                    .padding(.horizontal)
+
+                    foodSection
+                    guestSection
+                    
+                    VStack {
+                        SubmitButton(title: "Invite Guest", systemImageName: "person.crop.circle.badge.plus", color: Color.green, action: {
+                            // Invite Guest logic
+                            let universalLink = "https://livepartyhelper.com/join-party/\(host.party_code)"
+                            let inviteText = "Hi, please join my party through the party push app! " + universalLink
+
+                            print("Universal Link to share: \(inviteText)")
+                            sheetManager.shareMessage = inviteText
+                            DispatchQueue.main.async {
+                                sheetManager.showShareSheet = true
+                            }
+                        })
+                        .sheet(isPresented: $sheetManager.showShareSheet) {
+                            if let message = sheetManager.shareMessage {
+                                ShareSheet(activityItems: [message], isPresented: $sheetManager.showShareSheet)
+                            }
+                        }
+                        .frame(maxWidth: .infinity)
+                        .padding(.bottom, 10)
+        //                .padding(.vertical, 4)
+                        .listRowInsets(EdgeInsets())
+                        .listRowBackground(Color.clear)
+                        
+                        SubmitButton(title: "End party", systemImageName: "door.right.hand.open", color: Color.red, action: {
+                            // End Party logic
+                            viewModel.endParty(authUser: authUser, party_code: host.party_code) { res in
+                                if res == true {
+                                    appState.endedPartyCode = host.party_code
+                                }
+                            }
+                        })
+                    }
+                    
+                    Spacer()
+                }
+                .padding(.bottom, 32)
+            } // End of Scroll View
+            .refreshable {
+                viewModel.refresh(authUser: authUser, host: host)
+            }
+        } // End of ZStack
+        .overlay(
+            Group {
+                if viewModel.isLoading {
+                    ProgressOverlay(message: "Loading party details...")
+                }
+            }
+        )
+        .refreshable {
+//            print("host: " + host.party_code + " " + host.party_name + " " + host.description)
+            viewModel.refresh(authUser: authUser, host: host)
+        }
+        .onAppear {
+//            print("host: " + host.party_code + " " + host.party_name + " " + host.description)
+            viewModel.refresh(authUser: authUser, host: host)
+        }
+        .onChange(of: appState.endedPartyCode, initial: true) { _, endedCode in
+            if endedCode == host.party_code {
+                showEndedPartyAlert = true
+            }
+        }
+        .alert("You have successfully ended this party.", isPresented: $showEndedPartyAlert) {
+            Button("OK") {
+                print("ALERT BUTTON PRESSED")
+                appState.needToRefresh = true
+                sessionManager.showHome(authUser: authUser, appState: appState)
+            }
+        }
+        .alert("You have successfully removed this guest.", isPresented: $showRemovedGuestSuccessAlert) {
+            Button("OK") {
+                viewModel.refresh(authUser: authUser, host: host)
+            }
+        }
+        .onChange(of: appState.needToRefresh, initial: false) { _, refresh in
+            if(refresh)
+            {
+                viewModel.refresh(authUser: authUser, host: host)
+                appState.endedPartyCode = nil
+                appState.kickedGuestUsername = nil
+                appState.needToRefresh = false
+            }
+        }
+    } // End of View
+
+    private var guestSection: some View {
+        VStack(alignment: .leading, spacing: 10) {
+            Text("Current Guests")
+                .font(.headline)
+                .foregroundColor(Palette.deepTextColor)
+            
+            if viewModel.guests.isEmpty {
+                VStack {
+                    Text("No guests have joined your party yet.")
+                        .multilineTextAlignment(.center)
+                        .font(.headline)
+                        .padding(.vertical, 15)
+                        .frame(maxWidth: .infinity)
+                        .foregroundColor(Color.white)
+                }
+                .listRowBackground(Color.clear)
+            }
+            else {
+                List {
+                    ForEach(viewModel.guests) { guest in
+                        VStack {
+                            HStack {
+                                Image(systemName: "person.fill")
+                                    .foregroundColor(Palette.backgroundPurple)
+                                Text(guest.guest_name)
+                                    .font(.body.weight(.medium))
+                                    .foregroundColor(Palette.deepTextColor)
+                                Spacer()
+                            }
+                            .padding()
+                            .background(
+                                RoundedRectangle(cornerRadius: 14)
+                                    .fill(Color.white.opacity(0.3))
+                            )
+                            .padding(.bottom, 10)
+                        }
+                        .listRowInsets(EdgeInsets())
+                        .listRowBackground(Color.clear)
+                        .swipeActions(edge: .leading) {
+                            Button(role: .destructive) {
+                                viewModel.deleteGuest(authUser: authUser, host: host, guest: guest){ res in
+                                    if res == true {
+                                        showRemovedGuestSuccessAlert = true
+                                    }
+                                }
+                            } label: {
+                                Label("Delete", systemImage: "trash")
+                            }
+                        }
+                    }
+                }
+                .listStyle(.plain)
+                .scrollDisabled(false)
+                .frame(minHeight: 200)
+                .background(Color.clear)
+            }
+        }
+        .padding(.horizontal)
+    }
+    
+    private var foodSection: some View {
+//        let isAddEnabled = !currentFoodItem.trimmingCharacters(in: .whitespaces).isEmpty
+
+        return VStack(alignment: .leading, spacing: 10) {
+            Text("Food and Drinks")
+                .font(.headline)
+                .foregroundColor(Palette.deepTextColor)
+                .padding(.horizontal)
+
+            List {
+                ZStack {
+                    RoundedRectangle(cornerRadius: 14)
+                        .fill(Color.white.opacity(0.16))
+                    HStack {
+                        Button(action: { tryAddFood(); dismissKeyboard() }) {
+                            Image(systemName: "plus")
+                                .foregroundColor(.white)
+                                .padding(.leading, 12)
+                        }
+                        TextField(
+                            "",
+                            text: $addFoodViewModel.itemName,
+                            prompt: Text("Enter item name").foregroundColor(.white)
+                        )
+                        .onSubmit { tryAddFood() }
+                        .foregroundColor(.white)
+                        .padding(.horizontal, 12)
+                        .font(.body.weight(.medium))
+                    }
+                    .alert("Error", isPresented: Binding<Bool>(
+                        get: { addFoodViewModel.errorMessage != nil },
+                        set: { _ in addFoodViewModel.errorMessage = nil }
+                    )) {
+                        Button("OK", role: .cancel) {}
+                    } message: {
+                        Text(addFoodViewModel.errorMessage ?? "Unknown error")
+                    }
+                }
+                .frame(height: 56)
+                .padding(.horizontal)
+                .padding(.bottom, 10)
+                .listRowInsets(EdgeInsets())
+                .listRowBackground(Color.clear)
+
+                if viewModel.foods.isEmpty {
+                    VStack {
+                        Text("No food or drinks added yet.")
+                            .font(.headline)
+                            .padding(.vertical, 15)
+                            .frame(maxWidth: .infinity)
+                            .foregroundColor(Color.white)
+                    }
+                    .listRowBackground(Color.clear)
+                } else {
+                    ForEach(viewModel.foods) { food in
+                            VStack {
+                                HStack {
+                                    foodStatusIcon(for: food.status)
+                                    Text(food.item_name)
+                                        .font(.body.weight(.medium))
+                                        .foregroundColor(Palette.deepTextColor)
+                                    Spacer()
+                                }
+                                .padding()
+                                .background(
+                                    RoundedRectangle(cornerRadius: 14)
+                                        .fill(Color.white.opacity(0.3))
+                                )
+                                .padding(.horizontal)
+                                .padding(.bottom, 10)
+                            }
+                            .listRowInsets(EdgeInsets())
+                            .listRowBackground(Color.clear)
+                            .swipeActions(edge: .trailing) {
+                                Button {
+                                    viewModel.optimisticallyReportFoodStatus(authUser: authUser, host: host, itemName: food.item_name, newStatus: "out")
+                                } label: {
+                                    Label("Out", systemImage: "exclamationmark.shield.fill")
+                                }
+                                .tint(.red)
+
+                                Button {
+                                    viewModel.optimisticallyReportFoodStatus(authUser: authUser, host: host, itemName: food.item_name, newStatus: "low")
+                                } label: {
+                                    Label("Low", systemImage: "exclamationmark.triangle.fill")
+                                }
+                                .tint(.yellow)
+
+                                Button {
+                                    viewModel.optimisticallyReportFoodStatus(authUser: authUser, host: host, itemName: food.item_name, newStatus: "full")
+                                } label: {
+                                    Label("Refilled", systemImage: "arrow.trianglehead.2.counterclockwise")
+                                }
+                                .tint(.green)
+                            }
+                            .swipeActions(edge: .leading) {
+                                Button(role: .destructive) {
+                                    viewModel.deleteFoodItem(authUser: authUser, host: host, itemName: food.item_name) {
+                                        viewModel.refresh(authUser: authUser, host: host)
+                                    }
+                                } label: {
+                                    Label("Delete", systemImage: "trash")
+                                }
+                                .tint(.red)
+                            }
+                        }
+                    }
+            }
+            .listStyle(.plain)
+            .scrollDisabled(false)
+            .frame(minHeight: 200)
+            .background(Color.clear)
+            .alert("Failed to add food item", isPresented: $showingAddFoodErrorAlert) {
+                Button("OK", role: .cancel) { }
+            } message: {
+                Text("Please enter a non-empty item name.")
+            }
+        }
+    }
+
+    
+    @ViewBuilder
+    private func foodStatusIcon(for status: String) -> some View {
+        switch status {
+        case "full": Image(systemName: "checkmark.circle.fill").foregroundColor(.green)
+        case "low": Image(systemName: "exclamationmark.triangle.fill").foregroundColor(.yellow)
+        case "out": Image(systemName: "xmark.circle.fill").foregroundColor(.red)
+        default: Image(systemName: "circle").foregroundColor(.gray)
+        }
+    }
+}
+
+//#Preview {
+//    CombinedHMP()
+//}
+

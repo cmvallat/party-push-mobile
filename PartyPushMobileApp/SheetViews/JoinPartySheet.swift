@@ -14,6 +14,9 @@ struct JoinPartySheet: View {
     var onPartyJoined: () -> Void
     @EnvironmentObject var sessionManager: SessionManager
     @State private var lastSavedHost: Host? = nil
+    let initialPartyCode: String?
+    
+    @Environment(\.dismiss) private var dismiss
 
     @StateObject private var viewModel = JoinPartySheetViewModel()
     
@@ -29,7 +32,7 @@ struct JoinPartySheet: View {
                 HStack {
                     Spacer()
                     DismissSheetButton(onDismiss: {
-                        showJoinPartyView = false
+                        dismiss()
                     })
                 }
                 .padding(.top, 8)
@@ -62,6 +65,11 @@ struct JoinPartySheet: View {
                     }
                 })
                 Spacer()
+            }
+        }
+        .onAppear {
+            if let code = initialPartyCode, viewModel.partyCode.isEmpty {
+                viewModel.partyCode = code
             }
         }
         .overlay(loadingOverlay)

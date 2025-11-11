@@ -137,6 +137,7 @@ struct HostFoodManagementPage: View {
                 } message: {
                     Text(addFoodViewModel.errorMessage ?? "Unknown error")
                 }
+                
                 // --- End New Food Management Section ---
                 guestSection
                 HStack {
@@ -155,7 +156,7 @@ struct HostFoodManagementPage: View {
                     }
                     .sheet(isPresented: $showShareSheet) {
                         if let url = shareURL {
-                            ShareSheet(activityItems: [url])
+//                            ShareSheet(activityItems: [url])
                         }
                     }
                     .padding(.vertical, 6)
@@ -242,13 +243,13 @@ struct HostFoodManagementPage: View {
                             .font(.headline)
                             .foregroundColor(.primary)
                             .frame(maxWidth: .infinity)
-                        .swipeActions(edge: .leading) {
-                            Button(role: .destructive) {
-                                viewModel.deleteGuest(authUser: authUser, host: host, guest: row)
-                            } label: {
-                                Label("Delete", systemImage: "trash")
+                            .swipeActions(edge: .leading) {
+                                Button(role: .destructive) {
+//                                    viewModel.deleteGuest(authUser: authUser, host: host, guest: row)
+                                } label: {
+                                    Label("Delete", systemImage: "trash")
+                                }
                             }
-                        }
                     }
                     .padding()
                     .frame(maxWidth: .infinity)

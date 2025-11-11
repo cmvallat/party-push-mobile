@@ -8,6 +8,7 @@ import SwiftUI
 
 struct SubmitButton: View {
     var title: String = "Submit"
+    var systemImageName: String? = nil
     var isLoading: Bool = false
     var color: Color = Palette.accentBlue
     var action: () -> Void
@@ -18,11 +19,17 @@ struct SubmitButton: View {
                     .frame(maxWidth: .infinity)
                     .padding(.vertical, 14)
             } else {
-                Text(title)
-                    .font(.system(size: 18, weight: .semibold, design: .rounded))
-                    .foregroundColor(.white)
-                    .frame(maxWidth: .infinity)
-                    .padding(.vertical, 14)
+                HStack(spacing: 8) {
+                    if let imageName = systemImageName {
+                        Image(systemName: imageName)
+                            .foregroundColor(.white)
+                    }
+                    Text(title)
+                        .font(.system(size: 18, weight: .semibold, design: .rounded))
+                        .foregroundColor(.white)
+                }
+                .frame(maxWidth: .infinity)
+                .padding(.vertical, 14)
             }
         }
         .background(color)

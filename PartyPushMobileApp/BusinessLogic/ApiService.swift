@@ -611,4 +611,62 @@ enum APIService {
             }
         }.resume()
     }
+    
+    static func deleteAllUserData(authUser: AuthUser, completion: @escaping (Result<Void, Error>) -> Void) {
+        guard var urlComps = URLComponents(string: "https://o571tk1wv7.execute-api.us-east-1.amazonaws.com/Prod/hello") else {
+            completion(.failure(APIError.invalidURL))
+            return
+        }
+        urlComps.queryItems = [
+            URLQueryItem(name: "username", value: authUser.username),
+        ]
+        var request = URLRequest(url: urlComps.url!)
+        request.httpMethod = "DELETE"
+        request.setValue(authUser.idToken, forHTTPHeaderField: "AccessToken")
+        
+        URLSession.shared.dataTask(with: request) { data, response, error in
+            if let error = error {
+                completion(.failure(error))
+                return
+            }
+            if let httpResponse = response as? HTTPURLResponse, !(200...299).contains(httpResponse.statusCode) {
+                let message = String(data: data ?? Data(), encoding: .utf8) ?? "Unknown error"
+                completion(.failure(NSError(domain: "", code: httpResponse.statusCode, userInfo: [NSLocalizedDescriptionKey: message])))
+                return
+            }
+            completion(.success(()))
+        }.resume()
+    }
+    
+    static func deleteExample(authUser: AuthUser, host: Host, itemName: String, completion: @escaping (String) -> Void) {
+        var urlComps = URLComponents(string: "https://e8ro13vvl3.execute-api.us-east-1.amazonaws.com/Prod")!
+        urlComps.queryItems = [
+            URLQueryItem(name: "username", value: authUser.username),
+            URLQueryItem(name: "party_code", value: host.party_code),
+            URLQueryItem(name: "item_name", value: itemName)
+        ]
+        
+        var request = URLRequest(url: urlComps.url!)
+        request.httpMethod = "DELETE"
+        request.setValue(authUser.idToken, forHTTPHeaderField: "AccessToken")
+        
+        URLSession.shared.dataTask(with: request) { data, _, error in
+            if let data = data, let returnedObj = try? JSONDecoder().decode(APIResponse<EmptyCodable>.self, from: data) {
+                let message = returnedObj.message
+                print(message)
+                // if successfully processed
+                if(message == "Success!")
+                {
+                    print("food item deleted successfully")
+                    completion("success")
+                }
+                else{
+                    completion("Could not remove food item from the party")
+                }
+            } else {
+                print("Error decoding food item deletion response:", error?.localizedDescription ?? "Unknown error")
+                completion("error")
+            }
+        }.resume()
+    }
 }

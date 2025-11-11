@@ -302,4 +302,44 @@ final class SessionManager : ObservableObject {
             self.authState = .unauthorized(.login)
         }
     }
+    
+    func deleteCurrentUser(authUser: AuthUser, completion: @escaping (Result<Void, Error>) -> Void) {
+        //print("[DeleteUser] Provided accessToken: \(authUser.accessToken)")
+        guard !authUser.accessToken.isEmpty else {
+            completion(.failure(NSError(domain: "", code: 0, userInfo: [NSLocalizedDescriptionKey: "Access token is missing. Please log in again."])))
+            return
+        }
+        
+        var request = URLRequest(url: cognitoUrl)
+        request.httpMethod = "POST"
+        request.setValue("AWSCognitoIdentityProviderService.DeleteUser", forHTTPHeaderField: "X-Amz-Target")
+        request.setValue("application/x-amz-json-1.1", forHTTPHeaderField: "Content-Type")
+        let body: [String: Any] = ["AccessToken": authUser.accessToken]
+        request.httpBody = try? JSONSerialization.data(withJSONObject: body)
+        
+        let task = URLSession.shared.dataTask(with: request) { data, response, error in
+            if let error = error {
+                //print("[DeleteUser] Network error: \(error)")
+                completion(.failure(error))
+                return
+            }
+            if let httpResponse = response as? HTTPURLResponse {
+                //print("[DeleteUser] HTTP Status: \(httpResponse.statusCode)")
+                if let data = data, let body = String(data: data, encoding: .utf8) {
+                    //print("[DeleteUser] Response body: \(body)")
+                } else {
+                    //print("[DeleteUser] No response body data.")
+                }
+                if !(200...299).contains(httpResponse.statusCode) {
+                    completion(.failure(NSError(domain: "", code: httpResponse.statusCode, userInfo: [NSLocalizedDescriptionKey: "DeleteUser failed with status \(httpResponse.statusCode)"])))
+                    return
+                }
+            }
+            DispatchQueue.main.async {
+                self.logout(authUser: authUser)
+                completion(.success(()))
+            }
+        }
+        task.resume()
+    }
 }
