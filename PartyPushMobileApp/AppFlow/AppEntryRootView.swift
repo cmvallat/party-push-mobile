@@ -39,13 +39,14 @@ struct AppEntryRootView: View {
                             .environmentObject(sessionManager)
                     }
                 case .home(let authUser, let appState):
-                    HomePage(authUser: authUser, appState: appState)
-                        .environmentObject(sessionManager)
+                    MainAppShell(authUser: authUser, appState: appState) {
+                        HomePage(authUser: authUser, appState: appState)
+                    }
+                    .environmentObject(sessionManager)
                 case .guest(let host, let authUser, let appState):
                     GuestManagementPage(host: host, authUser: authUser, appState: appState)
                         .environmentObject(sessionManager)
                 case .host(let host, let authUser, let appState):
-//                    HostManagementPage(host: host, authUser: authUser, appState: appState)
                     CombinedHMP(host: host, authUser: authUser, appState: appState)
                         .environmentObject(sessionManager)
                 }

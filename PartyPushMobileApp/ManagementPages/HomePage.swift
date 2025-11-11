@@ -204,7 +204,7 @@ struct HomePage: View {
 //                    self.isFirstTime = false
 //                    if granted {
 //                        UIApplication.shared.registerForRemoteNotifications()
-//                        
+//
 //                        // Delay a moment to give the AppDelegate time to receive the token
 //                        DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) {
 //                            if let token = UserDefaults.standard.string(forKey: "deviceToken") {
