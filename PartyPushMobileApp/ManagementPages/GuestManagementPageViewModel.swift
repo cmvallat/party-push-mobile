@@ -57,6 +57,22 @@ class GuestManagementViewModel: ObservableObject {
             }
         }
     }
+    
+    func leaveParty(authUser: AuthUser, party_code: String, username: String, onSuccess: @escaping () -> Void) {
+        APIService.removeGuest(
+            authUser: authUser,
+            party_code: party_code,
+            username: username,
+            isHost: false
+        ) { [weak self] success in
+            // Already on main thread from APIService
+            if success {
+                onSuccess()
+            } else {
+                self?.deleteGuestFailed = true
+            }
+        }
+    }
 
     func reportFood(authUser: AuthUser, itemName: String, partyCode: String, status: String, completion: @escaping (Bool) -> Void) {
         APIService.reportFood(authUser: authUser, itemName: itemName, partyCode: partyCode, status: status, isHost: false) { [weak self] response in

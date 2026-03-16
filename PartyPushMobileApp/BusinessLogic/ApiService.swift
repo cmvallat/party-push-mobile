@@ -187,7 +187,79 @@ enum APIService {
             }
         }.resume()
     }
-
+     
+    /// Asks the backend to remove a guest.
+    ///
+    /// - Parameters:
+    ///   - authUser:    The currently authenticated user (provides the auth token).
+    ///   - party_code:  The party the guest belongs to.
+    ///   - username:    The guest's username.
+    ///   - isHost:      `true`  → host is kicking the guest out.
+    ///                  `false` → guest is leaving voluntarily.
+    ///   - completion:  Called on the **main thread** with `true` on success,
+    ///                  `false` on any logical or network failure.
+    static func removeGuest(
+        authUser: AuthUser,
+        party_code: String,
+        username: String,
+        isHost: Bool,
+        completion: @escaping (Bool) -> Void
+    ) {
+        var urlComps = URLComponents(
+            string: "https://evnq0z71b4.execute-api.us-east-1.amazonaws.com/Prod/hello/"
+        )!
+        urlComps.queryItems = [
+            URLQueryItem(name: "username",   value: username),
+            URLQueryItem(name: "party_code", value: party_code),
+            URLQueryItem(name: "isHost",     value: String(isHost)),
+        ]
+ 
+        var request = URLRequest(url: urlComps.url!)
+        request.httpMethod = "DELETE"
+        request.setValue(authUser.idToken, forHTTPHeaderField: "AccessToken")
+ 
+        print("[APIService] removeGuest → \(username), isHost: \(isHost), party: \(party_code)")
+ 
+        URLSession.shared.dataTask(with: request) { data, response, error in
+            DispatchQueue.main.async {
+                // Network-level failure
+                if let error {
+                    print("[APIService] removeGuest network error: \(error.localizedDescription)")
+                    completion(false)
+                    return
+                }
+ 
+                guard let data else {
+                    print("[APIService] removeGuest: no data returned")
+                    completion(false)
+                    return
+                }
+ 
+                if let rawString = String(data: data, encoding: .utf8) {
+                    print("[APIService] removeGuest raw response: \(rawString)")
+                }
+                
+                // Decode the structured response
+                guard let result = try? JSONDecoder().decode(DeleteGuestAPIResponse.self, from: data) else {
+                    print("[APIService] removeGuest: failed to decode response")
+                    completion(false)
+                    return
+                }
+ 
+                print("[APIService] removeGuest response — success: \(result.Success), message: \(result.Message)")
+ 
+                if !result.NotificationSent {
+                    // Surface notification issues to the console without blocking the UX.
+                    let reason = result.NotificationError ?? "unknown reason"
+                    print("[APIService] removeGuest: notification not sent (\(reason))")
+                }
+ 
+                // Only the `success` flag drives the completion result.
+                completion(result.Success)
+            }
+        }.resume()
+    }
+    
     static func deleteGuest(authUser: AuthUser, party_code: String, username: String, isHost: String, completion: @escaping (String) -> Void) {
         var urlComps = URLComponents(string: "https://sl83ejal53.execute-api.us-east-1.amazonaws.com/Prod/hello")!
         urlComps.queryItems = [

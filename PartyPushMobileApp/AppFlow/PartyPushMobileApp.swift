@@ -22,7 +22,7 @@ struct PartyPushMobileApp: App {
 //            UserDefaults.standard.synchronize()
 //        }
         // For development only:, uncomment to ensure they show up each time
-        // try? Tips.resetDatastore()
+//        try? Tips.resetDatastore()
         try? Tips.configure()
         sessionManager.checkForExistingSession()
     }

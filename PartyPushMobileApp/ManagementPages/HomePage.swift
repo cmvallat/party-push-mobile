@@ -1,5 +1,6 @@
 import SwiftUI
 import UserNotifications
+import TipKit
 
 struct DeepLinkPartyCode: Identifiable, Equatable {
     let code: String
@@ -24,6 +25,12 @@ struct HomePage: View {
     @State private var guestName = ""
     
     @State private var pendingDeepLinkPartyCode: DeepLinkPartyCode? = nil
+    @State private var onboardingComplete = false
+    
+    @State var tipGroup = TipGroup(.ordered) {
+        JoinPartyTip()
+        AddHostTip()
+    }
 //    @State private var initialPartyCode: String? = nil
     
     var body: some View {
@@ -64,7 +71,10 @@ struct HomePage: View {
                 
                 // join and add buttons
                 VStack(spacing: 20) {
-                    Button(action: { showJoinSheet = true }) {
+                    Button(action: {
+                        showJoinSheet = true
+                        (tipGroup.currentTip as? JoinPartyTip)?.invalidate(reason: .actionPerformed)
+                    }) {
                         HStack(spacing: 12) {
                             Image(systemName: "person.2.fill")
                                 .font(.system(size: 22, weight: .bold))
@@ -73,6 +83,7 @@ struct HomePage: View {
                                 .font(.system(.title2, weight: .bold))
                                 .foregroundColor(Palette.deepTextColor)
                         }
+                        .popoverTip(onboardingComplete ? (tipGroup.currentTip as? JoinPartyTip) : nil)
                         .frame(maxWidth: .infinity)
                         .padding(.vertical, 18)
                         .background(Palette.lighterButtonBackground)
@@ -80,7 +91,10 @@ struct HomePage: View {
                         .shadow(color: Color.black.opacity(0.15), radius: 5, x: 0, y: 2)
                     }
                     
-                    Button(action: { showHostSheet = true }) {
+                    Button(action: {
+                        showHostSheet = true
+                        (tipGroup.currentTip as? AddHostTip)?.invalidate(reason: .actionPerformed)
+                    }) {
                         HStack(spacing: 12) {
                             Image(systemName: "house.fill")
                                 .font(.system(size: 22, weight: .bold))
@@ -89,6 +103,7 @@ struct HomePage: View {
                                 .font(.system(.title2, weight: .bold))
                                 .foregroundColor(Palette.deepTextColor)
                         }
+                        .popoverTip(onboardingComplete ? (tipGroup.currentTip as? AddHostTip) : nil)
                         .frame(maxWidth: .infinity)
                         .padding(.vertical, 18)
                         .background(Palette.lighterButtonBackground)
@@ -148,6 +163,9 @@ struct HomePage: View {
                 Button("Not Now", role: .cancel) {
                     isFirstTime = false
                     UserDefaults.standard.setValue(1, forKey: "FirstTime")
+                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+                        onboardingComplete = true
+                    }
                 }
             } message: {
                 Text("We use push notifications to keep guests and hosts updated on food changes, party updates, and other important events.")
@@ -251,6 +269,9 @@ struct HomePage: View {
                         }
                     }
                 }
+                DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+                                onboardingComplete = true
+                            }
             }
         }
     }

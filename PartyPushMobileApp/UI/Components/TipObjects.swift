@@ -48,11 +48,20 @@ struct HelpTip: Tip {
     }
 }
 
-struct ReportFoodLowTip: Tip {
+struct ReportFoodFromGuestTip: Tip {
     var title: Text {
         Text("Report Food Status")
     }
     var message: Text? {
-        Text("Swipe left on an item to report it as low or out of stock.")
+        Text("Swipe left on an item to report it as low or out of stock. This will alert the party host.")
+    }
+}
+
+struct ReportFoodFromHostTip: Tip {
+    var title: Text {
+        Text("Report Food Status")
+    }
+    var message: Text? {
+        Text("Swipe left on an item to change it's status. This will alert all party guests.")
     }
 }

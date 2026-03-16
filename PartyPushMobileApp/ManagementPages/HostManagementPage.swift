@@ -1,5 +1,6 @@
 import SwiftUI
 import UIKit
+import TipKit
 
 struct HostManagementPage: View {
     var host: Host
@@ -13,6 +14,8 @@ struct HostManagementPage: View {
     // For Universal Linking - invite guest
     @State private var showShareSheet = false
     @State private var shareURL: URL?
+    
+    @State private var reportFoodTip = ReportFoodFromHostTip()
     
     @EnvironmentObject var sessionManager: SessionManager
 
@@ -247,7 +250,12 @@ struct HostManagementPage: View {
             .listRowSeparator(.hidden)
 
         } header: {
-            Text("Food and Drinks").font(.headline)
+//            Text("Food and Drinks").font(.headline)
+            Button(action: {}) {
+                Text("Food and Drinks List").font(.headline)
+            }
+            .buttonStyle(.plain)
+            .popoverTip(viewModel.foods.isEmpty ? reportFoodTip : nil)
         }
         .headerProminence(.increased)
     }
