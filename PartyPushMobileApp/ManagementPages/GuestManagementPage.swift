@@ -1,4 +1,5 @@
 import SwiftUI
+import TipKit
 
 struct GuestManagementPage: View {
     var host: Host
@@ -14,6 +15,7 @@ struct GuestManagementPage: View {
     @State private var showKickedPartyAlert = false
     @State private var showLeftPartyAlertScreen = false
     @State private var showDeleteGuestFailureAlert = false
+    @State private var reportFoodTip = ReportFoodFromGuestTip()
     
     @EnvironmentObject var sessionManager: SessionManager
     
@@ -55,7 +57,7 @@ struct GuestManagementPage: View {
                     })
                     .alert("Are you sure you want to leave this party?", isPresented: $showLeavePartyConfirmation) {
                         Button("Leave", role: .destructive) {
-                            viewModel.deleteGuest(
+                            viewModel.leaveParty(
                                 authUser: authUser,
                                 party_code: host.party_code,
                                 username: authUser.username
@@ -65,6 +67,13 @@ struct GuestManagementPage: View {
                         }
                         Button("Cancel", role: .cancel) {}
                     }
+                    // Optional: surface the failure to the user
+//                    .alert("Could not leave party", isPresented: $viewModel.deleteGuestFailed) {
+//                        Button("OK", role: .cancel) { viewModel.deleteGuestFailed = false }
+//                    } message: {
+//                        Text("Something went wrong. Please try again.")
+//                    }
+                    
                 }
                 .padding()
                 Spacer()
@@ -162,6 +171,7 @@ struct GuestManagementPage: View {
                 .font(.headline)
                 .foregroundColor(Palette.deepTextColor)
                 .padding(.horizontal)
+                .popoverTip(reportFoodTip)
             
             if viewModel.foods.isEmpty {
                 VStack {

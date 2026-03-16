@@ -1,4 +1,5 @@
 import SwiftUI
+import TipKit
 
 struct HostFoodManagementPage: View {
     var host: Host
@@ -14,6 +15,8 @@ struct HostFoodManagementPage: View {
     // For Universal Linking - invite guest
     @State private var showShareSheet = false
     @State private var shareURL: URL?
+    
+    @State private var reportFoodTip = ReportFoodFromHostTip()
     
     @EnvironmentObject var sessionManager: SessionManager
 
@@ -41,7 +44,14 @@ struct HostFoodManagementPage: View {
                 Divider()
 
                 // --- Begin New Food Management Section ---
-                Text("Food and Drinks").font(.headline).padding(.bottom, 2)
+//                Text("Food and Drinks").font(.headline).padding(.bottom, 2)
+//                    .popoverTip(reportFoodTip)
+                Button(action: {}) {
+                    Text("Food and Drinks dfijdnfgjd").font(.headline).padding(.bottom, 2)
+                }
+                .buttonStyle(.plain)
+                .popoverTip(reportFoodTip)
+//                    .popoverTip(viewModel.foods.isEmpty ? reportFoodTip : nil)
                 List {
                     if viewModel.foods.isEmpty {
                         Text("No current food items")
@@ -58,6 +68,7 @@ struct HostFoodManagementPage: View {
                                     .foregroundColor(.primary)
                                 Spacer()
                             }
+//                            .popoverTip(viewModel.foods.first?.id == row.id ? reportFoodTip : nil)
                             .padding()
                             .background(.ultraThinMaterial)
                             .cornerRadius(16)

@@ -51,6 +51,21 @@ class HostManagementViewModel: ObservableObject {
         }
     }
 
+//    func kickGuesetFromParty(authUser: AuthUser, party_code: String, username: String, onSuccess: @escaping () -> Void) {
+//        APIService.removeGuest(
+//            authUser: authUser,
+//            party_code: party_code,
+//            username: username,
+//            isHost: false
+//        ) { [weak self] success in
+//            // Already on main thread from APIService
+//            if success {
+//                onSuccess()
+//            } else {
+//                self?.deleteGuestFailed = true
+//            }
+//        }
+//    }
 
     func deleteGuest(authUser: AuthUser, host: Host, guest: Guest, completion: @escaping (Bool) -> Void) {
         APIService.deleteGuest(authUser: authUser, party_code: host.party_code, username: guest.username, isHost: "true"){response in

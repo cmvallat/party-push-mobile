@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import TipKit
 
 class ShareSheetManager: ObservableObject {
     @Published var showShareSheet = false
@@ -54,6 +55,8 @@ struct CombinedHMP: View {
     @StateObject private var sheetManager = ShareSheetManager()
     
     @EnvironmentObject var sessionManager: SessionManager
+    
+    @State private var reportFoodTip = ReportFoodFromHostTip()
     
 //    @State private var currentFoodItem: String = ""
     @State private var showingAddFoodErrorAlert = false
@@ -273,10 +276,20 @@ struct CombinedHMP: View {
 //        let isAddEnabled = !currentFoodItem.trimmingCharacters(in: .whitespaces).isEmpty
 
         return VStack(alignment: .leading, spacing: 10) {
-            Text("Food and Drinks")
-                .font(.headline)
-                .foregroundColor(Palette.deepTextColor)
-                .padding(.horizontal)
+//            Text("Food and Drinks")
+//                .font(.headline)
+//                .foregroundColor(Palette.deepTextColor)
+//                .padding(.horizontal)
+//                .popoverTip(reportFoodTip)
+            
+            Button(action: {}) {
+                Text("Food and Drinks")
+                    .font(.headline)
+                    .foregroundColor(Palette.deepTextColor)
+            }
+            .buttonStyle(.plain)
+            .popoverTip(reportFoodTip)
+            .padding(.horizontal)
 
             List {
                 ZStack {
